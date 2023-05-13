@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "780909776597",
+    "project_id": "arfriend-47efa",
+    "storage_bucket": "arfriend-47efa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780909776597:android:217665f89f769079ce5c5c",
+        "android_client_info": {
+          "package_name": "com.arfriendv2.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780909776597-hhn8g2c1rdtjm1c83hpri7ebhccmjlng.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2yNNwoccMOr624B7mFgV7Q7GnHPa0rtc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "780909776597-hhn8g2c1rdtjm1c83hpri7ebhccmjlng.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "780909776597-3t4eajvs5lerakqbv7vf5cfpq6jh19ks.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.arfriend"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780909776597:android:e3d214964695479cce5c5c",
+        "android_client_info": {
+          "package_name": "com.example.arfriend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780909776597-hhn8g2c1rdtjm1c83hpri7ebhccmjlng.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2yNNwoccMOr624B7mFgV7Q7GnHPa0rtc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "780909776597-hhn8g2c1rdtjm1c83hpri7ebhccmjlng.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "780909776597-3t4eajvs5lerakqbv7vf5cfpq6jh19ks.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.arfriend"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
