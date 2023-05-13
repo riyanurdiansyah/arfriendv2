@@ -13,7 +13,7 @@ _$_MessageEntity _$$_MessageEntityFromJson(Map<String, dynamic> json) =>
       hidden: json['hidden'] as bool? ?? false,
       id: json['id'] as String? ?? "",
       isRead: json['isRead'] as bool? ?? false,
-      date: json['date'] as String,
+      date: json['date'] as String? ?? "",
     );
 
 Map<String, dynamic> _$$_MessageEntityToJson(_$_MessageEntity instance) =>

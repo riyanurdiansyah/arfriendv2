@@ -170,7 +170,7 @@ class _$_MessageEntity implements _MessageEntity {
       this.hidden = false,
       this.id = "",
       this.isRead = false,
-      required this.date});
+      this.date = ""});
 
   factory _$_MessageEntity.fromJson(Map<String, dynamic> json) =>
       _$$_MessageEntityFromJson(json);
@@ -189,6 +189,7 @@ class _$_MessageEntity implements _MessageEntity {
   @JsonKey()
   final bool isRead;
   @override
+  @JsonKey()
   final String date;
 
   @override
@@ -235,7 +236,7 @@ abstract class _MessageEntity implements MessageEntity {
       final bool hidden,
       final String id,
       final bool isRead,
-      required final String date}) = _$_MessageEntity;
+      final String date}) = _$_MessageEntity;
 
   factory _MessageEntity.fromJson(Map<String, dynamic> json) =
       _$_MessageEntity.fromJson;

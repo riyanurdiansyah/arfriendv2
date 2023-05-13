@@ -26,3 +26,9 @@ List<SidebarEntity> listSidebar = [
     role: 1,
   ),
 ];
+
+final List<String> items = [
+  'Text',
+  'File',
+  'Sheet',
+];

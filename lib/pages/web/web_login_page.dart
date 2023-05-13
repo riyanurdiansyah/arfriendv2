@@ -3,6 +3,7 @@ import 'package:arfriendv2/utils/app_text.dart';
 import 'package:arfriendv2/utils/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -187,10 +188,9 @@ class _WebLoginPageState extends State<WebLoginPage> {
                     BlocBuilder<LoginBloc, LoginState>(
                       builder: (context, state) {
                         if (state is LoginLoadingState) {
-                          return const SizedBox(
-                            width: 35,
-                            height: 35,
-                            child: CircularProgressIndicator(),
+                          return const SpinKitThreeInOut(
+                            color: Color(0xff004B7B),
+                            size: 25.0,
                           );
                         }
                         return SizedBox(

@@ -12,10 +12,9 @@ class AppText {
     int? maxLines,
     double? height,
   }) {
-    return Text(
+    return SelectableText(
       title,
       textAlign: textAlign ?? TextAlign.start,
-      overflow: overflow,
       maxLines: maxLines ?? 1,
       style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.normal,
@@ -37,10 +36,9 @@ class AppText {
     double? height,
     FontStyle? fontStyle,
   }) {
-    return Text(
+    return SelectableText(
       title,
       textAlign: textAlign ?? TextAlign.start,
-      overflow: overflow,
       maxLines: maxLines ?? 1,
       style: GoogleFonts.sourceSansPro(
           fontWeight: FontWeight.w400,
@@ -59,12 +57,11 @@ class AppText {
       FontStyle? fontStyle,
       double? height,
       bool? softWarp}) {
-    return Text(
+    return SelectableText(
       title,
       textAlign: textAlign ?? TextAlign.start,
-      overflow: overflow,
+      minLines: 1,
       maxLines: maxLines ?? 1,
-      softWrap: softWarp,
       style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.w500,
         fontSize: fontSize,
@@ -86,10 +83,9 @@ class AppText {
     double? height,
     FontStyle? fontStyle,
   }) {
-    return Text(
+    return SelectableText(
       title,
       textAlign: textAlign ?? TextAlign.start,
-      overflow: overflow,
       maxLines: maxLines ?? 1,
       style: GoogleFonts.sourceSansPro(
           fontWeight: FontWeight.w600,
@@ -110,10 +106,10 @@ class AppText {
     int? maxLines,
     double? height,
   }) {
-    return Text(
+    return SelectableText(
       title,
       textAlign: textAlign ?? TextAlign.start,
-      overflow: overflow,
+      minLines: 1,
       maxLines: maxLines ?? 1,
       style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.w700,
@@ -133,10 +129,10 @@ class AppText {
     TextOverflow? overflow,
     int? maxLines,
   }) {
-    return Text(
+    return SelectableText(
       title,
       textAlign: textAlign ?? TextAlign.start,
-      overflow: overflow,
+      minLines: 1,
       maxLines: maxLines ?? 1,
       style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.w800,
@@ -155,10 +151,10 @@ class AppText {
     TextOverflow? overflow,
     int? maxLines,
   }) {
-    return Text(
+    return SelectableText(
       title,
       textAlign: textAlign ?? TextAlign.start,
-      overflow: overflow,
+      minLines: 1,
       maxLines: maxLines ?? 1,
       style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.w900,
@@ -178,10 +174,10 @@ class AppText {
     int? maxLines,
     double? height,
   }) {
-    return Text(
+    return SelectableText(
       title,
       textAlign: textAlign ?? TextAlign.start,
-      overflow: overflow,
+      minLines: 1,
       maxLines: maxLines ?? 1,
       style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.bold,

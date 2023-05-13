@@ -17,17 +17,17 @@ class WebDashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: const Color(0xff004B7B),
-      //   automaticallyImplyLeading: false,
-      //   elevation: 0,
-      //   leadingWidth: 0,
-      //   title: Image.asset(
-      //     "assets/images/logo.webp",
-      //     width: 200,
-      //   ),
-      //   centerTitle: false,
-      // ),
+      appBar: AppBar(
+        backgroundColor: const Color(0xff004B7B),
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        leadingWidth: 0,
+        title: Image.asset(
+          "assets/images/logo.webp",
+          width: 200,
+        ),
+        centerTitle: false,
+      ),
       body: Stack(
         children: [
           SizedBox(
