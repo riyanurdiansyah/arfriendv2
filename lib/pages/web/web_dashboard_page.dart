@@ -1,3 +1,4 @@
+import 'package:arfriendv2/pages/web/web_side_bar.dart';
 import 'package:flutter/material.dart';
 
 class WebDashboardPage extends StatelessWidget {
@@ -14,6 +15,17 @@ class WebDashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      // appBar: AppBar(
+      //   backgroundColor: const Color(0xff004B7B),
+      //   automaticallyImplyLeading: false,
+      //   elevation: 0,
+      //   leadingWidth: 0,
+      //   title: Image.asset(
+      //     "assets/images/logo.webp",
+      //     width: 200,
+      //   ),
+      //   centerTitle: false,
+      // ),
       body: Stack(
         children: [
           SizedBox(
@@ -28,9 +40,7 @@ class WebDashboardPage extends StatelessWidget {
             children: [
               Expanded(
                 flex: 1,
-                child: Container(
-                  color: Colors.white,
-                ),
+                child: SideNavbar(route: route),
               ),
               Expanded(
                 flex: 5,

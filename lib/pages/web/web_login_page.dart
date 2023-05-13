@@ -121,6 +121,8 @@ class _WebLoginPageState extends State<WebLoginPage> {
                               ? size.width / 2
                               : size.width / 1.5,
                       child: TextFormField(
+                        onEditingComplete: () =>
+                            _loginBloc.add(LoginOnPressEvent()),
                         controller: _loginBloc.tcPassword,
                         obscureText: true,
                         validator: (val) => Validators.checkFieldPass(val!),

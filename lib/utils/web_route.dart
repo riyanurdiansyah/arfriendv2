@@ -1,3 +1,4 @@
+import 'package:arfriendv2/pages/web/web_chat_page.dart';
 import 'package:arfriendv2/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -70,13 +71,13 @@ GoRouter router = GoRouter(
                 );
               },
             ),
-            // GoRoute(
-            //   path: RouteName.chat,
-            //   name: RouteName.chat,
-            //   pageBuilder: (context, state) {
-            //     return const NoTransitionPage(child: ChatPage());
-            //   },
-            // ),
+            GoRoute(
+              path: RouteName.chat,
+              name: RouteName.chat,
+              pageBuilder: (context, state) {
+                return const NoTransitionPage(child: WebChatPage());
+              },
+            ),
             // GoRoute(
             //   path: RouteName.history,
             //   name: RouteName.history,

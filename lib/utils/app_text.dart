@@ -17,7 +17,7 @@ class AppText {
       textAlign: textAlign ?? TextAlign.start,
       overflow: overflow,
       maxLines: maxLines ?? 1,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.normal,
         fontSize: fontSize,
         color: colors,
@@ -42,7 +42,7 @@ class AppText {
       textAlign: textAlign ?? TextAlign.start,
       overflow: overflow,
       maxLines: maxLines ?? 1,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.sourceSansPro(
           fontWeight: FontWeight.w400,
           fontSize: fontSize,
           color: colors,
@@ -65,7 +65,7 @@ class AppText {
       overflow: overflow,
       maxLines: maxLines ?? 1,
       softWrap: softWarp,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.w500,
         fontSize: fontSize,
         color: colors,
@@ -91,7 +91,7 @@ class AppText {
       textAlign: textAlign ?? TextAlign.start,
       overflow: overflow,
       maxLines: maxLines ?? 1,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.sourceSansPro(
           fontWeight: FontWeight.w600,
           fontSize: fontSize,
           color: colors,
@@ -115,7 +115,7 @@ class AppText {
       textAlign: textAlign ?? TextAlign.start,
       overflow: overflow,
       maxLines: maxLines ?? 1,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.w700,
         fontSize: fontSize,
         color: colors,
@@ -138,7 +138,7 @@ class AppText {
       textAlign: textAlign ?? TextAlign.start,
       overflow: overflow,
       maxLines: maxLines ?? 1,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.w800,
         fontSize: fontSize,
         color: colors,
@@ -160,7 +160,7 @@ class AppText {
       textAlign: textAlign ?? TextAlign.start,
       overflow: overflow,
       maxLines: maxLines ?? 1,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.w900,
         fontSize: fontSize,
         color: colors,
@@ -183,7 +183,7 @@ class AppText {
       textAlign: textAlign ?? TextAlign.start,
       overflow: overflow,
       maxLines: maxLines ?? 1,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.sourceSansPro(
         fontWeight: FontWeight.bold,
         fontSize: fontSize,
         color: colors,
