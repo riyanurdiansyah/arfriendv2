@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../entities/dataset/message_entity.dart';
+import '../../utils/app_responsive.dart';
 
 class WebChatBotWidget extends StatelessWidget {
   const WebChatBotWidget({
@@ -74,9 +75,10 @@ class WebChatBotWidget extends StatelessWidget {
               ],
             ),
           ),
-          const Expanded(
-            child: SizedBox(),
-          ),
+          if (!AppResponsive.isMobile(context))
+            const Expanded(
+              child: SizedBox(),
+            ),
         ],
       ),
     );
@@ -97,9 +99,10 @@ class WebChatUserWidget extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 18.0),
       child: Row(
         children: [
-          const Expanded(
-            child: SizedBox(),
-          ),
+          if (!AppResponsive.isMobile(context))
+            const Expanded(
+              child: SizedBox(),
+            ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,

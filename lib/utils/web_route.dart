@@ -1,4 +1,6 @@
 import 'package:arfriendv2/pages/web/web_chat_page.dart';
+import 'package:arfriendv2/pages/web/web_home_page.dart';
+import 'package:arfriendv2/pages/web/web_train_page.dart';
 import 'package:arfriendv2/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -66,8 +68,10 @@ GoRouter router = GoRouter(
               path: RouteName.home,
               name: RouteName.home,
               pageBuilder: (context, state) {
-                return const NoTransitionPage(
-                  child: SizedBox(),
+                return NoTransitionPage(
+                  child: WebHomePage(
+                    route: state.location,
+                  ),
                 );
               },
             ),
@@ -75,7 +79,10 @@ GoRouter router = GoRouter(
               path: RouteName.chat,
               name: RouteName.chat,
               pageBuilder: (context, state) {
-                return const NoTransitionPage(child: WebChatPage());
+                return NoTransitionPage(
+                    child: WebChatPage(
+                  route: state.location,
+                ));
               },
             ),
             // GoRoute(
@@ -85,13 +92,17 @@ GoRouter router = GoRouter(
             //     return const NoTransitionPage(child: HistoryPage());
             //   },
             // ),
-            // GoRoute(
-            //   path: RouteName.train,
-            //   name: RouteName.train,
-            //   pageBuilder: (context, state) {
-            //     return const NoTransitionPage(child: TrainPage());
-            //   },
-            // ),
+            GoRoute(
+              path: RouteName.train,
+              name: RouteName.train,
+              pageBuilder: (context, state) {
+                return NoTransitionPage(
+                  child: WebTrainPage(
+                    route: state.location,
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ],

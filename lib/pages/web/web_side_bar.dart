@@ -1,3 +1,4 @@
+import 'package:arfriendv2/utils/app_responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -60,24 +61,27 @@ class SideNavbar extends StatelessWidget {
                               ? Colors.white
                               : Colors.black54,
                         ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          listSidebar[index].title,
-                          style: GoogleFonts.poppins(
-                            fontSize: route.contains(listSidebar[index].route)
-                                ? 14.5
-                                : 13.5,
-                            color: route.contains(listSidebar[index].route)
-                                ? Colors.white
-                                : Colors.black54,
-                            letterSpacing: 1.2,
-                            fontWeight: route.contains(listSidebar[index].route)
-                                ? FontWeight.w600
-                                : FontWeight.w500,
+                        if (AppResponsive.isDesktop(context))
+                          const SizedBox(
+                            width: 15,
                           ),
-                        )
+                        if (AppResponsive.isDesktop(context))
+                          Text(
+                            listSidebar[index].title,
+                            style: GoogleFonts.poppins(
+                              fontSize: route.contains(listSidebar[index].route)
+                                  ? 14.5
+                                  : 13.5,
+                              color: route.contains(listSidebar[index].route)
+                                  ? Colors.white
+                                  : Colors.black54,
+                              letterSpacing: 1.2,
+                              fontWeight:
+                                  route.contains(listSidebar[index].route)
+                                      ? FontWeight.w600
+                                      : FontWeight.w500,
+                            ),
+                          )
                       ],
                     ),
                   ),

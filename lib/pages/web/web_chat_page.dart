@@ -1,4 +1,6 @@
 import 'package:arfriendv2/pages/web/web_chat_widget.dart';
+import 'package:arfriendv2/pages/web/web_side_bar.dart';
+import 'package:arfriendv2/utils/app_responsive.dart';
 import 'package:arfriendv2/utils/app_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +13,12 @@ import '../../entities/chat/chat_entity.dart';
 import '../../utils/validators.dart';
 
 class WebChatPage extends StatefulWidget {
-  const WebChatPage({super.key});
+  const WebChatPage({
+    super.key,
+    required this.route,
+  });
+
+  final String route;
 
   @override
   State<WebChatPage> createState() => _WebChatPageState();
@@ -32,9 +39,15 @@ class _WebChatPageState extends State<WebChatPage> {
     return BlocProvider(
       create: (context) => _chatBloc,
       child: Scaffold(
+        endDrawer: AppResponsive.isMobile(context)
+            ? SideNavbar(route: widget.route)
+            : null,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           elevation: 0,
+          iconTheme: const IconThemeData(
+            color: Color(0xff004B7B),
+          ),
           backgroundColor: const Color(0xFFDAF0FF),
           title: Row(
             children: [

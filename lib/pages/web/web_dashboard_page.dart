@@ -1,6 +1,8 @@
 import 'package:arfriendv2/pages/web/web_side_bar.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/app_responsive.dart';
+
 class WebDashboardPage extends StatelessWidget {
   const WebDashboardPage({
     super.key,
@@ -38,10 +40,11 @@ class WebDashboardPage extends StatelessWidget {
           ),
           Row(
             children: [
-              Expanded(
-                flex: 1,
-                child: SideNavbar(route: route),
-              ),
+              if (!AppResponsive.isMobile(context))
+                Expanded(
+                  flex: 1,
+                  child: SideNavbar(route: route),
+                ),
               Expanded(
                 flex: 5,
                 child: widget,
