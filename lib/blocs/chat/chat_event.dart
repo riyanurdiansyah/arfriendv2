@@ -11,3 +11,5 @@ class ChatOnAddedHistoryToVariableEvent extends ChatEvent {
 }
 
 class ChatOnStreamHistoryEvent extends ChatEvent {}
+
+class ChatOnSendMessageEvent extends ChatEvent {}

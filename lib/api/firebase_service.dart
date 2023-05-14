@@ -10,5 +10,11 @@ abstract class FirebaseApiService {
 
   Future<Either<ErrorEntity, bool>> deleteDataset(String id);
 
+  Future<Either<ErrorEntity, bool>> saveDataset(Map<String, dynamic> body);
+
+  Future<Either<ErrorEntity, bool>> createChat(Map<String, dynamic> body);
+
+  Future<Either<ErrorEntity, bool>> updateChat(Map<String, dynamic> body);
+
   Stream<ChatEntity> streamHistoryChat(String id);
 }

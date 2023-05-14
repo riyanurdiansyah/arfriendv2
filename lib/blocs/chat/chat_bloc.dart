@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:arfriendv2/api/firebase_service.dart';
 import 'package:arfriendv2/api/firebase_service_impl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +26,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatInitialEvent>(_onInitial);
     on<ChatOnAddedHistoryToVariableEvent>(_onAddedHistory);
     on<ChatOnStreamHistoryEvent>(_onStreamHistory);
+    on<ChatOnSendMessageEvent>(_onSendMessage);
   }
 
   FutureOr<void> _onInitial(ChatInitialEvent event, Emitter<ChatState> emit) {
@@ -53,5 +55,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     stream.listen((data) {
       streamController.add(data);
     });
+  }
+
+  FutureOr<void> _onSendMessage(
+      ChatOnSendMessageEvent event, Emitter<ChatState> emit) async {
+    final exists = (await FirebaseFirestore.instance
+            .collection("chat")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .get())
+        .exists;
   }
 }

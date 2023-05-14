@@ -57,4 +57,53 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<ErrorEntity, bool>> saveDataset(
+      Map<String, dynamic> body) async {
+    try {
+      final count =
+          (await FirebaseFirestore.instance.collection("dataset").get())
+              .docs
+              .length;
+      body["number"] = count + 1;
+      return FirebaseFirestore.instance
+          .collection("dataset")
+          .doc(body["id"])
+          .set(body)
+          .then((_) {
+        return const Right(true);
+      });
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ErrorEntity, bool>> updateChat(
+      Map<String, dynamic> body) async {
+    try {
+      return await FirebaseFirestore.instance
+          .collection("chat")
+          .doc(body["id"])
+          .update(body)
+          .then((value) => const Right(true));
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ErrorEntity, bool>> createChat(
+      Map<String, dynamic> body) async {
+    try {
+      return await FirebaseFirestore.instance
+          .collection("chat")
+          .doc(body["id"])
+          .set(body)
+          .then((value) => const Right(true));
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
 }

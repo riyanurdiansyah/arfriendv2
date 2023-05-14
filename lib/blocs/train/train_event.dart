@@ -4,6 +4,8 @@ abstract class TrainEvent {}
 
 class TrainInitialEvent extends TrainEvent {}
 
+class TrainClearAllFieldEvent extends TrainEvent {}
+
 class TrainAddSingleIdEvent extends TrainEvent {
   TrainAddSingleIdEvent(this.id);
 
@@ -23,3 +25,27 @@ class TrainOnChangePageEvent extends TrainEvent {
 }
 
 class TrainDeleteDataEvent extends TrainEvent {}
+
+class TrainSaveTextDataEvent extends TrainEvent {}
+
+class TrainSaveFileDataEvent extends TrainEvent {}
+
+class TrainChooseTragetRoleEvent extends TrainEvent {
+  TrainChooseTragetRoleEvent(this.role);
+
+  final String role;
+}
+
+class TrainChooseFileEvent extends TrainEvent {}
+
+class TrainChooseCsvFileEvent extends TrainEvent {
+  TrainChooseCsvFileEvent(this.file);
+
+  final FilePickerResult file;
+}
+
+class TrainChooseDocFileEvent extends TrainEvent {
+  TrainChooseDocFileEvent(this.file);
+
+  final FilePickerResult file;
+}

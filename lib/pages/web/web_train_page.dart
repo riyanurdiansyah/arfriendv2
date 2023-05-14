@@ -1,3 +1,4 @@
+import 'package:arfriendv2/utils/app_dialog.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -131,15 +132,30 @@ class _WebTrainPageState extends State<WebTrainPage> {
                     ),
                   ),
                   items: items
-                      .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
+                      .map(
+                        (item) => DropdownMenuItem<String>(
+                          value: item,
+                          onTap: () {
+                            if (item.toLowerCase() == "text") {
+                              AppDialog.dialogAddText(
+                                context: context,
+                                trainBloc: _trainBloc,
+                              );
+                            }
+
+                            if (item.toLowerCase() == "file") {
+                              AppDialog.dialogAddFile(
+                                  context: context, trainBloc: _trainBloc);
+                            }
+                          },
+                          child: Text(
+                            item,
+                            style: GoogleFonts.sourceSansPro(
+                              fontSize: 14,
                             ),
-                          ))
+                          ),
+                        ),
+                      )
                       .toList(),
                   // value: selectedValue,
                   onChanged: (value) {},
@@ -203,144 +219,6 @@ class _WebTrainPageState extends State<WebTrainPage> {
                 }
                 return Column(
                   children: [
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(
-                    //       horizontal: 16, vertical: 25),
-                    //   child: Row(
-                    //     children: [
-                    //       InkWell(
-                    //         onTap: () {},
-                    //         child: Container(
-                    //           padding: const EdgeInsets.symmetric(
-                    //               horizontal: 14, vertical: 10),
-                    //           decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.circular(6),
-                    //             color: const Color(0xFFA90505),
-                    //           ),
-                    //           child: Row(
-                    //             children: [
-                    //               const Icon(
-                    //                 Icons.delete_outline_rounded,
-                    //                 size: 14,
-                    //                 color: Colors.white,
-                    //               ),
-                    //               const SizedBox(
-                    //                 width: 12,
-                    //               ),
-                    //               AppText.labelW600(
-                    //                 "Delete",
-                    //                 14,
-                    //                 Colors.white,
-                    //               ),
-                    //             ],
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       const SizedBox(
-                    //         width: 14,
-                    //       ),
-                    //       InkWell(
-                    //         onTap: () => _trainBloc.add(TrainOnSortingEvent()),
-                    //         child: Container(
-                    //           padding: const EdgeInsets.symmetric(
-                    //               horizontal: 14, vertical: 10),
-                    //           decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.circular(6),
-                    //             color: Colors.white,
-                    //           ),
-                    //           child: Row(
-                    //             children: [
-                    //               const Icon(
-                    //                 Icons.sort_rounded,
-                    //                 size: 14,
-                    //                 color: Colors.black,
-                    //               ),
-                    //               const SizedBox(
-                    //                 width: 12,
-                    //               ),
-                    //               AppText.labelW600(
-                    //                 "Sort",
-                    //                 14,
-                    //                 Colors.black,
-                    //               ),
-                    //             ],
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       const Spacer(),
-                    //       InkWell(
-                    //         onTap: () {},
-                    //         child: Container(
-                    //           padding: const EdgeInsets.symmetric(
-                    //               horizontal: 14, vertical: 10),
-                    //           decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.circular(6),
-                    //             color: colorPrimaryDark,
-                    //           ),
-                    //           child: Row(
-                    //             children: [
-                    //               const Icon(
-                    //                 Icons.add_rounded,
-                    //                 size: 14,
-                    //                 color: Colors.white,
-                    //               ),
-                    //               const SizedBox(
-                    //                 width: 12,
-                    //               ),
-                    //               AppText.labelW600(
-                    //                 "Add more",
-                    //                 14,
-                    //                 Colors.white,
-                    //               ),
-                    //             ],
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       const SizedBox(
-                    //         width: 14,
-                    //       ),
-                    //       SizedBox(
-                    //         width: size.width / 5,
-                    //         height: 36,
-                    //         child: TextField(
-                    //           onTap: () {},
-                    //           onEditingComplete: () {},
-                    //           showCursor: false,
-                    //           decoration: InputDecoration(
-                    //             filled: true,
-                    //             fillColor: Colors.white,
-                    //             border: OutlineInputBorder(
-                    //               borderSide: const BorderSide(
-                    //                   width: 0.2, color: Colors.grey),
-                    //               borderRadius: BorderRadius.circular(5),
-                    //             ),
-                    //             focusedBorder: OutlineInputBorder(
-                    //               borderSide: const BorderSide(
-                    //                   width: 0.4, color: colorPrimaryDark),
-                    //               borderRadius: BorderRadius.circular(5),
-                    //             ),
-                    //             enabledBorder: OutlineInputBorder(
-                    //               borderSide: const BorderSide(
-                    //                   width: 0.2, color: Colors.white),
-                    //               borderRadius: BorderRadius.circular(5),
-                    //             ),
-                    //             contentPadding: const EdgeInsets.symmetric(
-                    //                 vertical: 0, horizontal: 12),
-                    //             hintText: 'Cari data...',
-                    //             hintStyle: GoogleFonts.montserrat(
-                    //               color: Colors.grey,
-                    //               fontSize: 14,
-                    //             ),
-                    //             prefixIcon: const Icon(
-                    //               Icons.search_rounded,
-                    //               color: Colors.grey,
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                     const SizedBox(
                       height: 25,
                     ),

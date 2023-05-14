@@ -19,16 +19,23 @@ List<SidebarEntity> listSidebar = [
     route: "chat",
     role: 1,
   ),
-  const SidebarEntity(
-    title: "History",
-    image: "assets/images/test.webp",
-    route: "history",
-    role: 1,
-  ),
+  // const SidebarEntity(
+  //   title: "History",
+  //   image: "assets/images/test.webp",
+  //   route: "history",
+  //   role: 1,
+  // ),
 ];
 
 final List<String> items = [
   'Text',
   'File',
   'Sheet',
+];
+
+List<String> listRole = [
+  "All",
+  "CEO",
+  "Manager",
+  "Staff",
 ];

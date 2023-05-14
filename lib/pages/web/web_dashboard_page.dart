@@ -46,7 +46,7 @@ class WebDashboardPage extends StatelessWidget {
                   child: SideNavbar(route: route),
                 ),
               Expanded(
-                flex: 5,
+                flex: AppResponsive.isMobileWeb(context) ? 8 : 5,
                 child: widget,
               ),
             ],

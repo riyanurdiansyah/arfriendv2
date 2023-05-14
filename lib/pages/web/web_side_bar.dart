@@ -61,11 +61,13 @@ class SideNavbar extends StatelessWidget {
                               ? Colors.white
                               : Colors.black54,
                         ),
-                        if (AppResponsive.isDesktop(context))
+                        if (!AppResponsive.isTablet(context) &&
+                            !AppResponsive.isMobileWeb(context))
                           const SizedBox(
                             width: 15,
                           ),
-                        if (AppResponsive.isDesktop(context))
+                        if (!AppResponsive.isTablet(context) &&
+                            !AppResponsive.isMobileWeb(context))
                           Text(
                             listSidebar[index].title,
                             style: GoogleFonts.poppins(

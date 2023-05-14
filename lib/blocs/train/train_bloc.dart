@@ -1,11 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:arfriendv2/api/firebase_service.dart';
 import 'package:arfriendv2/api/firebase_service_impl.dart';
 import 'package:arfriendv2/entities/dataset/dataset_entity.dart';
+import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../utils/app_dialog.dart';
 part 'train_event.dart';
@@ -13,9 +18,15 @@ part 'train_state.dart';
 
 class TrainBloc extends Bloc<TrainEvent, TrainState> {
   final globalKey = GlobalKey<ScaffoldState>();
+  final textKey = GlobalKey<FormState>();
+  final fileKey = GlobalKey<FormState>();
+  final sheetKey = GlobalKey<FormState>();
+
   final FirebaseApiService apiService = FirebaseApiServiceImpl();
-  final tcEmail = TextEditingController();
-  final tcPassword = TextEditingController();
+  final tcTitle = TextEditingController();
+  final tcTitleFile = TextEditingController();
+  final tcDetail = TextEditingController();
+  final tcFile = TextEditingController();
 
   TrainBloc() : super(TrainInitialState()) {
     on<TrainEvent>((event, emit) {});
@@ -26,6 +37,13 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     on<TrainGetDataSetEvent>(_onGetDataset);
     on<TrainOnChangePageEvent>(_onChangePage);
     on<TrainDeleteDataEvent>(_onDeleteData);
+    on<TrainSaveTextDataEvent>(_onSaveTextData);
+    on<TrainChooseFileEvent>(_onChooseFile);
+    on<TrainChooseCsvFileEvent>(_onChooseCsvFile);
+    on<TrainChooseDocFileEvent>(_onChooseDocFile);
+    on<TrainSaveFileDataEvent>(_onSaveFileData);
+    on<TrainChooseTragetRoleEvent>(_onChooseTargetRole);
+    on<TrainClearAllFieldEvent>(_onClearAllField);
   }
 
   FutureOr<void> _onInitial(
@@ -123,11 +141,151 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
                 AppDialog.dialogNoAction(
                     context: globalKey.currentContext!,
                     title: "Data berhasil dihapus");
+                emit(state.copyWith(listId: []));
               });
             }
           }
         },
       );
     }
+  }
+
+  FutureOr<void> _onSaveTextData(
+      TrainSaveTextDataEvent event, Emitter<TrainState> emit) async {
+    var uuid = const Uuid().v4();
+
+    final body = {
+      "id": uuid,
+      "title": tcTitle.text,
+      "type": "text",
+      "addedBy": FirebaseAuth.instance.currentUser!.email!,
+      "to": state.targetRole,
+      "createdAt": DateTime.now().toIso8601String(),
+      "updatedAt": DateTime.now().toIso8601String(),
+      "messages": {
+        "role": "user",
+        "content": tcDetail.text,
+        "hidden": true,
+      }
+    };
+
+    final response = await apiService.saveDataset(body);
+    response.fold(
+        (l) => AppDialog.dialogNoAction(
+            context: globalKey.currentContext!,
+            title: "Gagal manambahkan data"), (r) {
+      add(TrainGetDataSetEvent());
+      AppDialog.dialogNoAction(
+          context: globalKey.currentContext!,
+          title: "Data berhasil ditambahkan");
+    });
+  }
+
+  FutureOr<void> _onChooseFile(
+      TrainChooseFileEvent event, Emitter<TrainState> emit) async {
+    var result = await FilePicker.platform.pickFiles(
+      allowedExtensions: ["csv", "doc", "docx", "pdf"],
+      type: FileType.custom,
+      allowMultiple: false,
+    );
+
+    if (result != null) {
+      tcFile.text = result.files.first.name;
+      if (result.files.first.name.contains("doc")) {
+        add(TrainChooseDocFileEvent(result));
+      }
+      if (result.files.first.name.contains("csv")) {
+        add(TrainChooseCsvFileEvent(result));
+      }
+    }
+  }
+
+  FutureOr<void> _onChooseDocFile(
+      TrainChooseDocFileEvent event, Emitter<TrainState> emit) {}
+
+  FutureOr<void> _onChooseCsvFile(
+      TrainChooseCsvFileEvent event, Emitter<TrainState> emit) {
+    final bytes = utf8.decode(event.file.files.first.bytes!);
+    List<List<dynamic>> rows = const CsvToListConverter().convert(bytes);
+    List<dynamic> headers = rows[0];
+
+    List<Map<String, dynamic>> listData = rows.map((list) {
+      Map<String, dynamic> map = {};
+      for (int i = 0; i < headers.length; i++) {
+        map[headers[i]] = list[i];
+      }
+      return map;
+    }).toList();
+
+    listData.removeAt(0);
+
+    String jsonLines = listData.map((map) => jsonEncode(map)).join('\n');
+    emit(state.copyWith(promptContent: jsonLines));
+  }
+
+  FutureOr<void> _onSaveFileData(
+      TrainSaveFileDataEvent event, Emitter<TrainState> emit) async {
+    if (state.promptContent.isEmpty) {
+      add(TrainClearAllFieldEvent());
+      AppDialog.dialogNoAction(
+          context: globalKey.currentContext!, title: "Silahkan upload file");
+    } else if (state.targetRole.isEmpty) {
+      add(TrainClearAllFieldEvent());
+      AppDialog.dialogNoAction(
+          context: globalKey.currentContext!,
+          title: "Silahkan pilih target role");
+    } else {
+      emit(state.copyWith(isLoadingProses: !state.isLoadingProses));
+      var uuid = const Uuid().v4();
+
+      final prompt = {
+        "konteks": tcTitleFile.text,
+        "respons": state.promptContent,
+      };
+
+      final data = {
+        "id": uuid,
+        "title": tcTitleFile.text,
+        "type": "file",
+        "addedBy": FirebaseAuth.instance.currentUser!.email!,
+        "to": state.targetRole,
+        "createdAt": DateTime.now().toIso8601String(),
+        "updatedAt": DateTime.now().toIso8601String(),
+        "messages": {
+          "role": "user",
+          "content": '${jsonEncode(prompt)}\n',
+          "hidden": true,
+        }
+      };
+
+      final response = await apiService.saveDataset(data);
+      response.fold((fail) {
+        emit(state.copyWith(isLoadingProses: false));
+        return AppDialog.dialogNoAction(
+            context: globalKey.currentContext!,
+            title: "Ooppss... terjadi kesalahan diserver. silahkan coba lagi");
+      }, (r) {
+        emit(state.copyWith(isLoadingProses: false));
+        add(TrainGetDataSetEvent());
+        add(TrainClearAllFieldEvent());
+        return AppDialog.dialogNoAction(
+            context: globalKey.currentContext!,
+            title: "Data berhasil ditambahkan");
+      });
+    }
+  }
+
+  FutureOr<void> _onChooseTargetRole(
+      TrainChooseTragetRoleEvent event, Emitter<TrainState> emit) {
+    emit(state.copyWith(targetRole: event.role));
+  }
+
+  FutureOr<void> _onClearAllField(
+      TrainClearAllFieldEvent event, Emitter<TrainState> emit) {
+    tcDetail.clear();
+    tcFile.clear();
+    tcTitle.clear();
+    tcTitleFile.clear();
+    emit(state.copyWith(targetRole: "", listId: [], promptContent: ""));
   }
 }
