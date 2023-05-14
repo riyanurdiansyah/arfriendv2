@@ -10,6 +10,36 @@ class ChatOnAddedHistoryToVariableEvent extends ChatEvent {
   final ChatEntity chat;
 }
 
+class ChatOnStreamChatEvent extends ChatEvent {}
+
 class ChatOnStreamHistoryEvent extends ChatEvent {}
 
 class ChatOnSendMessageEvent extends ChatEvent {}
+
+class ChatOnTapHistoryIdEvent extends ChatEvent {
+  ChatOnTapHistoryIdEvent(this.id);
+
+  final String id;
+}
+
+class ChatOnDeleteHistoryMessageEvent extends ChatEvent {
+  ChatOnDeleteHistoryMessageEvent(this.id);
+
+  final String id;
+}
+
+class ChatOnCreateMessageEvent extends ChatEvent {}
+
+class ChatOnGetListHistoryMessageEvent extends ChatEvent {}
+
+class ChatOnUpdateIsReadEvent extends ChatEvent {
+  ChatOnUpdateIsReadEvent(this.id);
+
+  final String id;
+}
+
+class ChatOnChangeTypingEvent extends ChatEvent {
+  ChatOnChangeTypingEvent(this.typing);
+
+  final bool typing;
+}

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../blocs/chat/chat_bloc.dart';
 import 'app_text.dart';
 import 'validators.dart';
 
@@ -476,6 +477,156 @@ class AppDialog {
                             onPressed: () {
                               context.pop();
                               trainBloc.add(TrainSaveFileDataEvent());
+                            },
+                            child: Text(
+                              'Simpan',
+                              style: GoogleFonts.sourceSansPro(
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static dialogAddChat({
+    required BuildContext context,
+    required ChatBloc chatBloc,
+    String? text,
+  }) {
+    final size = MediaQuery.of(context).size;
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppText.labelW700(
+                "Tambah Chat",
+                16,
+                Colors.black,
+              ),
+              IconButton(
+                onPressed: () => context.pop(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                ),
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: size.width / 3,
+            child: Form(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppText.labelW700(
+                    "Target",
+                    14,
+                    Colors.black,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  DropdownButtonFormField<String>(
+                    items: listDivisi.map((String data) {
+                      return DropdownMenuItem<String>(
+                        value: data,
+                        child: Row(
+                          children: <Widget>[
+                            AppText.labelW600(
+                              data,
+                              14,
+                              Colors.grey.shade600,
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (val) {},
+                    decoration: InputDecoration(
+                      hintStyle: GoogleFonts.poppins(),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 12),
+                      hintText: ".....",
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 18,
+                  ),
+                  AppText.labelW700(
+                    "Judul Chat",
+                    14,
+                    Colors.black,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    controller: chatBloc.tcTitle,
+                    validator: (val) => Validators.requiredField(val!),
+                    decoration: InputDecoration(
+                      hintStyle: GoogleFonts.poppins(),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 12),
+                      hintText: "....",
+                      border: const OutlineInputBorder(),
+                    ),
+                    // onChanged: (val) =>
+                    //     _blastBloc.add(BlastOnChangeTextFieldEvent("hp", val)),
+                  ),
+                  const SizedBox(
+                    height: 26,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          width: 125,
+                          height: 40,
+                          child: OutlinedButton(
+                            onPressed: () => context.pop(),
+                            child: Text(
+                              'Tutup',
+                              style: GoogleFonts.sourceSansPro(
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w700,
+                                color: colorPrimaryDark,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 14,
+                      ),
+                      Expanded(
+                        child: SizedBox(
+                          height: 40,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorPrimaryDark,
+                            ),
+                            onPressed: () {
+                              context.pop();
+                              chatBloc.add(ChatOnCreateMessageEvent());
                             },
                             child: Text(
                               'Simpan',

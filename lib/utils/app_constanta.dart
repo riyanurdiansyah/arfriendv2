@@ -1,5 +1,7 @@
 import '../entities/sidebar/sidebar_entity.dart';
 
+const String apiKey = "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";
+
 List<SidebarEntity> listSidebar = [
   const SidebarEntity(
     title: "Home",
@@ -38,4 +40,13 @@ List<String> listRole = [
   "CEO",
   "Manager",
   "Staff",
+];
+
+List<String> listDivisi = [
+  "SOP",
+  "Tech",
+  "HR",
+  "BO",
+  "Product",
+  "Academic",
 ];

@@ -20,7 +20,11 @@ ChatEntity _$ChatEntityFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ChatEntity {
-  String get id => throw _privateConstructorUsedError;
+  String get idUser => throw _privateConstructorUsedError;
+  String get idChat => throw _privateConstructorUsedError;
+  String get idTarget => throw _privateConstructorUsedError;
+  String get target => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError;
   List<MessageEntity> get messages => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -35,7 +39,13 @@ abstract class $ChatEntityCopyWith<$Res> {
           ChatEntity value, $Res Function(ChatEntity) then) =
       _$ChatEntityCopyWithImpl<$Res, ChatEntity>;
   @useResult
-  $Res call({String id, List<MessageEntity> messages});
+  $Res call(
+      {String idUser,
+      String idChat,
+      String idTarget,
+      String target,
+      String title,
+      List<MessageEntity> messages});
 }
 
 /// @nodoc
@@ -51,13 +61,33 @@ class _$ChatEntityCopyWithImpl<$Res, $Val extends ChatEntity>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? idUser = null,
+    Object? idChat = null,
+    Object? idTarget = null,
+    Object? target = null,
+    Object? title = null,
     Object? messages = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      idUser: null == idUser
+          ? _value.idUser
+          : idUser // ignore: cast_nullable_to_non_nullable
+              as String,
+      idChat: null == idChat
+          ? _value.idChat
+          : idChat // ignore: cast_nullable_to_non_nullable
+              as String,
+      idTarget: null == idTarget
+          ? _value.idTarget
+          : idTarget // ignore: cast_nullable_to_non_nullable
+              as String,
+      target: null == target
+          ? _value.target
+          : target // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
               as String,
       messages: null == messages
           ? _value.messages
@@ -75,7 +105,13 @@ abstract class _$$_ChatEntityCopyWith<$Res>
       __$$_ChatEntityCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, List<MessageEntity> messages});
+  $Res call(
+      {String idUser,
+      String idChat,
+      String idTarget,
+      String target,
+      String title,
+      List<MessageEntity> messages});
 }
 
 /// @nodoc
@@ -89,13 +125,33 @@ class __$$_ChatEntityCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? idUser = null,
+    Object? idChat = null,
+    Object? idTarget = null,
+    Object? target = null,
+    Object? title = null,
     Object? messages = null,
   }) {
     return _then(_$_ChatEntity(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      idUser: null == idUser
+          ? _value.idUser
+          : idUser // ignore: cast_nullable_to_non_nullable
+              as String,
+      idChat: null == idChat
+          ? _value.idChat
+          : idChat // ignore: cast_nullable_to_non_nullable
+              as String,
+      idTarget: null == idTarget
+          ? _value.idTarget
+          : idTarget // ignore: cast_nullable_to_non_nullable
+              as String,
+      target: null == target
+          ? _value.target
+          : target // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
               as String,
       messages: null == messages
           ? _value._messages
@@ -109,16 +165,33 @@ class __$$_ChatEntityCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ChatEntity implements _ChatEntity {
   const _$_ChatEntity(
-      {required this.id, required final List<MessageEntity> messages})
+      {required this.idUser,
+      required this.idChat,
+      this.idTarget = "",
+      this.target = "",
+      this.title = "",
+      final List<MessageEntity> messages = const []})
       : _messages = messages;
 
   factory _$_ChatEntity.fromJson(Map<String, dynamic> json) =>
       _$$_ChatEntityFromJson(json);
 
   @override
-  final String id;
+  final String idUser;
+  @override
+  final String idChat;
+  @override
+  @JsonKey()
+  final String idTarget;
+  @override
+  @JsonKey()
+  final String target;
+  @override
+  @JsonKey()
+  final String title;
   final List<MessageEntity> _messages;
   @override
+  @JsonKey()
   List<MessageEntity> get messages {
     if (_messages is EqualUnmodifiableListView) return _messages;
     // ignore: implicit_dynamic_type
@@ -127,7 +200,7 @@ class _$_ChatEntity implements _ChatEntity {
 
   @override
   String toString() {
-    return 'ChatEntity(id: $id, messages: $messages)';
+    return 'ChatEntity(idUser: $idUser, idChat: $idChat, idTarget: $idTarget, target: $target, title: $title, messages: $messages)';
   }
 
   @override
@@ -135,14 +208,19 @@ class _$_ChatEntity implements _ChatEntity {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ChatEntity &&
-            (identical(other.id, id) || other.id == id) &&
+            (identical(other.idUser, idUser) || other.idUser == idUser) &&
+            (identical(other.idChat, idChat) || other.idChat == idChat) &&
+            (identical(other.idTarget, idTarget) ||
+                other.idTarget == idTarget) &&
+            (identical(other.target, target) || other.target == target) &&
+            (identical(other.title, title) || other.title == title) &&
             const DeepCollectionEquality().equals(other._messages, _messages));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, const DeepCollectionEquality().hash(_messages));
+  int get hashCode => Object.hash(runtimeType, idUser, idChat, idTarget, target,
+      title, const DeepCollectionEquality().hash(_messages));
 
   @JsonKey(ignore: true)
   @override
@@ -160,14 +238,26 @@ class _$_ChatEntity implements _ChatEntity {
 
 abstract class _ChatEntity implements ChatEntity {
   const factory _ChatEntity(
-      {required final String id,
-      required final List<MessageEntity> messages}) = _$_ChatEntity;
+      {required final String idUser,
+      required final String idChat,
+      final String idTarget,
+      final String target,
+      final String title,
+      final List<MessageEntity> messages}) = _$_ChatEntity;
 
   factory _ChatEntity.fromJson(Map<String, dynamic> json) =
       _$_ChatEntity.fromJson;
 
   @override
-  String get id;
+  String get idUser;
+  @override
+  String get idChat;
+  @override
+  String get idTarget;
+  @override
+  String get target;
+  @override
+  String get title;
   @override
   List<MessageEntity> get messages;
   @override

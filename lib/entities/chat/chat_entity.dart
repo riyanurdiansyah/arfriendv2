@@ -8,8 +8,12 @@ part 'chat_entity.g.dart';
 @freezed
 class ChatEntity with _$ChatEntity {
   const factory ChatEntity(
-      {required String id,
-      required List<MessageEntity> messages}) = _ChatEntity;
+      {required String idUser,
+      required String idChat,
+      @Default("") String idTarget,
+      @Default("") String target,
+      @Default("") String title,
+      @Default([]) List<MessageEntity> messages}) = _ChatEntity;
 
   factory ChatEntity.fromJson(Map<String, dynamic> json) =>
       _$ChatEntityFromJson(json);

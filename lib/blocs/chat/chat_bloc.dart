@@ -2,21 +2,25 @@ import 'dart:async';
 
 import 'package:arfriendv2/api/firebase_service.dart';
 import 'package:arfriendv2/api/firebase_service_impl.dart';
+import 'package:arfriendv2/utils/app_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../entities/chat/chat_entity.dart';
+import '../../entities/dataset/message_entity.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
+  final globalKey = GlobalKey<ScaffoldState>();
   final FirebaseApiService apiService = FirebaseApiServiceImpl();
-  final tcEmail = TextEditingController();
-  final tcPassword = TextEditingController();
+  final tcTitle = TextEditingController();
+  final tcQuestion = TextEditingController();
 
   StreamController<ChatEntity> streamController =
       StreamController<ChatEntity>.broadcast();
@@ -25,22 +29,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatEvent>((event, emit) {});
     on<ChatInitialEvent>(_onInitial);
     on<ChatOnAddedHistoryToVariableEvent>(_onAddedHistory);
-    on<ChatOnStreamHistoryEvent>(_onStreamHistory);
+    on<ChatOnStreamChatEvent>(_onStreamChat);
     on<ChatOnSendMessageEvent>(_onSendMessage);
+    on<ChatOnTapHistoryIdEvent>(_onTapIdHistory);
+    on<ChatOnCreateMessageEvent>(_onCreateMessage);
+    on<ChatOnGetListHistoryMessageEvent>(_onGetListHistory);
+    on<ChatOnDeleteHistoryMessageEvent>(_onDeleteHistoryChat);
+    on<ChatOnUpdateIsReadEvent>(_onUpdateIsRead);
+    on<ChatOnChangeTypingEvent>(_onChangeTyping);
   }
 
-  FutureOr<void> _onInitial(ChatInitialEvent event, Emitter<ChatState> emit) {
+  FutureOr<void> _onInitial(
+      ChatInitialEvent event, Emitter<ChatState> emit) async {
+    add(ChatOnGetListHistoryMessageEvent());
     add(ChatOnStreamHistoryEvent());
     emit(state.copyWith(isLoadingSetup: false));
-  }
-
-  Stream<ChatEntity> streamChat() {
-    return apiService
-        .streamHistoryChat(FirebaseAuth.instance.currentUser!.uid)
-        .map((data) {
-      add(ChatOnAddedHistoryToVariableEvent(data));
-      return data;
-    });
   }
 
   FutureOr<void> _onAddedHistory(
@@ -48,10 +51,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(state.copyWith(historyChat: event.chat, isLoadingSetup: false));
   }
 
-  FutureOr<void> _onStreamHistory(
-      ChatOnStreamHistoryEvent event, Emitter<ChatState> emit) {
+  FutureOr<void> _onStreamChat(
+      ChatOnStreamChatEvent event, Emitter<ChatState> emit) {
     Stream<ChatEntity> stream =
-        apiService.streamHistoryChat(FirebaseAuth.instance.currentUser!.uid);
+        apiService.streamChat(FirebaseAuth.instance.currentUser!.uid);
     stream.listen((data) {
       streamController.add(data);
     });
@@ -59,10 +62,119 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   FutureOr<void> _onSendMessage(
       ChatOnSendMessageEvent event, Emitter<ChatState> emit) async {
-    final exists = (await FirebaseFirestore.instance
-            .collection("chat")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .get())
-        .exists;
+    List<Map<String, dynamic>> messagesJson = [];
+    List<MessageEntity> listMessage = [];
+    final checkData = (await FirebaseFirestore.instance
+        .collection("chat")
+        .doc(state.idChat)
+        .get());
+    if (checkData.exists) {
+      if (checkData.data()?["messages"] != null) {
+        final dataList = checkData.data()?["messages"] as List<dynamic>;
+        for (var data in dataList) {
+          listMessage.add(MessageEntity.fromJson(data));
+        }
+      }
+      listMessage.add(
+        MessageEntity(
+          role: "user",
+          content: tcQuestion.text,
+          hidden: false,
+          date: DateTime.now().toIso8601String(),
+          isRead: true,
+          id: const Uuid().v4(),
+        ),
+      );
+      tcQuestion.clear();
+
+      for (var data in listMessage) {
+        messagesJson.add(data.toJson());
+      }
+      final updateChatDB = await apiService.updateChat({
+        "idChat": state.idChat,
+        "messages": messagesJson,
+      });
+
+      updateChatDB.fold(
+          (fail) => AppDialog.dialogNoAction(
+              context: globalKey.currentContext!,
+              title: fail.message), (r) async {
+        add(ChatOnChangeTypingEvent(true));
+        final response = await apiService.sendMessageToChatGPT(listMessage);
+        response.fold((_) => emit(state.copyWith(isTyping: false)),
+            (data) async {
+          messagesJson.add(data.toJson());
+          add(ChatOnChangeTypingEvent(false));
+          await apiService.updateChat({
+            "idChat": state.idChat,
+            "messages": messagesJson,
+          });
+        });
+      });
+    }
+  }
+
+  FutureOr<void> _onTapIdHistory(
+      ChatOnTapHistoryIdEvent event, Emitter<ChatState> emit) {
+    emit(state.copyWith(idChat: event.id));
+  }
+
+  FutureOr<void> _onCreateMessage(
+      ChatOnCreateMessageEvent event, Emitter<ChatState> emit) async {
+    final body = {
+      "idUser": FirebaseAuth.instance.currentUser!.uid,
+      "idChat": const Uuid().v4(),
+      "title": tcTitle.text,
+      "target": "Tech",
+      "idTarget": "xyzw",
+    };
+    await apiService.createChat(body);
+    add(ChatOnGetListHistoryMessageEvent());
+  }
+
+  FutureOr<void> _onGetListHistory(
+      ChatOnGetListHistoryMessageEvent event, Emitter<ChatState> emit) async {
+    final response =
+        await apiService.getHistoryChat(FirebaseAuth.instance.currentUser!.uid);
+    response.fold(
+        (l) => null, (data) => emit(state.copyWith(listHistory: data)));
+  }
+
+  FutureOr<void> _onDeleteHistoryChat(
+      ChatOnDeleteHistoryMessageEvent event, Emitter<ChatState> emit) async {
+    final response = await apiService.deleteHistoryById(event.id);
+    response.fold((l) => null, (r) => add(ChatOnGetListHistoryMessageEvent()));
+  }
+
+  FutureOr<void> _onUpdateIsRead(
+      ChatOnUpdateIsReadEvent event, Emitter<ChatState> emit) async {
+    List<Map<String, dynamic>> messagesJson = [];
+    List<MessageEntity> listMessage = [];
+    final checkData = (await FirebaseFirestore.instance
+        .collection("chat")
+        .doc(state.idChat)
+        .get());
+    if (checkData.exists) {
+      final dataList = checkData.data()?["messages"] as List<dynamic>;
+      for (var data in dataList) {
+        listMessage.add(MessageEntity.fromJson(data));
+      }
+      listMessage[listMessage.indexWhere((e) => e.id == event.id)] =
+          listMessage[listMessage.indexWhere((e) => e.id == event.id)]
+              .copyWith(isRead: true);
+
+      for (var data in listMessage) {
+        messagesJson.add(data.toJson());
+      }
+      await apiService.updateChat({
+        "idChat": state.idChat,
+        "messages": messagesJson,
+      });
+    }
+  }
+
+  FutureOr<void> _onChangeTyping(
+      ChatOnChangeTypingEvent event, Emitter<ChatState> emit) {
+    emit(state.copyWith(isTyping: event.typing));
   }
 }
