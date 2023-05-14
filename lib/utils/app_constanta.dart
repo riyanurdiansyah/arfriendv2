@@ -1,7 +1,5 @@
 import '../entities/sidebar/sidebar_entity.dart';
 
-const String apiKey = "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";
-
 List<SidebarEntity> listSidebar = [
   const SidebarEntity(
     title: "Home",

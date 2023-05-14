@@ -136,6 +136,12 @@ class _WebTrainPageState extends State<WebTrainPage> {
                         (item) => DropdownMenuItem<String>(
                           value: item,
                           onTap: () {
+                            if (item.toLowerCase() == "sheet") {
+                              AppDialog.dialogAddSheet(
+                                context: context,
+                                trainBloc: _trainBloc,
+                              );
+                            }
                             if (item.toLowerCase() == "text") {
                               AppDialog.dialogAddText(
                                 context: context,

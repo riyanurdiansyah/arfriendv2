@@ -28,6 +28,10 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
   final tcDetail = TextEditingController();
   final tcFile = TextEditingController();
 
+  final tcSheetID = TextEditingController();
+  final tcSheetName = TextEditingController();
+  final tcTitleSheet = TextEditingController();
+
   TrainBloc() : super(TrainInitialState()) {
     on<TrainEvent>((event, emit) {});
     on<TrainInitialEvent>(_onInitial);

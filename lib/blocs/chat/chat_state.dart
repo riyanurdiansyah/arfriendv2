@@ -7,6 +7,8 @@ class ChatState extends Equatable {
     this.idChat = "",
     this.listHistory = const [],
     this.isTyping = false,
+    this.target = "",
+    this.isVoice = false,
   });
 
   final bool isLoadingSetup;
@@ -14,20 +16,25 @@ class ChatState extends Equatable {
   final String idChat;
   final List<ChatEntity> listHistory;
   final bool isTyping;
+  final String target;
+  final bool isVoice;
 
-  ChatState copyWith({
-    bool? isLoadingSetup,
-    ChatEntity? historyChat,
-    String? idChat,
-    List<ChatEntity>? listHistory,
-    bool? isTyping,
-  }) =>
+  ChatState copyWith(
+          {bool? isLoadingSetup,
+          ChatEntity? historyChat,
+          String? idChat,
+          List<ChatEntity>? listHistory,
+          bool? isTyping,
+          String? target,
+          bool? isVoice}) =>
       ChatState(
         isLoadingSetup: isLoadingSetup ?? this.isLoadingSetup,
         historyChat: historyChat ?? this.historyChat,
         idChat: idChat ?? this.idChat,
         listHistory: listHistory ?? this.listHistory,
         isTyping: isTyping ?? this.isTyping,
+        target: target ?? this.target,
+        isVoice: isVoice ?? this.isVoice,
       );
 
   @override
@@ -37,6 +44,8 @@ class ChatState extends Equatable {
         idChat,
         listHistory,
         isTyping,
+        target,
+        isVoice,
       ];
 }
 

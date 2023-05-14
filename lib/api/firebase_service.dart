@@ -22,7 +22,7 @@ abstract class FirebaseApiService {
   Future<Either<ErrorEntity, bool>> deleteHistoryById(String id);
 
   Future<Either<ErrorEntity, MessageEntity>> sendMessageToChatGPT(
-      List<MessageEntity> messages);
+      Map<String, dynamic> headers, List<MessageEntity> messages);
 
   Stream<ChatEntity> streamChat(String id);
 

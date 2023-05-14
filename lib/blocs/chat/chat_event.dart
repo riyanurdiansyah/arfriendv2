@@ -43,3 +43,17 @@ class ChatOnChangeTypingEvent extends ChatEvent {
 
   final bool typing;
 }
+
+class ChatOnChangeTargetEvent extends ChatEvent {
+  ChatOnChangeTargetEvent(this.target);
+
+  final String target;
+}
+
+class ChatOnVoiceEvent extends ChatEvent {}
+
+class ChatOnChangeStatusVoiceEvent extends ChatEvent {
+  ChatOnChangeStatusVoiceEvent(this.isVoice);
+
+  final bool isVoice;
+}

@@ -10,8 +10,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-import '../utils/app_constanta.dart';
-
 class FirebaseApiServiceImpl implements FirebaseApiService {
   @override
   Future<Either<ErrorEntity, bool>> login(String email, String password) async {
@@ -163,20 +161,13 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
 
   @override
   Future<Either<ErrorEntity, MessageEntity>> sendMessageToChatGPT(
-      List<MessageEntity> messages) async {
+      Map<String, dynamic> headers, List<MessageEntity> messages) async {
     Dio dio = Dio();
     List<Map<String, dynamic>> messagesJson = [];
     for (var data in messages) {
       messagesJson.add({"role": data.role, "content": data.content});
     }
     final data = {"model": "gpt-3.5-turbo", "messages": messagesJson};
-    final headers = {
-      "Accept": "*/*",
-      "Content-Type": "application/json",
-      "Authorization": "Bearer $apiKey",
-    };
-    debugPrint("CEK BODY : $data");
-    debugPrint("CEK HEADER : $headers");
 
     try {
       final response = await dio.post(
@@ -201,6 +192,7 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       return Left(ErrorEntity(
           code: 400, message: "Terjadi kesalahan silahkan coba lagi"));
     } catch (e) {
+      debugPrint("CEK ERROR : ${e.toString()}");
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }
   }

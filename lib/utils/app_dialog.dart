@@ -300,6 +300,208 @@ class AppDialog {
     );
   }
 
+  static dialogAddSheet({
+    required BuildContext context,
+    required TrainBloc trainBloc,
+    String? text,
+  }) {
+    final size = MediaQuery.of(context).size;
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppText.labelW700(
+                "Tambah Data",
+                16,
+                Colors.black,
+              ),
+              IconButton(
+                onPressed: () => context.pop(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                ),
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: size.width / 3,
+            child: Form(
+              key: trainBloc.textKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppText.labelW700(
+                    "Target Role",
+                    14,
+                    Colors.black,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  DropdownButtonFormField<String>(
+                    items: listRole.map((String data) {
+                      return DropdownMenuItem<String>(
+                        value: data,
+                        child: Row(
+                          children: <Widget>[
+                            AppText.labelW600(
+                              data,
+                              14,
+                              Colors.grey.shade600,
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (val) =>
+                        trainBloc.add(TrainChooseTragetRoleEvent(val!)),
+                    decoration: InputDecoration(
+                      hintStyle: GoogleFonts.poppins(),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 12),
+                      hintText: ".....",
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 18,
+                  ),
+                  AppText.labelW700(
+                    "Judul",
+                    14,
+                    Colors.black,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  TextFormField(
+                    controller: trainBloc.tcTitleSheet,
+                    validator: (val) => Validators.requiredField(val!),
+                    decoration: InputDecoration(
+                      hintStyle: GoogleFonts.poppins(),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 12),
+                      hintText: "....",
+                      border: const OutlineInputBorder(),
+                    ),
+                    // onChanged: (val) =>
+                    //     _blastBloc.add(BlastOnChangeTextFieldEvent("hp", val)),
+                  ),
+                  const SizedBox(
+                    height: 18,
+                  ),
+                  AppText.labelW700(
+                    "Sheet ID",
+                    14,
+                    Colors.black,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  TextFormField(
+                    controller: trainBloc.tcSheetID,
+                    validator: (val) => Validators.requiredField(val!),
+                    decoration: InputDecoration(
+                      hintStyle: GoogleFonts.poppins(),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 12),
+                      hintText: "....",
+                      border: const OutlineInputBorder(),
+                    ),
+                    // onChanged: (val) =>
+                    //     _blastBloc.add(BlastOnChangeTextFieldEvent("hp", val)),
+                  ),
+                  const SizedBox(
+                    height: 18,
+                  ),
+                  AppText.labelW700(
+                    "Sheet Name",
+                    14,
+                    Colors.black,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  TextFormField(
+                    controller: trainBloc.tcSheetName,
+                    validator: (val) => Validators.requiredField(val!),
+                    decoration: InputDecoration(
+                      hintStyle: GoogleFonts.poppins(),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 12),
+                      hintText: "....",
+                      border: const OutlineInputBorder(),
+                    ),
+                    // onChanged: (val) =>
+                    //     _blastBloc.add(BlastOnChangeTextFieldEvent("hp", val)),
+                  ),
+                  const SizedBox(
+                    height: 18,
+                  ),
+                  const SizedBox(
+                    height: 26,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          width: 125,
+                          height: 40,
+                          child: OutlinedButton(
+                            onPressed: () => context.pop(),
+                            child: Text(
+                              'Tutup',
+                              style: GoogleFonts.sourceSansPro(
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w700,
+                                color: colorPrimaryDark,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 14,
+                      ),
+                      Expanded(
+                        child: SizedBox(
+                          height: 40,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorPrimaryDark,
+                            ),
+                            onPressed: () {
+                              context.pop();
+                              trainBloc.add(TrainSaveTextDataEvent());
+                            },
+                            child: Text(
+                              'Simpan',
+                              style: GoogleFonts.sourceSansPro(
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   static dialogAddFile({
     required BuildContext context,
     required TrainBloc trainBloc,
@@ -556,7 +758,8 @@ class AppDialog {
                         ),
                       );
                     }).toList(),
-                    onChanged: (val) {},
+                    onChanged: (val) =>
+                        chatBloc.add(ChatOnChangeTargetEvent(val!)),
                     decoration: InputDecoration(
                       hintStyle: GoogleFonts.poppins(),
                       contentPadding: const EdgeInsets.symmetric(

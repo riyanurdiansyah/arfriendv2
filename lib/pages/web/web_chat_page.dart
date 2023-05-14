@@ -106,8 +106,22 @@ class _WebChatPageState extends State<WebChatPage> {
             child: BlocBuilder<ChatBloc, ChatState>(
               builder: (context, state) {
                 if (state.idChat.isEmpty) {
-                  return Container(
-                    color: Colors.blue,
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Image.asset(
+                      //   "assets/images/logo.webp",
+                      //   width: 175,
+                      // ),
+                      // const SizedBox(
+                      //   height: 50,
+                      // ),
+                      AppText.labelW600(
+                        "Silahkan memulai percakapan",
+                        18,
+                        Colors.grey.shade600,
+                      ),
+                    ],
                   );
                 }
                 return Scaffold(
@@ -237,62 +251,91 @@ class _WebChatPageState extends State<WebChatPage> {
                   floatingActionButton: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     height: 65,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: _chatBloc.tcQuestion,
-                            validator: (val) => Validators.requiredField(val!),
-                            style: GoogleFonts.montserrat(
-                              color: Colors.grey.shade600,
-                            ),
-                            onEditingComplete: () =>
-                                _chatBloc.add(ChatOnSendMessageEvent()),
-                            decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              filled: true,
-                              hintStyle: GoogleFonts.montserrat(
-                                color: const Color(0xFFA2A4A8),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 12),
-                              hintText: "Ketik pertanyaan...",
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade300,
-                                  width: 1,
+                    child: BlocBuilder<ChatBloc, ChatState>(
+                      builder: (context, state) {
+                        return Row(
+                          children: [
+                            if (!state.isVoice)
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _chatBloc.tcQuestion,
+                                  validator: (val) =>
+                                      Validators.requiredField(val!),
+                                  style: GoogleFonts.montserrat(
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  onEditingComplete: () =>
+                                      _chatBloc.add(ChatOnSendMessageEvent()),
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    hintStyle: GoogleFonts.montserrat(
+                                      color: const Color(0xFFA2A4A8),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 0, horizontal: 12),
+                                    hintText: "Ketik pertanyaan...",
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade300,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade400,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(8),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade400,
-                                  width: 1,
+                            if (!state.isVoice)
+                              const SizedBox(
+                                width: 12,
+                              ),
+                            if (state.isVoice)
+                              Expanded(
+                                child: AnimatedContainer(
+                                  duration: const Duration(seconds: 1),
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.red,
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () =>
+                                        _chatBloc.add(ChatOnVoiceEvent()),
+                                    icon: const Icon(
+                                      Icons.stop_rounded,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(8),
                               ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Container(
-                          height: 48,
-                          width: 48,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: const Color(0xFF0E85D1),
-                          ),
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.mic_rounded,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
+                            if (!state.isVoice)
+                              AnimatedContainer(
+                                duration: const Duration(seconds: 1),
+                                height: 48,
+                                width: 48,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: const Color(0xFF0E85D1),
+                                ),
+                                child: IconButton(
+                                  onPressed: () =>
+                                      _chatBloc.add(ChatOnVoiceEvent()),
+                                  icon: const Icon(
+                                    Icons.mic_rounded,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 );

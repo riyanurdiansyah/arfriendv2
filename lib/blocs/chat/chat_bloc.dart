@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../entities/chat/chat_entity.dart';
@@ -21,6 +22,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final FirebaseApiService apiService = FirebaseApiServiceImpl();
   final tcTitle = TextEditingController();
   final tcQuestion = TextEditingController();
+  String apiKey = "";
+
+  SpeechToText speech = SpeechToText();
 
   StreamController<ChatEntity> streamController =
       StreamController<ChatEntity>.broadcast();
@@ -37,10 +41,18 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatOnDeleteHistoryMessageEvent>(_onDeleteHistoryChat);
     on<ChatOnUpdateIsReadEvent>(_onUpdateIsRead);
     on<ChatOnChangeTypingEvent>(_onChangeTyping);
+    on<ChatOnChangeTargetEvent>(_onChangeTarget);
+    on<ChatOnVoiceEvent>(_onVoice);
+    on<ChatOnChangeStatusVoiceEvent>(_onChangeStatusVoice);
   }
 
   FutureOr<void> _onInitial(
       ChatInitialEvent event, Emitter<ChatState> emit) async {
+    final data = (await FirebaseFirestore.instance
+        .collection("config")
+        .doc("configs")
+        .get());
+    apiKey = data.data()!["api_key"];
     add(ChatOnGetListHistoryMessageEvent());
     add(ChatOnStreamHistoryEvent());
     emit(state.copyWith(isLoadingSetup: false));
@@ -95,14 +107,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         "messages": messagesJson,
       });
 
+      final headers = {
+        "Accept": "*/*",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $apiKey",
+      };
+
       updateChatDB.fold(
           (fail) => AppDialog.dialogNoAction(
               context: globalKey.currentContext!,
               title: fail.message), (r) async {
         add(ChatOnChangeTypingEvent(true));
-        final response = await apiService.sendMessageToChatGPT(listMessage);
-        response.fold((_) => emit(state.copyWith(isTyping: false)),
-            (data) async {
+        final response =
+            await apiService.sendMessageToChatGPT(headers, listMessage);
+        response.fold((_) => add(ChatOnChangeTypingEvent(false)), (data) async {
           messagesJson.add(data.toJson());
           add(ChatOnChangeTypingEvent(false));
           await apiService.updateChat({
@@ -125,8 +143,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       "idUser": FirebaseAuth.instance.currentUser!.uid,
       "idChat": const Uuid().v4(),
       "title": tcTitle.text,
-      "target": "Tech",
-      "idTarget": "xyzw",
+      "target": state.target.isEmpty ? "all" : state.target,
+      "idTarget": "",
     };
     await apiService.createChat(body);
     add(ChatOnGetListHistoryMessageEvent());
@@ -176,5 +194,35 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   FutureOr<void> _onChangeTyping(
       ChatOnChangeTypingEvent event, Emitter<ChatState> emit) {
     emit(state.copyWith(isTyping: event.typing));
+  }
+
+  FutureOr<void> _onChangeTarget(
+      ChatOnChangeTargetEvent event, Emitter<ChatState> emit) {
+    emit(state.copyWith(target: event.target));
+  }
+
+  FutureOr<void> _onVoice(
+      ChatOnVoiceEvent event, Emitter<ChatState> emit) async {
+    if (state.isVoice) {
+      add(ChatOnChangeStatusVoiceEvent(false));
+      speech.stop();
+      add(ChatOnSendMessageEvent());
+    } else {
+      final ava = await speech.initialize();
+      if (ava) {
+        speech.listen(
+          onResult: (result) {
+            debugPrint("HASIL : ${result.recognizedWords}");
+            tcQuestion.text = result.recognizedWords;
+          },
+        );
+        add(ChatOnChangeStatusVoiceEvent(true));
+      }
+    }
+  }
+
+  FutureOr<void> _onChangeStatusVoice(
+      ChatOnChangeStatusVoiceEvent event, Emitter<ChatState> emit) {
+    emit(state.copyWith(isVoice: event.isVoice));
   }
 }
