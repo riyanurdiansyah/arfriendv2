@@ -12,4 +12,8 @@ abstract class RouteName {
   static const String train = "train";
 
   static const String history = "history";
+
+  static const String chatapp = "chatapp";
+
+  static const String historyapp = "historyapp";
 }

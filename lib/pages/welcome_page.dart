@@ -1,4 +1,6 @@
+import 'package:arfriendv2/utils/app_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +29,11 @@ class _WelcomePageState extends State<WelcomePage>
       final user = FirebaseAuth.instance.currentUser;
       Future.delayed(const Duration(seconds: 3), () {
         if (user != null) {
-          context.goNamed(RouteName.home);
+          if (kIsWeb) {
+            context.goNamed(RouteName.home);
+          } else {
+            context.goNamed(RouteName.historyapp);
+          }
         } else {
           context.goNamed(RouteName.masuk);
         }
@@ -45,10 +51,10 @@ class _WelcomePageState extends State<WelcomePage>
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
-      value: const SystemUiOverlayStyle(
+      value: SystemUiOverlayStyle(
         statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.light,
-        statusBarColor: Colors.white,
+        statusBarColor: colorPrimary.withOpacity(0.4),
       ),
       child: Scaffold(
         backgroundColor: Colors.lightBlue.shade300,

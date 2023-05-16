@@ -71,154 +71,156 @@ class _WebLoginPageState extends State<WebLoginPage> {
                 ),
               ),
               Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/images/logo.webp",
-                      width: 300,
-                    ),
-                    SizedBox(
-                      width: AppResponsive.isDesktop(context)
-                          ? size.width / 4
-                          : AppResponsive.isTablet(context)
-                              ? size.width / 2
-                              : size.width / 1.5,
-                      child: TextFormField(
-                        controller: _loginBloc.tcEmail,
-                        validator: (val) => Validators.checkFieldPass(val!),
-                        style: GoogleFonts.poppins(
-                          color: Colors.grey.shade600,
-                        ),
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintStyle: GoogleFonts.poppins(),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 12),
-                          hintText: "johndoe@gmail.com",
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 1,
-                            ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/logo.webp",
+                        width: 300,
+                      ),
+                      SizedBox(
+                        width: AppResponsive.isDesktop(context)
+                            ? size.width / 4
+                            : AppResponsive.isTablet(context)
+                                ? size.width / 2
+                                : size.width / 1.25,
+                        child: TextFormField(
+                          controller: _loginBloc.tcEmail,
+                          validator: (val) => Validators.checkFieldPass(val!),
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey.shade600,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade400,
-                              width: 1,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            hintStyle: GoogleFonts.poppins(),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 12),
+                            hintText: "johndoe@gmail.com",
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                                width: 1,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade400,
+                                width: 1,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 18,
-                    ),
-                    SizedBox(
-                      width: AppResponsive.isDesktop(context)
-                          ? size.width / 4
-                          : AppResponsive.isTablet(context)
-                              ? size.width / 2
-                              : size.width / 1.5,
-                      child: TextFormField(
-                        onEditingComplete: () =>
-                            _loginBloc.add(LoginOnPressEvent()),
-                        controller: _loginBloc.tcPassword,
-                        obscureText: true,
-                        validator: (val) => Validators.checkFieldPass(val!),
-                        style: GoogleFonts.poppins(
-                          color: Colors.grey,
-                        ),
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintStyle: GoogleFonts.poppins(),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 12),
-                          hintText: "******",
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 1,
-                            ),
+                      const SizedBox(
+                        height: 18,
+                      ),
+                      SizedBox(
+                        width: AppResponsive.isDesktop(context)
+                            ? size.width / 4
+                            : AppResponsive.isTablet(context)
+                                ? size.width / 2
+                                : size.width / 1.25,
+                        child: TextFormField(
+                          onEditingComplete: () =>
+                              _loginBloc.add(LoginOnPressEvent()),
+                          controller: _loginBloc.tcPassword,
+                          obscureText: true,
+                          validator: (val) => Validators.checkFieldPass(val!),
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade400,
-                              width: 1,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            hintStyle: GoogleFonts.poppins(),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 12),
+                            hintText: "******",
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                                width: 1,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade400,
+                                width: 1,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 25),
-                      width: AppResponsive.isDesktop(context)
-                          ? size.width / 4
-                          : AppResponsive.isTablet(context)
-                              ? size.width / 2
-                              : size.width / 1.5,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 2,
-                              color: Colors.grey.shade300,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 18),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 25),
+                        width: AppResponsive.isDesktop(context)
+                            ? size.width / 4
+                            : AppResponsive.isTablet(context)
+                                ? size.width / 2
+                                : size.width / 1.25,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: 2,
+                                color: Colors.grey.shade300,
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 18),
+                              ),
                             ),
-                          ),
-                          AppText.labelW500(
-                            "we are friend",
-                            12,
-                            const Color(0xFF004B7B).withOpacity(0.6),
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: 2,
-                              color: Colors.grey.shade300,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 18),
+                            AppText.labelW500(
+                              "we are friend",
+                              12,
+                              const Color(0xFF004B7B).withOpacity(0.6),
                             ),
-                          ),
-                        ],
+                            Expanded(
+                              child: Container(
+                                height: 2,
+                                color: Colors.grey.shade300,
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 18),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    BlocBuilder<LoginBloc, LoginState>(
-                      builder: (context, state) {
-                        if (state is LoginLoadingState) {
-                          return const SpinKitThreeInOut(
-                            color: Color(0xff004B7B),
-                            size: 25.0,
+                      BlocBuilder<LoginBloc, LoginState>(
+                        builder: (context, state) {
+                          if (state is LoginLoadingState) {
+                            return const SpinKitThreeInOut(
+                              color: Color(0xff004B7B),
+                              size: 25.0,
+                            );
+                          }
+                          return SizedBox(
+                            width: AppResponsive.isDesktop(context)
+                                ? size.width / 4
+                                : AppResponsive.isTablet(context)
+                                    ? size.width / 2
+                                    : size.width / 1.25,
+                            height: 50,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF004B7B),
+                              ),
+                              onPressed: () =>
+                                  _loginBloc.add(LoginOnPressEvent()),
+                              child: AppText.labelBold(
+                                "MASUK",
+                                14,
+                                Colors.white,
+                              ),
+                            ),
                           );
-                        }
-                        return SizedBox(
-                          width: AppResponsive.isDesktop(context)
-                              ? size.width / 4
-                              : AppResponsive.isTablet(context)
-                                  ? size.width / 2
-                                  : size.width / 1.5,
-                          height: 50,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF004B7B),
-                            ),
-                            onPressed: () =>
-                                _loginBloc.add(LoginOnPressEvent()),
-                            child: AppText.labelBold(
-                              "MASUK",
-                              14,
-                              Colors.white,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(
-                      height: 150,
-                    ),
-                  ],
+                        },
+                      ),
+                      const SizedBox(
+                        height: 150,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

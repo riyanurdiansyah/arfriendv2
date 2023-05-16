@@ -203,7 +203,6 @@ class AppDialog {
                     height: 12,
                   ),
                   TextFormField(
-                    keyboardType: TextInputType.number,
                     controller: trainBloc.tcTitle,
                     validator: (val) => Validators.requiredField(val!),
                     decoration: InputDecoration(
@@ -629,7 +628,6 @@ class AppDialog {
                     height: 12,
                   ),
                   TextFormField(
-                    keyboardType: TextInputType.number,
                     controller: trainBloc.tcTitleFile,
                     validator: (val) => Validators.requiredField(val!),
                     decoration: InputDecoration(
@@ -780,7 +778,6 @@ class AppDialog {
                     height: 12,
                   ),
                   TextFormField(
-                    keyboardType: TextInputType.number,
                     controller: chatBloc.tcTitle,
                     validator: (val) => Validators.requiredField(val!),
                     decoration: InputDecoration(

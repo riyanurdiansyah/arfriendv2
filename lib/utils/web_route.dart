@@ -1,3 +1,6 @@
+import 'package:arfriendv2/blocs/chat/chat_bloc.dart';
+import 'package:arfriendv2/pages/mobile/chat_page.dart';
+import 'package:arfriendv2/pages/mobile/history_chat_page.dart';
 import 'package:arfriendv2/pages/web/web_chat_page.dart';
 import 'package:arfriendv2/pages/web/web_home_page.dart';
 import 'package:arfriendv2/pages/web/web_train_page.dart';
@@ -42,6 +45,28 @@ GoRouter router = GoRouter(
       name: 'masuk',
       pageBuilder: (context, state) => buildPageWithDefaultTransition(
           context: context, state: state, child: const WebLoginPage()),
+    ),
+    GoRoute(
+      path: '/historyapp',
+      name: 'historyapp',
+      pageBuilder: (context, state) => buildPageWithDefaultTransition(
+          context: context, state: state, child: const HistoryChatPage()),
+    ),
+    GoRoute(
+      path: '/chatapp',
+      name: 'chatapp',
+      pageBuilder: (context, state) {
+        final chatBloc = state.extra as ChatBloc;
+        final id = state.queryParameters["id"] ?? "";
+        return buildPageWithDefaultTransition(
+          context: context,
+          state: state,
+          child: ChatPage(
+            id: id,
+            chatBloc: chatBloc,
+          ),
+        );
+      },
     ),
     ShellRoute(
       navigatorKey: shellNavigatorKey,

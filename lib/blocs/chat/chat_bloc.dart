@@ -53,6 +53,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         .doc("configs")
         .get());
     apiKey = data.data()!["api_key"];
+    print("object");
     add(ChatOnGetListHistoryMessageEvent());
     add(ChatOnStreamHistoryEvent());
     emit(state.copyWith(isLoadingSetup: false));
@@ -146,6 +147,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       "target": state.target.isEmpty ? "all" : state.target,
       "idTarget": "",
     };
+    tcTitle.clear();
     await apiService.createChat(body);
     add(ChatOnGetListHistoryMessageEvent());
   }
@@ -211,6 +213,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final ava = await speech.initialize();
       if (ava) {
         speech.listen(
+          localeId: "id_ID",
           onResult: (result) {
             debugPrint("HASIL : ${result.recognizedWords}");
             tcQuestion.text = result.recognizedWords;
