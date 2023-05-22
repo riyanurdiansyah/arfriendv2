@@ -13,6 +13,8 @@ import 'package:uuid/uuid.dart';
 
 import '../../entities/chat/chat_entity.dart';
 import '../../entities/dataset/message_entity.dart';
+import '../../utils/app_responsive.dart';
+import '../../utils/app_text.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
@@ -76,60 +78,89 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ChatOnSendMessageEvent event, Emitter<ChatState> emit) async {
     List<Map<String, dynamic>> messagesJson = [];
     List<MessageEntity> listMessage = [];
-    final checkData = (await FirebaseFirestore.instance
-        .collection("chat")
-        .doc(state.idChat)
-        .get());
-    if (checkData.exists) {
-      if (checkData.data()?["messages"] != null) {
-        final dataList = checkData.data()?["messages"] as List<dynamic>;
-        for (var data in dataList) {
-          listMessage.add(MessageEntity.fromJson(data));
+
+    final responseDataset = await apiService.getDataset();
+    responseDataset.fold(
+        (l) => ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red,
+                duration: const Duration(seconds: 2),
+                width: AppResponsive.isDesktop(globalKey.currentContext!)
+                    ? MediaQuery.of(globalKey.currentContext!).size.width / 4
+                    : AppResponsive.isTablet(globalKey.currentContext!)
+                        ? MediaQuery.of(globalKey.currentContext!).size.width /
+                            2
+                        : MediaQuery.of(globalKey.currentContext!).size.width /
+                            1.5,
+                behavior: SnackBarBehavior.floating,
+                content: AppText.labelW600(
+                  "Gagal mengundah dataset",
+                  14,
+                  Colors.white,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ), (dataset) async {
+      for (var data in dataset) {
+        listMessage.add(data.messages);
+      }
+      final checkData = (await FirebaseFirestore.instance
+          .collection("chat")
+          .doc(state.idChat)
+          .get());
+      if (checkData.exists) {
+        if (checkData.data()?["messages"] != null) {
+          final dataList = checkData.data()?["messages"] as List<dynamic>;
+          for (var data in dataList) {
+            listMessage.add(MessageEntity.fromJson(data));
+          }
         }
-      }
-      listMessage.add(
-        MessageEntity(
-          role: "user",
-          content: tcQuestion.text,
-          hidden: false,
-          date: DateTime.now().toIso8601String(),
-          isRead: true,
-          id: const Uuid().v4(),
-        ),
-      );
-      tcQuestion.clear();
+        final id = const Uuid().v4();
+        listMessage.add(
+          MessageEntity(
+            role: "user",
+            content: tcQuestion.text,
+            hidden: false,
+            date: DateTime.now().toIso8601String(),
+            isRead: true,
+            id: id,
+          ),
+        );
+        tcQuestion.clear();
 
-      for (var data in listMessage) {
-        messagesJson.add(data.toJson());
-      }
-      final updateChatDB = await apiService.updateChat({
-        "idChat": state.idChat,
-        "messages": messagesJson,
-      });
-
-      final headers = {
-        "Accept": "*/*",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $apiKey",
-      };
-
-      updateChatDB.fold(
-          (fail) => AppDialog.dialogNoAction(
-              context: globalKey.currentContext!,
-              title: fail.message), (r) async {
-        add(ChatOnChangeTypingEvent(true));
-        final response =
-            await apiService.sendMessageToChatGPT(headers, listMessage);
-        response.fold((_) => add(ChatOnChangeTypingEvent(false)), (data) async {
+        for (var data in listMessage) {
           messagesJson.add(data.toJson());
-          add(ChatOnChangeTypingEvent(false));
-          await apiService.updateChat({
-            "idChat": state.idChat,
-            "messages": messagesJson,
+        }
+        final updateChatDB = await apiService.updateChat({
+          "idChat": state.idChat,
+          "messages": messagesJson,
+        });
+
+        final headers = {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $apiKey",
+        };
+
+        updateChatDB.fold(
+            (fail) => AppDialog.dialogNoAction(
+                context: globalKey.currentContext!,
+                title: fail.message), (r) async {
+          add(ChatOnChangeTypingEvent(true));
+          final response =
+              await apiService.sendMessageToChatGPT(headers, listMessage);
+          response.fold((_) => add(ChatOnChangeTypingEvent(false)),
+              (data) async {
+            messagesJson.add(data.toJson());
+            add(ChatOnChangeTypingEvent(false));
+            await apiService.updateChat({
+              "idChat": state.idChat,
+              "messages": messagesJson,
+            });
           });
         });
-      });
-    }
+      }
+    });
   }
 
   FutureOr<void> _onTapIdHistory(

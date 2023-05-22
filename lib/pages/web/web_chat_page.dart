@@ -198,30 +198,32 @@ class _WebChatPageState extends State<WebChatPage> {
                                       bottom: 50),
                                   child: BlocBuilder<ChatBloc, ChatState>(
                                     builder: (context, state) {
+                                      final data = snapshot.data?.messages
+                                          .where((e) => e.role != "system")
+                                          .toList();
+
                                       return Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Column(
                                             children: List.generate(
-                                              snapshot.data?.messages.length ??
-                                                  0,
+                                              data?.length ?? 0,
                                               (index) {
-                                                final data = snapshot
-                                                    .data?.messages[index];
-                                                if (data!.role == "user") {
+                                                if (data![index].role ==
+                                                    "user") {
                                                   return WebChatUserWidget(
-                                                      data: data);
+                                                      data: data[index]);
                                                 }
                                                 return WebChatBotWidget(
-                                                  data: data,
+                                                  data: data[index],
                                                   isLastMessage: (index ==
                                                           snapshot
                                                                   .data!
                                                                   .messages
                                                                   .length -
                                                               1 &&
-                                                      !data.isRead),
+                                                      !data[index].isRead),
                                                   chatBloc: _chatBloc,
                                                 );
                                               },

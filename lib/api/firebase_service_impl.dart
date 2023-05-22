@@ -167,7 +167,14 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
     for (var data in messages) {
       messagesJson.add({"role": data.role, "content": data.content});
     }
-    final data = {"model": "gpt-3.5-turbo", "messages": messagesJson};
+    final data = {
+      "model": "gpt-3.5-turbo",
+      "temperature": 0,
+      "max_tokens": 250,
+      "messages": messagesJson,
+    };
+
+    print("CEK DATA MSG : $data");
 
     try {
       final response = await dio.post(

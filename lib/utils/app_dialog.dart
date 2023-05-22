@@ -573,6 +573,31 @@ class AppDialog {
                     height: 18,
                   ),
                   AppText.labelW700(
+                    "Judul",
+                    14,
+                    Colors.black,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    controller: trainBloc.tcTitleFile,
+                    validator: (val) => Validators.requiredField(val!),
+                    decoration: InputDecoration(
+                      hintStyle: GoogleFonts.poppins(),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 12),
+                      hintText: "....",
+                      border: const OutlineInputBorder(),
+                    ),
+                    // onChanged: (val) =>
+                    //     _blastBloc.add(BlastOnChangeTextFieldEvent("hp", val)),
+                  ),
+                  const SizedBox(
+                    height: 18,
+                  ),
+                  AppText.labelW700(
                     "File",
                     14,
                     Colors.black,
@@ -604,8 +629,15 @@ class AppDialog {
                               ),
                             ),
                           ),
-                          onPressed: () =>
-                              trainBloc.add(TrainChooseFileEvent()),
+                          onPressed: () {
+                            if (trainBloc.tcTitleFile.text.isEmpty) {
+                              AppDialog.dialogNoAction(
+                                  context: context,
+                                  title: "Masukan judul terlebih dahulu");
+                            } else {
+                              trainBloc.add(TrainChooseFileEvent());
+                            }
+                          },
                           child: Text(
                             "Pilih File",
                             style: GoogleFonts.poppins(
@@ -616,31 +648,6 @@ class AppDialog {
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 18,
-                  ),
-                  AppText.labelW700(
-                    "Judul",
-                    14,
-                    Colors.black,
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: trainBloc.tcTitleFile,
-                    validator: (val) => Validators.requiredField(val!),
-                    decoration: InputDecoration(
-                      hintStyle: GoogleFonts.poppins(),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 12),
-                      hintText: "....",
-                      border: const OutlineInputBorder(),
-                    ),
-                    // onChanged: (val) =>
-                    //     _blastBloc.add(BlastOnChangeTextFieldEvent("hp", val)),
                   ),
                   const SizedBox(
                     height: 26,

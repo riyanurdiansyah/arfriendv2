@@ -212,6 +212,16 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     final bytes = utf8.decode(event.file.files.first.bytes!);
     List<List<dynamic>> rows = const CsvToListConverter().convert(bytes);
     List<dynamic> headers = rows[0];
+    String template = "Ada data ${tcTitleFile.text} terdiri dari ";
+
+    for (int i = 0; i < headers.length; i++) {
+      if (i + 1 == headers.length) {
+        template =
+            "$template dan ${headers[i].toString()}. isi data dipisah dengan , dan tiap baris dipisah dengan # ";
+      } else {
+        template = "${template + headers[i].toString()},";
+      }
+    }
 
     List<Map<String, dynamic>> listData = rows.map((list) {
       Map<String, dynamic> map = {};
@@ -223,8 +233,12 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
 
     listData.removeAt(0);
 
-    String jsonLines = listData.map((map) => jsonEncode(map)).join('\n');
-    emit(state.copyWith(promptContent: jsonLines));
+    List<String> hasilListString = listData
+        .map((map) => map.values.map((value) => value.toString()).join(', '))
+        .toList();
+    String hasilAkhir = hasilListString.join(' # ');
+
+    emit(state.copyWith(promptContent: template + hasilAkhir));
   }
 
   FutureOr<void> _onSaveFileData(
@@ -242,10 +256,10 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
       emit(state.copyWith(isLoadingProses: !state.isLoadingProses));
       var uuid = const Uuid().v4();
 
-      final prompt = {
-        "konteks": tcTitleFile.text,
-        "respons": state.promptContent,
-      };
+      // final prompt = {
+      //   "konteks": tcTitleFile.text,
+      //   "respons": state.promptContent,
+      // };
 
       final data = {
         "id": uuid,
@@ -257,7 +271,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
         "updatedAt": DateTime.now().toIso8601String(),
         "messages": {
           "role": "user",
-          "content": '${jsonEncode(prompt)}\n',
+          "content": state.promptContent,
           "hidden": true,
         }
       };
