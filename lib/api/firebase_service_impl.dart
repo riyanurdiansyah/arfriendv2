@@ -2,7 +2,9 @@ import 'package:arfriendv2/api/firebase_service.dart';
 import 'package:arfriendv2/entities/chat/chat_entity.dart';
 import 'package:arfriendv2/entities/dataset/dataset_entity.dart';
 import 'package:arfriendv2/entities/dataset/message_entity.dart';
+import 'package:arfriendv2/entities/divisi/divisi_entity.dart';
 import 'package:arfriendv2/entities/error_entity.dart';
+import 'package:arfriendv2/entities/role/role_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -174,8 +176,6 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       "messages": messagesJson,
     };
 
-    print("CEK DATA MSG : $data");
-
     try {
       final response = await dio.post(
         "https://api.openai.com/v1/chat/completions",
@@ -202,5 +202,30 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       debugPrint("CEK ERROR : ${e.toString()}");
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }
+  }
+
+  @override
+  Stream<List<RoleEntity>> streamRoles() {
+    List<RoleEntity> roles = [];
+    final stream = FirebaseFirestore.instance.collection("roles").snapshots();
+    return stream.map((e) {
+      for (var data in e.docs) {
+        roles.add(RoleEntity.fromJson(data.data()));
+      }
+      return roles;
+    });
+  }
+
+  @override
+  Stream<List<DivisiEntity>> streamDivisi() {
+    List<DivisiEntity> divisions = [];
+    final stream =
+        FirebaseFirestore.instance.collection("divisions").snapshots();
+    return stream.map((e) {
+      for (var data in e.docs) {
+        divisions.add(DivisiEntity.fromJson(data.data()));
+      }
+      return divisions;
+    });
   }
 }

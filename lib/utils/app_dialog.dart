@@ -1,4 +1,6 @@
 import 'package:arfriendv2/blocs/train/train_bloc.dart';
+import 'package:arfriendv2/entities/divisi/divisi_entity.dart';
+import 'package:arfriendv2/entities/role/role_entity.dart';
 import 'package:arfriendv2/utils/app_color.dart';
 import 'package:arfriendv2/utils/app_constanta.dart';
 import 'package:flutter/material.dart';
@@ -544,30 +546,88 @@ class AppDialog {
                   const SizedBox(
                     height: 12,
                   ),
-                  DropdownButtonFormField<String>(
-                    items: listRole.map((String data) {
-                      return DropdownMenuItem<String>(
-                        value: data,
-                        child: Row(
-                          children: <Widget>[
-                            AppText.labelW600(
-                              data,
-                              14,
-                              Colors.grey.shade600,
-                            ),
-                          ],
+                  StreamBuilder<List<RoleEntity>>(
+                    stream: trainBloc.apiService.streamRoles(),
+                    builder: (context, snapshot) {
+                      final data = snapshot.data ?? [];
+                      data.add(const RoleEntity(
+                          id: "add", role: "TAMBAH ROLE", roleId: -1));
+                      return DropdownButtonFormField<RoleEntity>(
+                        items: List.generate(
+                          snapshot.data?.length ?? 0,
+                          (index) {
+                            return DropdownMenuItem(
+                              value: snapshot.data![index],
+                              child: Row(
+                                children: <Widget>[
+                                  AppText.labelW600(
+                                    snapshot.data![index].role,
+                                    14,
+                                    Colors.grey.shade600,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        onChanged: (val) => trainBloc
+                            .add(TrainChooseTragetRoleEvent(val!.role)),
+                        decoration: InputDecoration(
+                          hintStyle: GoogleFonts.poppins(),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 12),
+                          hintText: ".....",
+                          border: const OutlineInputBorder(),
                         ),
                       );
-                    }).toList(),
-                    onChanged: (val) =>
-                        trainBloc.add(TrainChooseTragetRoleEvent(val!)),
-                    decoration: InputDecoration(
-                      hintStyle: GoogleFonts.poppins(),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 12),
-                      hintText: ".....",
-                      border: const OutlineInputBorder(),
-                    ),
+                    },
+                  ),
+                  const SizedBox(
+                    height: 18,
+                  ),
+                  AppText.labelW700(
+                    "Divisi",
+                    14,
+                    Colors.black,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  StreamBuilder<List<DivisiEntity>>(
+                    stream: trainBloc.apiService.streamDivisi(),
+                    builder: (context, snapshot) {
+                      final data = snapshot.data ?? [];
+                      data.add(const DivisiEntity(
+                          id: "add", divisi: "TAMBAH DIVISI", divisiId: "add"));
+                      return DropdownButtonFormField<DivisiEntity>(
+                        items: List.generate(
+                          data.length,
+                          (index) {
+                            return DropdownMenuItem(
+                              value: data[index],
+                              child: Row(
+                                children: <Widget>[
+                                  AppText.labelW600(
+                                    data[index].divisi,
+                                    14,
+                                    Colors.grey.shade600,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        onChanged: (val) => trainBloc
+                            .add(TrainChooseTragetDivisiEvent(val!.divisi)),
+                        decoration: InputDecoration(
+                          hintStyle: GoogleFonts.poppins(),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 12),
+                          hintText: ".....",
+                          border: const OutlineInputBorder(),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 18,

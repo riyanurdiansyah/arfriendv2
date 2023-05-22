@@ -8,6 +8,7 @@ class TrainState extends Equatable {
     this.datasetSorting = "",
     this.page = 1,
     this.targetRole = "",
+    this.targetDivisi = "",
     this.promptContent = "",
     this.isLoadingProses = false,
   });
@@ -18,6 +19,7 @@ class TrainState extends Equatable {
   final String datasetSorting;
   final int page;
   final String targetRole;
+  final String targetDivisi;
   final String promptContent;
   final bool isLoadingProses;
 
@@ -28,6 +30,7 @@ class TrainState extends Equatable {
     String? datasetSorting,
     int? page,
     String? targetRole,
+    String? targetDivisi,
     String? promptContent,
     bool? isLoadingProses,
   }) =>
@@ -38,6 +41,7 @@ class TrainState extends Equatable {
         datasetSorting: datasetSorting ?? this.datasetSorting,
         page: page ?? this.page,
         targetRole: targetRole ?? this.targetRole,
+        targetDivisi: targetDivisi ?? this.targetDivisi,
         promptContent: promptContent ?? this.promptContent,
         isLoadingProses: isLoadingProses ?? this.isLoadingProses,
       );

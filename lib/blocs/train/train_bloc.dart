@@ -298,6 +298,11 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     emit(state.copyWith(targetRole: event.role));
   }
 
+  FutureOr<void> _onChooseDivisi(
+      TrainChooseTragetDivisiEvent event, Emitter<TrainState> emit) {
+    emit(state.copyWith(targetDivisi: event.divisi));
+  }
+
   FutureOr<void> _onClearAllField(
       TrainClearAllFieldEvent event, Emitter<TrainState> emit) {
     tcDetail.clear();

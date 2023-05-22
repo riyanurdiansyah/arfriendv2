@@ -36,6 +36,12 @@ class TrainChooseTragetRoleEvent extends TrainEvent {
   final String role;
 }
 
+class TrainChooseTragetDivisiEvent extends TrainEvent {
+  TrainChooseTragetDivisiEvent(this.divisi);
+
+  final String divisi;
+}
+
 class TrainChooseFileEvent extends TrainEvent {}
 
 class TrainChooseCsvFileEvent extends TrainEvent {
