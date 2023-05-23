@@ -50,8 +50,8 @@ class TrainChooseCsvFileEvent extends TrainEvent {
   final FilePickerResult file;
 }
 
-class TrainChooseDocFileEvent extends TrainEvent {
-  TrainChooseDocFileEvent(this.file);
+class TrainChooseExceptCsvFileEvent extends TrainEvent {
+  TrainChooseExceptCsvFileEvent(this.file);
 
   final FilePickerResult file;
 }
