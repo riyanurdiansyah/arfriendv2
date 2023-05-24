@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:arfriendv2/api/firebase_service.dart';
 import 'package:arfriendv2/api/firebase_service_impl.dart';
@@ -7,6 +8,7 @@ import 'package:arfriendv2/entities/dataset/dataset_entity.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -44,10 +46,11 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     on<TrainSaveTextDataEvent>(_onSaveTextData);
     on<TrainChooseFileEvent>(_onChooseFile);
     on<TrainChooseCsvFileEvent>(_onChooseCsvFile);
-    on<TrainChooseDocFileEvent>(_onChooseDocFile);
+    on<TrainChooseExceptCsvFileEvent>(_onChooseExceptCsvFile);
     on<TrainSaveFileDataEvent>(_onSaveFileData);
     on<TrainChooseTragetRoleEvent>(_onChooseTargetRole);
     on<TrainClearAllFieldEvent>(_onClearAllField);
+    on<TrainChooseTragetDivisiEvent>(_onChooseDivisi);
   }
 
   FutureOr<void> _onInitial(
@@ -167,9 +170,10 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
       "createdAt": DateTime.now().toIso8601String(),
       "updatedAt": DateTime.now().toIso8601String(),
       "messages": {
-        "role": "user",
+        "role": "system",
         "content": tcDetail.text,
         "hidden": true,
+        "date": DateTime.now().toIso8601String(),
       }
     };
 
@@ -195,17 +199,39 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
 
     if (result != null) {
       tcFile.text = result.files.first.name;
-      if (result.files.first.name.contains("doc")) {
-        add(TrainChooseDocFileEvent(result));
-      }
       if (result.files.first.name.contains("csv")) {
         add(TrainChooseCsvFileEvent(result));
+      } else {
+        add(TrainChooseExceptCsvFileEvent(result));
       }
     }
   }
 
-  FutureOr<void> _onChooseDocFile(
-      TrainChooseDocFileEvent event, Emitter<TrainState> emit) {}
+  FutureOr<void> _onChooseExceptCsvFile(
+      TrainChooseExceptCsvFileEvent event, Emitter<TrainState> emit) async {
+    // emit(state.copyWith(isLoadingProses: !state.isLoadingProses));
+    final response = await uploadFile(event.file);
+    emit(state.copyWith(promptContent: "Data ${tcTitleFile.text} $response"));
+  }
+
+  Future<String> uploadFile(FilePickerResult result) async {
+    PlatformFile filex = result.files.first;
+    Uint8List fileData = filex.bytes!;
+    final storage = FirebaseStorage.instance;
+    final storageRef = storage.ref().child('nama_folder/abcde.pdf');
+
+    storageRef.putData(fileData).then((_) {
+      print('File uploaded successfully.');
+      storageRef.getDownloadURL().then((url) {
+        print('Download URL: $url');
+      });
+    }).catchError((error) {
+      print('Error uploading file: $error');
+    });
+    String downloadUrl = await storageRef.getDownloadURL();
+
+    return downloadUrl;
+  }
 
   FutureOr<void> _onChooseCsvFile(
       TrainChooseCsvFileEvent event, Emitter<TrainState> emit) {
@@ -223,7 +249,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
 
     listData.removeAt(0);
 
-    String jsonLines = listData.map((map) => jsonEncode(map)).join('\n');
+    String jsonLines = listData.map((map) => jsonEncode(map)).join(' ');
     emit(state.copyWith(promptContent: jsonLines));
   }
 
@@ -256,9 +282,10 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
         "createdAt": DateTime.now().toIso8601String(),
         "updatedAt": DateTime.now().toIso8601String(),
         "messages": {
-          "role": "user",
-          "content": '${jsonEncode(prompt)}\n',
+          "role": "system",
+          "content": prompt.toString(),
           "hidden": true,
+          "date": DateTime.now().toIso8601String(),
         }
       };
 
@@ -282,6 +309,11 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
   FutureOr<void> _onChooseTargetRole(
       TrainChooseTragetRoleEvent event, Emitter<TrainState> emit) {
     emit(state.copyWith(targetRole: event.role));
+  }
+
+  FutureOr<void> _onChooseDivisi(
+      TrainChooseTragetDivisiEvent event, Emitter<TrainState> emit) {
+    emit(state.copyWith(targetDivisi: event.divisi));
   }
 
   FutureOr<void> _onClearAllField(

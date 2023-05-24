@@ -1,8 +1,12 @@
+import 'package:arfriendv2/entities/category/category_entity.dart';
 import 'package:arfriendv2/entities/chat/chat_entity.dart';
 import 'package:arfriendv2/entities/dataset/dataset_entity.dart';
 import 'package:arfriendv2/entities/dataset/message_entity.dart';
+import 'package:arfriendv2/entities/divisi/divisi_entity.dart';
 import 'package:arfriendv2/entities/error_entity.dart';
 import 'package:dartz/dartz.dart';
+
+import '../entities/role/role_entity.dart';
 
 abstract class FirebaseApiService {
   Future<Either<ErrorEntity, bool>> login(String email, String password);
@@ -27,4 +31,10 @@ abstract class FirebaseApiService {
   Stream<ChatEntity> streamChat(String id);
 
   Stream<List<ChatEntity>> streamHistoryChat(String id);
+
+  Stream<List<RoleEntity>> streamRoles();
+
+  Stream<List<DivisiEntity>> streamDivisi();
+
+  Stream<List<CategoryEntity>> streamCategory(String id);
 }

@@ -77,17 +77,51 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ChatOnSendMessageEvent event, Emitter<ChatState> emit) async {
     List<Map<String, dynamic>> messagesJson = [];
     List<MessageEntity> listMessage = [];
+    List<MessageEntity> listMessageForGTP = [];
+    List<Map<String, dynamic>> upMessage = [];
+    List<MessageEntity> listUpMessage = [];
+
     final checkData = (await FirebaseFirestore.instance
         .collection("chat")
         .doc(state.idChat)
         .get());
+    // responseDataset.fold(
+    //     (l) => ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
+    //           SnackBar(
+    //             backgroundColor: Colors.red,
+    //             duration: const Duration(seconds: 2),
+    //             width: AppResponsive.isDesktop(globalKey.currentContext!)
+    //                 ? MediaQuery.of(globalKey.currentContext!).size.width / 4
+    //                 : AppResponsive.isTablet(globalKey.currentContext!)
+    //                     ? MediaQuery.of(globalKey.currentContext!).size.width /
+    //                         2
+    //                     : MediaQuery.of(globalKey.currentContext!).size.width /
+    //                         1.5,
+    //             behavior: SnackBarBehavior.floating,
+    //             content: AppText.labelW600(
+    //               "Gagal mengundah dataset",
+    //               14,
+    //               Colors.white,
+    //               overflow: TextOverflow.ellipsis,
+    //             ),
+    //           ),
+    //         ), (dataset) async {
+
     if (checkData.exists) {
       if (checkData.data()?["messages"] != null) {
         final dataList = checkData.data()?["messages"] as List<dynamic>;
         for (var data in dataList) {
           listMessage.add(MessageEntity.fromJson(data));
         }
+      } else {
+        final responseDataset = await apiService.getDataset();
+        responseDataset.fold((l) => null, (dataset) {
+          for (var data in dataset) {
+            listMessage.add(data.messages);
+          }
+        });
       }
+      final id = const Uuid().v4();
       listMessage.add(
         MessageEntity(
           role: "user",
@@ -95,7 +129,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           hidden: false,
           date: DateTime.now().toIso8601String(),
           isRead: true,
-          id: const Uuid().v4(),
+          id: id,
         ),
       );
       tcQuestion.clear();
@@ -119,18 +153,41 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               context: globalKey.currentContext!,
               title: fail.message), (r) async {
         add(ChatOnChangeTypingEvent(true));
+        listMessageForGTP =
+            listMessage.where((e) => e.role == "system").toSet().toList();
+        listMessageForGTP.add(listMessage[listMessage.length - 1]);
         final response =
-            await apiService.sendMessageToChatGPT(headers, listMessage);
+            await apiService.sendMessageToChatGPT(headers, listMessageForGTP);
         response.fold((_) => add(ChatOnChangeTypingEvent(false)), (data) async {
-          messagesJson.add(data.toJson());
+          final checkData = (await FirebaseFirestore.instance
+              .collection("chat")
+              .doc(state.idChat)
+              .get());
+          if (checkData.exists) {
+            if (checkData.data()?["messages"] != null) {
+              final dataList = checkData.data()?["messages"] as List<dynamic>;
+              for (var data in dataList) {
+                listUpMessage.add(MessageEntity.fromJson(data));
+              }
+            }
+          }
+          for (var data in listUpMessage) {
+            upMessage.add(data.toJson());
+          }
+          upMessage.add(data.toJson());
           add(ChatOnChangeTypingEvent(false));
           await apiService.updateChat({
             "idChat": state.idChat,
-            "messages": messagesJson,
+            "messages": upMessage,
           });
+          messagesJson.clear();
+          listUpMessage.clear();
+          listMessage.clear();
+          listMessageForGTP.clear();
         });
       });
     }
+    // });
   }
 
   FutureOr<void> _onTapIdHistory(
