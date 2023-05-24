@@ -169,10 +169,10 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
     for (var data in messages) {
       messagesJson.add({"role": data.role, "content": data.content});
     }
+    print("CEKN : $messagesJson");
     final data = {
       "model": "gpt-3.5-turbo",
       "temperature": 0,
-      "max_tokens": 250,
       "messages": messagesJson,
     };
 
