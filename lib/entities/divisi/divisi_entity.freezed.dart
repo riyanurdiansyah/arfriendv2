@@ -22,7 +22,6 @@ DivisiEntity _$DivisiEntityFromJson(Map<String, dynamic> json) {
 mixin _$DivisiEntity {
   String get id => throw _privateConstructorUsedError;
   String get divisi => throw _privateConstructorUsedError;
-  String get divisiId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,7 +35,7 @@ abstract class $DivisiEntityCopyWith<$Res> {
           DivisiEntity value, $Res Function(DivisiEntity) then) =
       _$DivisiEntityCopyWithImpl<$Res, DivisiEntity>;
   @useResult
-  $Res call({String id, String divisi, String divisiId});
+  $Res call({String id, String divisi});
 }
 
 /// @nodoc
@@ -54,7 +53,6 @@ class _$DivisiEntityCopyWithImpl<$Res, $Val extends DivisiEntity>
   $Res call({
     Object? id = null,
     Object? divisi = null,
-    Object? divisiId = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -64,10 +62,6 @@ class _$DivisiEntityCopyWithImpl<$Res, $Val extends DivisiEntity>
       divisi: null == divisi
           ? _value.divisi
           : divisi // ignore: cast_nullable_to_non_nullable
-              as String,
-      divisiId: null == divisiId
-          ? _value.divisiId
-          : divisiId // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
   }
@@ -81,7 +75,7 @@ abstract class _$$_DivisiEntityCopyWith<$Res>
       __$$_DivisiEntityCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String divisi, String divisiId});
+  $Res call({String id, String divisi});
 }
 
 /// @nodoc
@@ -97,7 +91,6 @@ class __$$_DivisiEntityCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? divisi = null,
-    Object? divisiId = null,
   }) {
     return _then(_$_DivisiEntity(
       id: null == id
@@ -108,10 +101,6 @@ class __$$_DivisiEntityCopyWithImpl<$Res>
           ? _value.divisi
           : divisi // ignore: cast_nullable_to_non_nullable
               as String,
-      divisiId: null == divisiId
-          ? _value.divisiId
-          : divisiId // ignore: cast_nullable_to_non_nullable
-              as String,
     ));
   }
 }
@@ -119,8 +108,7 @@ class __$$_DivisiEntityCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_DivisiEntity implements _DivisiEntity {
-  const _$_DivisiEntity(
-      {required this.id, required this.divisi, required this.divisiId});
+  const _$_DivisiEntity({required this.id, required this.divisi});
 
   factory _$_DivisiEntity.fromJson(Map<String, dynamic> json) =>
       _$$_DivisiEntityFromJson(json);
@@ -129,12 +117,10 @@ class _$_DivisiEntity implements _DivisiEntity {
   final String id;
   @override
   final String divisi;
-  @override
-  final String divisiId;
 
   @override
   String toString() {
-    return 'DivisiEntity(id: $id, divisi: $divisi, divisiId: $divisiId)';
+    return 'DivisiEntity(id: $id, divisi: $divisi)';
   }
 
   @override
@@ -143,14 +129,12 @@ class _$_DivisiEntity implements _DivisiEntity {
         (other.runtimeType == runtimeType &&
             other is _$_DivisiEntity &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.divisi, divisi) || other.divisi == divisi) &&
-            (identical(other.divisiId, divisiId) ||
-                other.divisiId == divisiId));
+            (identical(other.divisi, divisi) || other.divisi == divisi));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, divisi, divisiId);
+  int get hashCode => Object.hash(runtimeType, id, divisi);
 
   @JsonKey(ignore: true)
   @override
@@ -169,8 +153,7 @@ class _$_DivisiEntity implements _DivisiEntity {
 abstract class _DivisiEntity implements DivisiEntity {
   const factory _DivisiEntity(
       {required final String id,
-      required final String divisi,
-      required final String divisiId}) = _$_DivisiEntity;
+      required final String divisi}) = _$_DivisiEntity;
 
   factory _DivisiEntity.fromJson(Map<String, dynamic> json) =
       _$_DivisiEntity.fromJson;
@@ -179,8 +162,6 @@ abstract class _DivisiEntity implements DivisiEntity {
   String get id;
   @override
   String get divisi;
-  @override
-  String get divisiId;
   @override
   @JsonKey(ignore: true)
   _$$_DivisiEntityCopyWith<_$_DivisiEntity> get copyWith =>

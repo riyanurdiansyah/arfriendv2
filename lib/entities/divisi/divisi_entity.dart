@@ -8,7 +8,7 @@ class DivisiEntity with _$DivisiEntity {
   const factory DivisiEntity({
     required String id,
     required String divisi,
-    required String divisiId,
+    // required String divisiId,
   }) = _DivisiEntity;
 
   factory DivisiEntity.fromJson(Map<String, dynamic> json) =>

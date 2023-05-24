@@ -1,3 +1,4 @@
+import 'package:arfriendv2/entities/category/category_entity.dart';
 import 'package:arfriendv2/entities/chat/chat_entity.dart';
 import 'package:arfriendv2/entities/dataset/dataset_entity.dart';
 import 'package:arfriendv2/entities/dataset/message_entity.dart';
@@ -34,4 +35,6 @@ abstract class FirebaseApiService {
   Stream<List<RoleEntity>> streamRoles();
 
   Stream<List<DivisiEntity>> streamDivisi();
+
+  Stream<List<CategoryEntity>> streamCategory(String id);
 }

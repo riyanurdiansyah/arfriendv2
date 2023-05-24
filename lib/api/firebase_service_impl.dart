@@ -1,4 +1,5 @@
 import 'package:arfriendv2/api/firebase_service.dart';
+import 'package:arfriendv2/entities/category/category_entity.dart';
 import 'package:arfriendv2/entities/chat/chat_entity.dart';
 import 'package:arfriendv2/entities/dataset/dataset_entity.dart';
 import 'package:arfriendv2/entities/dataset/message_entity.dart';
@@ -10,6 +11,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:uuid/uuid.dart';
 
 class FirebaseApiServiceImpl implements FirebaseApiService {
@@ -169,7 +171,6 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
     for (var data in messages) {
       messagesJson.add({"role": data.role, "content": data.content});
     }
-    print("CEKN : $messagesJson");
     final data = {
       "model": "gpt-3.5-turbo",
       "temperature": 0,
@@ -187,6 +188,15 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       debugPrint("CEK RESPONSE : ${response.data}");
       int code = response.statusCode ?? 500;
       if (code == 200) {
+        final stringInput = response.data["choices"][0]["message"].toString();
+        if (stringInput.contains("https")) {
+          List<String> links = stringInput.split('https://');
+          if (stringInput.startsWith('https://')) {
+            links.removeAt(0);
+          }
+          launchUrlString("https://${links[1]}");
+          // js.context.callMethod('open', [links[1]]);
+        }
         return Right(
           MessageEntity.fromJson(response.data["choices"][0]["message"])
               .copyWith(
@@ -224,6 +234,21 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
     return stream.map((e) {
       for (var data in e.docs) {
         divisions.add(DivisiEntity.fromJson(data.data()));
+      }
+      return divisions;
+    });
+  }
+
+  @override
+  Stream<List<CategoryEntity>> streamCategory(String id) {
+    List<CategoryEntity> divisions = [];
+    final stream = FirebaseFirestore.instance
+        .collection("category")
+        .where("idDivisi", isEqualTo: id)
+        .snapshots();
+    return stream.map((e) {
+      for (var data in e.docs) {
+        divisions.add(CategoryEntity.fromJson(data.data()));
       }
       return divisions;
     });

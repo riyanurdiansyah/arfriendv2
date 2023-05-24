@@ -50,6 +50,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     on<TrainSaveFileDataEvent>(_onSaveFileData);
     on<TrainChooseTragetRoleEvent>(_onChooseTargetRole);
     on<TrainClearAllFieldEvent>(_onClearAllField);
+    on<TrainChooseTragetDivisiEvent>(_onChooseDivisi);
   }
 
   FutureOr<void> _onInitial(

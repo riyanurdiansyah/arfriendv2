@@ -9,6 +9,7 @@ class TrainState extends Equatable {
     this.page = 1,
     this.targetRole = "",
     this.targetDivisi = "",
+    this.targetCategory = "",
     this.promptContent = "",
     this.isLoadingProses = false,
   });
@@ -20,6 +21,7 @@ class TrainState extends Equatable {
   final int page;
   final String targetRole;
   final String targetDivisi;
+  final String targetCategory;
   final String promptContent;
   final bool isLoadingProses;
 
@@ -31,6 +33,7 @@ class TrainState extends Equatable {
     int? page,
     String? targetRole,
     String? targetDivisi,
+    String? targetCategory,
     String? promptContent,
     bool? isLoadingProses,
   }) =>
@@ -42,6 +45,7 @@ class TrainState extends Equatable {
         page: page ?? this.page,
         targetRole: targetRole ?? this.targetRole,
         targetDivisi: targetDivisi ?? this.targetDivisi,
+        targetCategory: targetCategory ?? this.targetCategory,
         promptContent: promptContent ?? this.promptContent,
         isLoadingProses: isLoadingProses ?? this.isLoadingProses,
       );
@@ -54,6 +58,8 @@ class TrainState extends Equatable {
         page,
         targetRole,
         promptContent,
+        targetDivisi,
+        targetRole,
       ];
 }
 
