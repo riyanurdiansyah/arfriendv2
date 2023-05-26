@@ -12,8 +12,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:gsheets/gsheets.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../utils/app_constanta.dart';
 import '../../utils/app_dialog.dart';
 part 'train_event.dart';
 part 'train_state.dart';
@@ -51,6 +53,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     on<TrainChooseTragetRoleEvent>(_onChooseTargetRole);
     on<TrainClearAllFieldEvent>(_onClearAllField);
     on<TrainChooseTragetDivisiEvent>(_onChooseDivisi);
+    on<TrainFromSheetEvent>(_onTrainFromSheet);
   }
 
   FutureOr<void> _onInitial(
@@ -323,5 +326,83 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     tcTitle.clear();
     tcTitleFile.clear();
     emit(state.copyWith(targetRole: "", listId: [], promptContent: ""));
+  }
+
+  static Future<Worksheet> _getWorkSheet(
+      Spreadsheet spreadsheet, String title) async {
+    try {
+      return await spreadsheet.addWorksheet(title);
+    } catch (e) {
+      return spreadsheet.worksheetByTitle(title)!;
+    }
+  }
+
+  FutureOr<void> _onTrainFromSheet(
+      TrainFromSheetEvent event, Emitter<TrainState> emit) async {
+    emit(state.copyWith(isLoadingProses: !state.isLoadingProses));
+    final gsheet = GSheets(credentialSheet);
+    final spredsheet = await gsheet.spreadsheet(tcSheetID.text);
+    final worksheet = await _getWorkSheet(spredsheet, tcSheetName.text);
+
+    final rows = await worksheet.values.map.allRows() ?? [];
+    // List<Map<String, dynamic>> headers = rows[0];
+    print(
+        "CEKRES : ${rows.toString().replaceAll("[", "").replaceAll("]", "").replaceAll("{", "").replaceAll("}", "")}");
+
+    var uuid = const Uuid().v4();
+
+    final prompt = {
+      "konteks": tcTitle.text,
+      "respons": rows
+          .toString()
+          .replaceAll("[", "")
+          .replaceAll("]", "")
+          .replaceAll("{", "")
+          .replaceAll("}", ""),
+    };
+
+    final data = {
+      "id": uuid,
+      "title": tcTitleSheet.text,
+      "type": "sheet",
+      "addedBy": FirebaseAuth.instance.currentUser!.email!,
+      "to": state.targetRole,
+      "createdAt": DateTime.now().toIso8601String(),
+      "updatedAt": DateTime.now().toIso8601String(),
+      "messages": {
+        "role": "system",
+        "content": prompt.toString(),
+        "hidden": true,
+        "date": DateTime.now().toIso8601String(),
+      }
+    };
+
+    final response = await apiService.saveDataset(data);
+    response.fold((fail) {
+      emit(state.copyWith(isLoadingProses: false));
+      return AppDialog.dialogNoAction(
+          context: globalKey.currentContext!,
+          title: "Ooppss... terjadi kesalahan diserver. silahkan coba lagi");
+    }, (r) {
+      emit(state.copyWith(isLoadingProses: false));
+      add(TrainGetDataSetEvent());
+      add(TrainClearAllFieldEvent());
+      return AppDialog.dialogNoAction(
+          context: globalKey.currentContext!,
+          title: "Data berhasil ditambahkan");
+    });
+
+    // List<Map<String, dynamic>> listData = rows.map((list) {
+    //   Map<String, dynamic> map = {};
+    //   for (int i = 0; i < headers.length; i++) {
+    //     map[headers[i]] = list[i];
+    //   }
+    //   return map;
+    // }).toList();
+
+    // rows.removeAt(0);
+
+    // String jsonLines = rows.map((map) => jsonEncode(map)).join(' ');
+    // print("CEKZ : $jsonLines");
   }
 }

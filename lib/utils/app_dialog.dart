@@ -481,7 +481,7 @@ class AppDialog {
                             ),
                             onPressed: () {
                               context.pop();
-                              trainBloc.add(TrainSaveTextDataEvent());
+                              trainBloc.add(TrainFromSheetEvent());
                             },
                             child: Text(
                               'Simpan',
