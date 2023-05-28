@@ -9,6 +9,8 @@ abstract class RouteName {
 
   static const String chat = "chat";
 
+  static const String stream = "stream";
+
   static const String train = "train";
 
   static const String history = "history";

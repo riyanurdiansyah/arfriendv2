@@ -34,6 +34,12 @@ List<SidebarEntity> listSidebar = [
     route: "chat",
     role: 1,
   ),
+  const SidebarEntity(
+    title: "Chat-V2",
+    image: "assets/images/test.webp",
+    route: "stream",
+    role: 1,
+  ),
   // const SidebarEntity(
   //   title: "History",
   //   image: "assets/images/test.webp",

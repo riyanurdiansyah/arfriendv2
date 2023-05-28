@@ -1,5 +1,4 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:arfriendv2/blocs/chat/chat_bloc.dart';
 import 'package:arfriendv2/utils/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,12 +12,12 @@ class WebChatBotWidget extends StatelessWidget {
     super.key,
     required this.data,
     required this.isLastMessage,
-    required this.chatBloc,
+    required this.onFinish,
   });
 
   final MessageEntity data;
   final bool isLastMessage;
-  final ChatBloc chatBloc;
+  final VoidCallback onFinish;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +40,7 @@ class WebChatBotWidget extends StatelessWidget {
                   ),
                   child: isLastMessage
                       ? AnimatedTextKit(
-                          onFinished: () =>
-                              chatBloc.add(ChatOnUpdateIsReadEvent(data.id)),
+                          onFinished: () => onFinish(),
                           animatedTexts: [
                             TypewriterAnimatedText(
                               data.content,

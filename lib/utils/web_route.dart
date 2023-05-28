@@ -1,4 +1,5 @@
 import 'package:arfriendv2/pages/web/web_chat_page.dart';
+import 'package:arfriendv2/pages/web/web_chat_v2_page.dart';
 import 'package:arfriendv2/pages/web/web_home_page.dart';
 import 'package:arfriendv2/pages/web/web_train_page.dart';
 import 'package:arfriendv2/pages/welcome_page.dart';
@@ -85,13 +86,13 @@ GoRouter router = GoRouter(
                 ));
               },
             ),
-            // GoRoute(
-            //   path: RouteName.history,
-            //   name: RouteName.history,
-            //   pageBuilder: (context, state) {
-            //     return const NoTransitionPage(child: HistoryPage());
-            //   },
-            // ),
+            GoRoute(
+              path: RouteName.stream,
+              name: RouteName.stream,
+              pageBuilder: (context, state) {
+                return const NoTransitionPage(child: WebChatV2Page());
+              },
+            ),
             GoRoute(
               path: RouteName.train,
               name: RouteName.train,

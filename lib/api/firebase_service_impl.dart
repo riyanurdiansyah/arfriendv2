@@ -125,6 +125,7 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
         .where("idUser", isEqualTo: id)
         .snapshots();
     return stream.map((e) {
+      listChat.clear();
       for (var data in e.docs) {
         listChat.add(ChatEntity.fromJson(data.data()));
       }
@@ -252,5 +253,19 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       }
       return divisions;
     });
+  }
+
+  @override
+  Future<Either<ErrorEntity, bool>> streamCreateChat(
+      Map<String, dynamic> body) async {
+    try {
+      return await FirebaseFirestore.instance
+          .collection("streamChat")
+          .doc()
+          .set(body)
+          .then((value) => const Right(true));
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
   }
 }

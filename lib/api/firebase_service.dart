@@ -37,4 +37,6 @@ abstract class FirebaseApiService {
   Stream<List<DivisiEntity>> streamDivisi();
 
   Stream<List<CategoryEntity>> streamCategory(String id);
+
+  Future<Either<ErrorEntity, bool>> streamCreateChat(Map<String, dynamic> body);
 }
