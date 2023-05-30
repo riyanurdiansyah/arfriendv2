@@ -93,12 +93,14 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
   Future<Either<ErrorEntity, bool>> updateChat(
       Map<String, dynamic> body) async {
     try {
-      return await FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection("chat")
           .doc(body["idChat"])
-          .update(body)
-          .then((value) => const Right(true));
+          .update(body);
+      // return  => const Right(true));
+      return const Right(true);
     } catch (e) {
+      print("ERRR : ${e.toString()}");
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }
   }
@@ -264,6 +266,35 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
           .doc()
           .set(body)
           .then((value) => const Right(true));
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ErrorEntity, bool>> streamUpdateChat(
+      Map<String, dynamic> body) async {
+    try {
+      return await FirebaseFirestore.instance
+          .collection("streamChat")
+          .doc()
+          .set(body)
+          .then((value) => const Right(true));
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ErrorEntity, ChatEntity>> getChats(String idChat) async {
+    try {
+      final data =
+          await FirebaseFirestore.instance.collection("chat").doc(idChat).get();
+      if (data.exists) {
+        return Right(ChatEntity.fromJson(data.data()!));
+      } else {
+        return Left(ErrorEntity(code: 404, message: "Data not found"));
+      }
     } catch (e) {
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }

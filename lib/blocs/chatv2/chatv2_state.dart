@@ -1,7 +1,7 @@
-part of 'stream_bloc.dart';
+part of 'chatv2_bloc.dart';
 
-class StreamState extends Equatable {
-  const StreamState({
+class ChatV2State extends Equatable {
+  const ChatV2State({
     this.isLoadingSetup = true,
     this.isOnVoice = false,
     this.isOpenChat = false,
@@ -24,14 +24,14 @@ class StreamState extends Equatable {
         isTyping,
       ];
 
-  StreamState copyWith({
+  ChatV2State copyWith({
     bool? isLoadingSetup,
     bool? isOnVoice,
     bool? isOpenChat,
     String? idChat,
     bool? isTyping,
   }) {
-    return StreamState(
+    return ChatV2State(
       isLoadingSetup: isLoadingSetup ?? this.isLoadingSetup,
       isOnVoice: isOnVoice ?? this.isOnVoice,
       isOpenChat: isOpenChat ?? this.isOpenChat,
@@ -41,4 +41,4 @@ class StreamState extends Equatable {
   }
 }
 
-class StreamInitialState extends StreamState {}
+class ChatV2InitialState extends ChatV2State {}

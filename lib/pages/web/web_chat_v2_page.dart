@@ -1,4 +1,4 @@
-import 'package:arfriendv2/blocs/stream/stream_bloc.dart';
+import 'package:arfriendv2/blocs/chatv2/chatv2_bloc.dart';
 import 'package:arfriendv2/entities/chat/chat_entity.dart';
 import 'package:arfriendv2/utils/app_text_normal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,19 +20,19 @@ class WebChatV2Page extends StatefulWidget {
 }
 
 class _WebChatV2PageState extends State<WebChatV2Page> {
-  final _streamBloc = StreamBloc();
+  final _ChatV2Bloc = ChatV2Bloc();
 
   @override
   void initState() {
-    _streamBloc.add(StreamInitialEvent());
+    _ChatV2Bloc.add(ChatV2InitialEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return BlocProvider<StreamBloc>(
-      create: (context) => _streamBloc,
+    return BlocProvider<ChatV2Bloc>(
+      create: (context) => _ChatV2Bloc,
       child: Row(
         children: [
           Expanded(
@@ -63,7 +63,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () =>
-                        _streamBloc.add(StreamCreateNewChatEvent()),
+                        _ChatV2Bloc.add(ChatV2CreateNewChatEvent()),
                     child: Text(
                       "+ New Chat",
                       style: GoogleFonts.sourceSansPro(
@@ -74,7 +74,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                   ),
                 ),
                 StreamBuilder<List<ChatEntity>>(
-                  stream: _streamBloc.apiService.streamHistoryChat(
+                  stream: _ChatV2Bloc.apiService.streamHistoryChat(
                       FirebaseAuth.instance.currentUser!.uid),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -82,7 +82,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                     }
                     final data = snapshot.data ?? [];
                     return SingleChildScrollView(
-                      child: BlocBuilder<StreamBloc, StreamState>(
+                      child: BlocBuilder<ChatV2Bloc, ChatV2State>(
                         builder: (context, state) {
                           return Column(
                             children: List.generate(
@@ -91,8 +91,8 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                                 selected: state.idChat == data[index].idChat,
                                 selectedColor: Colors.grey,
                                 selectedTileColor: Colors.grey.shade300,
-                                onTap: () => _streamBloc.add(
-                                    StreamOnTapHistoryEvent(
+                                onTap: () => _ChatV2Bloc.add(
+                                    ChatV2OnTapHistoryEvent(
                                         data[index].idChat)),
                                 hoverColor: Colors.grey.shade200,
                                 leading: const Icon(
@@ -116,7 +116,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
           ),
           Expanded(
             flex: 3,
-            child: BlocBuilder<StreamBloc, StreamState>(
+            child: BlocBuilder<ChatV2Bloc, ChatV2State>(
               builder: (context, state) {
                 if (state.idChat.isEmpty) {
                   return const SizedBox();
@@ -148,7 +148,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                     actions: [
                       IconButton(
                         onPressed: () =>
-                            _streamBloc.add(StreamOnTapHistoryEvent("")),
+                            _ChatV2Bloc.add(ChatV2OnTapHistoryEvent("")),
                         icon: const Icon(
                           Icons.close_rounded,
                         ),
@@ -169,7 +169,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                         builder: (context, snapshot) {
                           return StreamBuilder<ChatEntity>(
                             stream:
-                                _streamBloc.apiService.streamChat(state.idChat),
+                                _ChatV2Bloc.apiService.streamChat(state.idChat),
                             builder: (context, snapshot) {
                               return SingleChildScrollView(
                                 reverse: true,
@@ -179,7 +179,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                                       right: 16,
                                       left: 16,
                                       bottom: 50),
-                                  child: BlocBuilder<StreamBloc, StreamState>(
+                                  child: BlocBuilder<ChatV2Bloc, ChatV2State>(
                                     builder: (context, state) {
                                       final data = snapshot.data?.messages
                                           .where((e) => e.role != "system")
@@ -236,20 +236,21 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                   floatingActionButton: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     height: 65,
-                    child: BlocBuilder<StreamBloc, StreamState>(
+                    child: BlocBuilder<ChatV2Bloc, ChatV2State>(
                       builder: (context, state) {
                         return Row(
                           children: [
                             if (!state.isOnVoice)
                               Expanded(
                                 child: TextFormField(
-                                  controller: _streamBloc.tcQuestion,
+                                  controller: _ChatV2Bloc.tcQuestion,
                                   validator: (val) =>
                                       Validators.requiredField(val!),
                                   style: GoogleFonts.montserrat(
                                     color: Colors.grey.shade600,
                                   ),
-                                  onEditingComplete: () {},
+                                  onEditingComplete: () => _ChatV2Bloc.add(
+                                      ChatV2CheckMessagesInDBEvent()),
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     filled: true,
