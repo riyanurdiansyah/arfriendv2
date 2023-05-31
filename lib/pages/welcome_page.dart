@@ -27,7 +27,7 @@ class _WelcomePageState extends State<WelcomePage>
       final user = FirebaseAuth.instance.currentUser;
       Future.delayed(const Duration(seconds: 3), () {
         if (user != null) {
-          context.goNamed(RouteName.home);
+          context.goNamed(RouteName.main);
         } else {
           context.goNamed(RouteName.masuk);
         }

@@ -20,11 +20,11 @@ class WebChatV2Page extends StatefulWidget {
 }
 
 class _WebChatV2PageState extends State<WebChatV2Page> {
-  final _ChatV2Bloc = ChatV2Bloc();
+  final _chatV2Bloc = ChatV2Bloc();
 
   @override
   void initState() {
-    _ChatV2Bloc.add(ChatV2InitialEvent());
+    _chatV2Bloc.add(ChatV2InitialEvent());
     super.initState();
   }
 
@@ -32,7 +32,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return BlocProvider<ChatV2Bloc>(
-      create: (context) => _ChatV2Bloc,
+      create: (context) => _chatV2Bloc,
       child: Row(
         children: [
           Expanded(
@@ -63,7 +63,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () =>
-                        _ChatV2Bloc.add(ChatV2CreateNewChatEvent()),
+                        _chatV2Bloc.add(ChatV2CreateNewChatEvent()),
                     child: Text(
                       "+ New Chat",
                       style: GoogleFonts.sourceSansPro(
@@ -74,7 +74,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                   ),
                 ),
                 StreamBuilder<List<ChatEntity>>(
-                  stream: _ChatV2Bloc.apiService.streamHistoryChat(
+                  stream: _chatV2Bloc.apiService.streamHistoryChat(
                       FirebaseAuth.instance.currentUser!.uid),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -91,7 +91,10 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                                 selected: state.idChat == data[index].idChat,
                                 selectedColor: Colors.grey,
                                 selectedTileColor: Colors.grey.shade300,
-                                onTap: () => _ChatV2Bloc.add(
+                                onLongPress: () => _chatV2Bloc.add(
+                                    ChatV2DeleteHistoryEvent(
+                                        data[index].idChat)),
+                                onTap: () => _chatV2Bloc.add(
                                     ChatV2OnTapHistoryEvent(
                                         data[index].idChat)),
                                 hoverColor: Colors.grey.shade200,
@@ -114,6 +117,10 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
               ],
             ),
           ),
+          Container(
+            width: 1,
+            color: Colors.grey.shade200,
+          ),
           Expanded(
             flex: 3,
             child: BlocBuilder<ChatV2Bloc, ChatV2State>(
@@ -122,6 +129,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                   return const SizedBox();
                 }
                 return Scaffold(
+                  key: _chatV2Bloc.globalKey,
                   appBar: AppBar(
                     automaticallyImplyLeading: false,
                     elevation: 0,
@@ -148,7 +156,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                     actions: [
                       IconButton(
                         onPressed: () =>
-                            _ChatV2Bloc.add(ChatV2OnTapHistoryEvent("")),
+                            _chatV2Bloc.add(ChatV2OnTapHistoryEvent("")),
                         icon: const Icon(
                           Icons.close_rounded,
                         ),
@@ -169,7 +177,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                         builder: (context, snapshot) {
                           return StreamBuilder<ChatEntity>(
                             stream:
-                                _ChatV2Bloc.apiService.streamChat(state.idChat),
+                                _chatV2Bloc.apiService.streamChat(state.idChat),
                             builder: (context, snapshot) {
                               return SingleChildScrollView(
                                 reverse: true,
@@ -243,14 +251,14 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                             if (!state.isOnVoice)
                               Expanded(
                                 child: TextFormField(
-                                  controller: _ChatV2Bloc.tcQuestion,
+                                  controller: _chatV2Bloc.tcQuestion,
                                   validator: (val) =>
                                       Validators.requiredField(val!),
                                   style: GoogleFonts.montserrat(
                                     color: Colors.grey.shade600,
                                   ),
-                                  onEditingComplete: () => _ChatV2Bloc.add(
-                                      ChatV2CheckMessagesInDBEvent()),
+                                  onEditingComplete: () => _chatV2Bloc
+                                      .add(ChatV2CheckMessagesInDBEvent()),
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     filled: true,

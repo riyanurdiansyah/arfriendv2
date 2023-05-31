@@ -3,7 +3,8 @@ part of 'chat_bloc.dart';
 class ChatState extends Equatable {
   const ChatState({
     this.isLoadingSetup = true,
-    this.historyChat = const ChatEntity(idUser: "", idChat: "", messages: []),
+    this.historyChat =
+        const ChatEntity(idUser: "", idChat: "", messages: [], number: 0),
     this.idChat = "",
     this.listHistory = const [],
     this.isTyping = false,

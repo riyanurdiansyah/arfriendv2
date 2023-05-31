@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:arfriendv2/utils/app_color.dart';
 import 'package:arfriendv2/utils/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,7 +33,7 @@ class WebChatBotWidget extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: colorPrimaryDark,
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
                       color: Colors.grey.shade300,
@@ -46,7 +47,7 @@ class WebChatBotWidget extends StatelessWidget {
                               data.content,
                               textStyle: GoogleFonts.sourceSansPro(
                                 fontSize: 14,
-                                color: const Color(0xFF1F2228),
+                                color: Colors.white,
                                 fontWeight: FontWeight.w500,
                                 height: 1.6,
                               ),
@@ -61,7 +62,7 @@ class WebChatBotWidget extends StatelessWidget {
                       : AppText.labelW500(
                           data.content,
                           14,
-                          const Color(0xFF1F2228),
+                          Colors.white,
                           maxLines: 100,
                           height: 1.6,
                         ),

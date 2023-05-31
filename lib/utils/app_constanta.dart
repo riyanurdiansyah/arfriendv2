@@ -23,6 +23,12 @@ List<SidebarEntity> listSidebar = [
     role: 1,
   ),
   const SidebarEntity(
+    title: "Kelola User",
+    image: "assets/images/test.webp",
+    route: "user",
+    role: 1,
+  ),
+  const SidebarEntity(
     title: "Train",
     image: "assets/images/test.webp",
     route: "train",
@@ -40,12 +46,6 @@ List<SidebarEntity> listSidebar = [
     route: "stream",
     role: 1,
   ),
-  // const SidebarEntity(
-  //   title: "History",
-  //   image: "assets/images/test.webp",
-  //   route: "history",
-  //   role: 1,
-  // ),
 ];
 
 final List<String> items = [

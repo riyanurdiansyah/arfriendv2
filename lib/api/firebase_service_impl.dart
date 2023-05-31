@@ -93,12 +93,12 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
   Future<Either<ErrorEntity, bool>> updateChat(
       Map<String, dynamic> body) async {
     try {
-      await FirebaseFirestore.instance
+      return await FirebaseFirestore.instance
           .collection("chat")
           .doc(body["idChat"])
-          .update(body);
-      // return  => const Right(true));
-      return const Right(true);
+          .update(body)
+          .onError((error, stackTrace) => Left("ERROR : ${error.toString()}"))
+          .then((value) => const Right(true));
     } catch (e) {
       print("ERRR : ${e.toString()}");
       return Left(ErrorEntity(code: 500, message: e.toString()));

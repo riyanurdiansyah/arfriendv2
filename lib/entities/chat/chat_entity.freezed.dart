@@ -22,6 +22,7 @@ ChatEntity _$ChatEntityFromJson(Map<String, dynamic> json) {
 mixin _$ChatEntity {
   String get idUser => throw _privateConstructorUsedError;
   String get idChat => throw _privateConstructorUsedError;
+  int get number => throw _privateConstructorUsedError;
   String get idTarget => throw _privateConstructorUsedError;
   String get target => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
@@ -42,6 +43,7 @@ abstract class $ChatEntityCopyWith<$Res> {
   $Res call(
       {String idUser,
       String idChat,
+      int number,
       String idTarget,
       String target,
       String title,
@@ -63,6 +65,7 @@ class _$ChatEntityCopyWithImpl<$Res, $Val extends ChatEntity>
   $Res call({
     Object? idUser = null,
     Object? idChat = null,
+    Object? number = null,
     Object? idTarget = null,
     Object? target = null,
     Object? title = null,
@@ -77,6 +80,10 @@ class _$ChatEntityCopyWithImpl<$Res, $Val extends ChatEntity>
           ? _value.idChat
           : idChat // ignore: cast_nullable_to_non_nullable
               as String,
+      number: null == number
+          ? _value.number
+          : number // ignore: cast_nullable_to_non_nullable
+              as int,
       idTarget: null == idTarget
           ? _value.idTarget
           : idTarget // ignore: cast_nullable_to_non_nullable
@@ -108,6 +115,7 @@ abstract class _$$_ChatEntityCopyWith<$Res>
   $Res call(
       {String idUser,
       String idChat,
+      int number,
       String idTarget,
       String target,
       String title,
@@ -127,6 +135,7 @@ class __$$_ChatEntityCopyWithImpl<$Res>
   $Res call({
     Object? idUser = null,
     Object? idChat = null,
+    Object? number = null,
     Object? idTarget = null,
     Object? target = null,
     Object? title = null,
@@ -141,6 +150,10 @@ class __$$_ChatEntityCopyWithImpl<$Res>
           ? _value.idChat
           : idChat // ignore: cast_nullable_to_non_nullable
               as String,
+      number: null == number
+          ? _value.number
+          : number // ignore: cast_nullable_to_non_nullable
+              as int,
       idTarget: null == idTarget
           ? _value.idTarget
           : idTarget // ignore: cast_nullable_to_non_nullable
@@ -167,6 +180,7 @@ class _$_ChatEntity implements _ChatEntity {
   const _$_ChatEntity(
       {required this.idUser,
       required this.idChat,
+      required this.number,
       this.idTarget = "",
       this.target = "",
       this.title = "",
@@ -180,6 +194,8 @@ class _$_ChatEntity implements _ChatEntity {
   final String idUser;
   @override
   final String idChat;
+  @override
+  final int number;
   @override
   @JsonKey()
   final String idTarget;
@@ -200,7 +216,7 @@ class _$_ChatEntity implements _ChatEntity {
 
   @override
   String toString() {
-    return 'ChatEntity(idUser: $idUser, idChat: $idChat, idTarget: $idTarget, target: $target, title: $title, messages: $messages)';
+    return 'ChatEntity(idUser: $idUser, idChat: $idChat, number: $number, idTarget: $idTarget, target: $target, title: $title, messages: $messages)';
   }
 
   @override
@@ -210,6 +226,7 @@ class _$_ChatEntity implements _ChatEntity {
             other is _$_ChatEntity &&
             (identical(other.idUser, idUser) || other.idUser == idUser) &&
             (identical(other.idChat, idChat) || other.idChat == idChat) &&
+            (identical(other.number, number) || other.number == number) &&
             (identical(other.idTarget, idTarget) ||
                 other.idTarget == idTarget) &&
             (identical(other.target, target) || other.target == target) &&
@@ -219,8 +236,8 @@ class _$_ChatEntity implements _ChatEntity {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, idUser, idChat, idTarget, target,
-      title, const DeepCollectionEquality().hash(_messages));
+  int get hashCode => Object.hash(runtimeType, idUser, idChat, number, idTarget,
+      target, title, const DeepCollectionEquality().hash(_messages));
 
   @JsonKey(ignore: true)
   @override
@@ -240,6 +257,7 @@ abstract class _ChatEntity implements ChatEntity {
   const factory _ChatEntity(
       {required final String idUser,
       required final String idChat,
+      required final int number,
       final String idTarget,
       final String target,
       final String title,
@@ -252,6 +270,8 @@ abstract class _ChatEntity implements ChatEntity {
   String get idUser;
   @override
   String get idChat;
+  @override
+  int get number;
   @override
   String get idTarget;
   @override

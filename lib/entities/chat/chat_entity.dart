@@ -10,6 +10,7 @@ class ChatEntity with _$ChatEntity {
   const factory ChatEntity(
       {required String idUser,
       required String idChat,
+      required int number,
       @Default("") String idTarget,
       @Default("") String target,
       @Default("") String title,

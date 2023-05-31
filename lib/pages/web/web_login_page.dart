@@ -55,7 +55,7 @@ class _WebLoginPageState extends State<WebLoginPage> {
           }
 
           if (state is LoginSuccessState) {
-            context.goNamed(RouteName.home);
+            context.goNamed(RouteName.main);
           }
         },
         child: Scaffold(

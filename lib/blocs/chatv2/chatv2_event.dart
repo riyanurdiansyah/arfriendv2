@@ -25,4 +25,15 @@ class ChatV2AddMessageToDBEvent extends ChatV2Event {
   ChatV2AddMessageToDBEvent(this.chat);
 }
 
+class ChatV2MessageToChatGPT extends ChatV2Event {
+  // final ChatEntity chat;
+  // ChatV2MessageToChatGPT(this.chat);
+}
+
 class ChatV2UpdateMessageToDBEvent extends ChatV2Event {}
+
+class ChatV2DeleteHistoryEvent extends ChatV2Event {
+  ChatV2DeleteHistoryEvent(this.id);
+
+  final String id;
+}
