@@ -179,7 +179,7 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
     }
     final data = {
       "model": "gpt-3.5-turbo",
-      "temperature": temperature ?? 0,
+      "temperature": temperature ?? 0.4,
       "messages": messagesJson,
     };
 
@@ -191,7 +191,6 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
           headers: headers,
         ),
       );
-      debugPrint("CEK RESPONSE : ${response.data}");
       int code = response.statusCode ?? 500;
       if (code == 200) {
         final stringInput = response.data["choices"][0]["message"].toString();
