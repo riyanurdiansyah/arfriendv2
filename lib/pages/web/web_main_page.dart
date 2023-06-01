@@ -1,9 +1,11 @@
 import 'package:arfriendv2/blocs/chatv2/chatv2_bloc.dart';
 import 'package:arfriendv2/utils/app_color.dart';
+import 'package:arfriendv2/utils/route_name.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../entities/chat/chat_entity.dart';
 import '../../utils/app_responsive.dart';
@@ -260,7 +262,8 @@ class _WebMainPageState extends State<WebMainPage> {
                                   color: colorPrimary,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () =>
+                                  launchUrlString("#/${RouteName.train}"),
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 60,
@@ -386,7 +389,12 @@ class _WebMainPageState extends State<WebMainPage> {
               child: BlocBuilder<ChatV2Bloc, ChatV2State>(
                 builder: (context, state) {
                   if (state.idChat.isEmpty) {
-                    return const SizedBox();
+                    return Center(
+                      child: Image.asset(
+                        "assets/images/bg.webp",
+                        width: 350,
+                      ),
+                    );
                   }
                   return Scaffold(
                     key: _chatV2Bloc.globalKey,
@@ -397,6 +405,19 @@ class _WebMainPageState extends State<WebMainPage> {
                         color: Color(0xff004B7B),
                       ),
                       backgroundColor: const Color(0xFFDAF0FF),
+                      leadingWidth: 28,
+                      leading: InkWell(
+                        focusColor: colorPrimary,
+                        hoverColor: colorPrimary,
+                        splashColor: colorPrimary,
+                        overlayColor: MaterialStateProperty.all(colorPrimary),
+                        highlightColor: colorPrimary,
+                        onTap: () =>
+                            _chatV2Bloc.add(ChatV2OnTapHistoryEvent("")),
+                        child: Image.asset(
+                          "assets/images/sidebar.webp",
+                        ),
+                      ),
                       title: Row(
                         children: [
                           Image.asset(
@@ -406,31 +427,34 @@ class _WebMainPageState extends State<WebMainPage> {
                           const SizedBox(
                             width: 12,
                           ),
-                          AppTextNormal.labelW600(
+                          Text(
                             "ArBot",
-                            18,
-                            Colors.black,
+                            style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.bold,
+                              color: colorPrimaryDark,
+                            ),
                           ),
+                          if (state.isTyping)
+                            AppTextNormal.labelW600(
+                              "   -   ",
+                              18,
+                              Colors.black,
+                            ),
+                          if (state.isTyping)
+                            AppTextNormal.labelW600(
+                              "Sedang mengetik...",
+                              18,
+                              Colors.black,
+                            ),
                         ],
                       ),
-                      actions: [
-                        IconButton(
-                          onPressed: () =>
-                              _chatV2Bloc.add(ChatV2OnTapHistoryEvent("")),
-                          icon: const Icon(
-                            Icons.close_rounded,
-                          ),
-                        ),
-                      ],
                     ),
                     body: Stack(
                       children: [
-                        SizedBox(
-                          width: double.infinity,
-                          height: size.height,
+                        Center(
                           child: Image.asset(
                             "assets/images/bg.webp",
-                            fit: BoxFit.cover,
+                            width: 350,
                           ),
                         ),
                         StreamBuilder(
@@ -467,16 +491,20 @@ class _WebMainPageState extends State<WebMainPage> {
                                                         data: data[index]);
                                                   }
                                                   return WebChatBotWidget(
-                                                    data: data[index],
-                                                    isLastMessage: (index ==
-                                                            snapshot
-                                                                    .data!
-                                                                    .messages
-                                                                    .length -
-                                                                1 &&
-                                                        !data[index].isRead),
-                                                    onFinish: () {},
-                                                  );
+                                                      data: data[index],
+                                                      isLastMessage: (index ==
+                                                              snapshot
+                                                                      .data!
+                                                                      .messages
+                                                                      .length -
+                                                                  1 &&
+                                                          !data[index].isRead),
+                                                      onFinish: () =>
+                                                          _chatV2Bloc.add(
+                                                              ChatV2UpdateIsReadEvent(
+                                                                  snapshot.data!
+                                                                      .messages,
+                                                                  index)));
                                                 },
                                               ),
                                             ),
@@ -508,8 +536,9 @@ class _WebMainPageState extends State<WebMainPage> {
                               if (!state.isOnVoice)
                                 Expanded(
                                   child: SizedBox(
-                                    height: 65,
+                                    height: 60,
                                     child: TextFormField(
+                                      readOnly: state.isTyping,
                                       controller: _chatV2Bloc.tcQuestion,
                                       validator: (val) =>
                                           Validators.requiredField(val!),
@@ -524,9 +553,9 @@ class _WebMainPageState extends State<WebMainPage> {
                                         hintStyle: GoogleFonts.montserrat(
                                           color: const Color(0xFFA2A4A8),
                                         ),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 0, horizontal: 12),
+                                        // contentPadding:
+                                        //     const EdgeInsets.symmetric(
+                                        //         vertical: 0, horizontal: 12),
                                         hintText: "Ketik pertanyaan...",
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,

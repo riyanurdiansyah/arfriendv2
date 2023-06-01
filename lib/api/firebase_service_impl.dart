@@ -168,7 +168,10 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
 
   @override
   Future<Either<ErrorEntity, MessageEntity>> sendMessageToChatGPT(
-      Map<String, dynamic> headers, List<MessageEntity> messages) async {
+    Map<String, dynamic> headers,
+    List<MessageEntity> messages, {
+    double? temperature,
+  }) async {
     Dio dio = Dio();
     List<Map<String, dynamic>> messagesJson = [];
     for (var data in messages) {
@@ -176,7 +179,7 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
     }
     final data = {
       "model": "gpt-3.5-turbo",
-      "temperature": 0,
+      "temperature": temperature ?? 0,
       "messages": messagesJson,
     };
 

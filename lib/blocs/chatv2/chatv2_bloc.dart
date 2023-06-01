@@ -40,7 +40,11 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
     on<ChatV2CheckMessagesInDBEvent>(_onCheckMessage);
     on<ChatV2AddMessageToDBEvent>(_onAddMessage);
     on<ChatV2DeleteHistoryEvent>(_onDeleteHistoryChat);
-    on<ChatV2MessageToChatGPT>(_onMessageToChatGPT);
+    on<ChatV2MessageToChatGPTEvent>(_onMessageToChatGPT);
+    on<ChatV2MessageToChatGPTFirstEvent>(_onMessageToChatGPTFirst);
+    on<ChatV2UpdateIsReadEvent>(_onUpdateIsRead);
+    on<ChatV2ChangeTypingEvent>(_onChangeTyping);
+    on<ChatV2AddErrorMessageEvent>(_onAddErrorMessage);
   }
 
   FutureOr<void> _onSaveNewChat(
@@ -75,8 +79,11 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
       "createdAt": DateTime.now().toIso8601String(),
     };
     final response = await apiService.createChat(body);
-    response.fold((l) => debugPrint("Error : ${l.message}"),
-        (r) => add(ChatV2OnTapHistoryEvent(id)));
+    response.fold((l) => debugPrint("Error : ${l.message}"), (r) {
+      // add(ChatV2ChangeTypingEvent(true));
+      add(ChatV2OnTapHistoryEvent(id));
+      add(ChatV2MessageToChatGPTFirstEvent());
+    });
   }
 
   FutureOr<void> _onTapHistory(
@@ -121,11 +128,11 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
     });
 
     response.fold((l) => debugPrint("ERROR :=> ${l.message}"),
-        (r) => add(ChatV2MessageToChatGPT()));
+        (r) => add(ChatV2MessageToChatGPTEvent()));
   }
 
   FutureOr<void> _onMessageToChatGPT(
-      ChatV2MessageToChatGPT event, Emitter<ChatV2State> emit) async {
+      ChatV2MessageToChatGPTEvent event, Emitter<ChatV2State> emit) async {
     final headers = {
       "Accept": "*/*",
       "Content-Type": "application/json",
@@ -160,5 +167,79 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
 
       final response = await apiService.sendMessageToChatGPT(headers, messages);
     });
+  }
+
+  FutureOr<void> _onMessageToChatGPTFirst(
+      ChatV2MessageToChatGPTFirstEvent event, Emitter<ChatV2State> emit) async {
+    final headers = {
+      "Accept": "*/*",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $apiKey",
+    };
+
+    List<MessageEntity> messages = [
+      const MessageEntity(
+          role: "system",
+          content:
+              "berikan kalimat motivasi semangat untuk hari ini maksimal 30 kata")
+    ];
+
+    final response = await apiService.sendMessageToChatGPT(headers, messages,
+        temperature: 1.0);
+    response.fold((l) => null, (data) async {
+      List<MessageEntity> messages = [];
+      List<Map<String, dynamic>> messagesJson = [];
+      tcQuestion.clear();
+      messages.add(MessageEntity(
+        role: "assistant",
+        content: data.content,
+        isRead: false,
+        date: DateTime.now().toIso8601String(),
+        id: const Uuid().v4(),
+      ));
+      for (var data in messages) {
+        messagesJson.add(data.toJson());
+      }
+      final response = await apiService.updateChat({
+        "idChat": state.idChat,
+        "messages": messagesJson,
+      });
+      response.fold((l) => add(ChatV2AddErrorMessageEvent(l.message)),
+          (r) => add(ChatV2ChangeTypingEvent(false)));
+    });
+  }
+
+  FutureOr<void> _onUpdateIsRead(
+      ChatV2UpdateIsReadEvent event, Emitter<ChatV2State> emit) async {
+    List<MessageEntity> messages = List.from(event.messages);
+    List<Map<String, dynamic>> upMessage = [];
+    messages[event.index] = MessageEntity(
+      role: messages[event.index].role,
+      content: messages[event.index].content,
+      date: messages[event.index].date,
+      isRead: true,
+      hidden: true,
+      id: messages[event.index].id,
+    );
+
+    for (var data in messages) {
+      upMessage.add(data.toJson());
+    }
+    await apiService.updateChat({
+      "idChat": state.idChat,
+      "messages": upMessage,
+    });
+  }
+
+  FutureOr<void> _onChangeTyping(
+      ChatV2ChangeTypingEvent event, Emitter<ChatV2State> emit) {
+    emit(state.copyWith(isTyping: event.isTyping));
+  }
+
+  FutureOr<void> _onAddErrorMessage(
+      ChatV2AddErrorMessageEvent event, Emitter<ChatV2State> emit) {
+    emit(state.copyWith(
+      isTyping: event.isTyping ?? false,
+    ));
   }
 }

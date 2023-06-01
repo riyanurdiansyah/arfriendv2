@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:arfriendv2/utils/app_color.dart';
 import 'package:arfriendv2/utils/app_text.dart';
@@ -30,42 +31,44 @@ class WebChatBotWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: colorPrimaryDark,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                      color: Colors.grey.shade300,
+                SlideInLeft(
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: colorPrimaryDark,
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                      ),
                     ),
-                  ),
-                  child: isLastMessage
-                      ? AnimatedTextKit(
-                          onFinished: () => onFinish(),
-                          animatedTexts: [
-                            TypewriterAnimatedText(
-                              data.content,
-                              textStyle: GoogleFonts.sourceSansPro(
-                                fontSize: 14,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                height: 1.6,
+                    child: isLastMessage
+                        ? AnimatedTextKit(
+                            onFinished: () => onFinish(),
+                            animatedTexts: [
+                              TypewriterAnimatedText(
+                                data.content,
+                                textStyle: GoogleFonts.sourceSansPro(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.6,
+                                ),
+                                speed: const Duration(milliseconds: 20),
                               ),
-                              speed: const Duration(milliseconds: 20),
-                            ),
-                          ],
-                          totalRepeatCount: 1,
-                          pause: const Duration(milliseconds: 1000),
-                          displayFullTextOnTap: false,
-                          stopPauseOnTap: false,
-                        )
-                      : AppText.labelW500(
-                          data.content,
-                          14,
-                          Colors.white,
-                          maxLines: 100,
-                          height: 1.6,
-                        ),
+                            ],
+                            totalRepeatCount: 1,
+                            pause: const Duration(milliseconds: 1000),
+                            displayFullTextOnTap: false,
+                            stopPauseOnTap: false,
+                          )
+                        : AppText.labelW500(
+                            data.content,
+                            16,
+                            Colors.white,
+                            maxLines: 100,
+                            height: 1.6,
+                          ),
+                  ),
                 ),
                 const SizedBox(
                   height: 12,
@@ -113,21 +116,23 @@ class WebChatUserWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: Colors.white60,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                      color: Colors.grey.shade300,
+                SlideInRight(
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white60,
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                      ),
                     ),
-                  ),
-                  child: AppText.labelW500(
-                    data.content,
-                    14,
-                    const Color(0xFF1F2228),
-                    maxLines: 100,
-                    height: 1.6,
+                    child: AppText.labelW500(
+                      data.content,
+                      16,
+                      const Color(0xFF1F2228),
+                      maxLines: 100,
+                      height: 1.6,
+                    ),
                   ),
                 ),
                 const SizedBox(

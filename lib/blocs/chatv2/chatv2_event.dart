@@ -25,15 +25,37 @@ class ChatV2AddMessageToDBEvent extends ChatV2Event {
   ChatV2AddMessageToDBEvent(this.chat);
 }
 
-class ChatV2MessageToChatGPT extends ChatV2Event {
-  // final ChatEntity chat;
-  // ChatV2MessageToChatGPT(this.chat);
-}
+class ChatV2MessageToChatGPTEvent extends ChatV2Event {}
+
+class ChatV2MessageToChatGPTFirstEvent extends ChatV2Event {}
 
 class ChatV2UpdateMessageToDBEvent extends ChatV2Event {}
+
+class ChatV2UpdateIsReadEvent extends ChatV2Event {
+  ChatV2UpdateIsReadEvent(this.messages, this.index);
+
+  final List<MessageEntity> messages;
+  final int index;
+}
 
 class ChatV2DeleteHistoryEvent extends ChatV2Event {
   ChatV2DeleteHistoryEvent(this.id);
 
   final String id;
+}
+
+class ChatV2ChangeTypingEvent extends ChatV2Event {
+  ChatV2ChangeTypingEvent(this.isTyping);
+
+  final bool isTyping;
+}
+
+class ChatV2AddErrorMessageEvent extends ChatV2Event {
+  ChatV2AddErrorMessageEvent(
+    this.errorMessage, {
+    this.isTyping,
+  });
+
+  final String errorMessage;
+  bool? isTyping;
 }

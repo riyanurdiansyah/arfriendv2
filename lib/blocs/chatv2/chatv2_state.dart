@@ -7,6 +7,7 @@ class ChatV2State extends Equatable {
     this.isOpenChat = false,
     this.idChat = "",
     this.isTyping = false,
+    this.errorMessage = "",
   });
 
   final bool isLoadingSetup;
@@ -14,6 +15,7 @@ class ChatV2State extends Equatable {
   final bool isOpenChat;
   final String idChat;
   final bool isTyping;
+  final String errorMessage;
 
   @override
   List<Object?> get props => [
@@ -22,6 +24,7 @@ class ChatV2State extends Equatable {
         isOpenChat,
         idChat,
         isTyping,
+        errorMessage,
       ];
 
   ChatV2State copyWith({
@@ -30,6 +33,7 @@ class ChatV2State extends Equatable {
     bool? isOpenChat,
     String? idChat,
     bool? isTyping,
+    String? errorMessage,
   }) {
     return ChatV2State(
       isLoadingSetup: isLoadingSetup ?? this.isLoadingSetup,
@@ -37,6 +41,7 @@ class ChatV2State extends Equatable {
       isOpenChat: isOpenChat ?? this.isOpenChat,
       idChat: idChat ?? this.idChat,
       isTyping: isTyping ?? this.isTyping,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }
