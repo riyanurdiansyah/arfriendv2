@@ -1,14 +1,9 @@
-import 'package:arfriendv2/blocs/chat/chat_bloc.dart';
-import 'package:arfriendv2/pages/mobile/chat_page.dart';
-import 'package:arfriendv2/pages/mobile/history_chat_page.dart';
-import 'package:arfriendv2/pages/web/web_chat_page.dart';
-import 'package:arfriendv2/pages/web/web_home_page.dart';
-import 'package:arfriendv2/pages/web/web_train_page.dart';
+import 'package:arfriendv2/pages/web/web_main_page.dart';
 import 'package:arfriendv2/pages/welcome_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../pages/web/web_dashboard_page.dart';
 import '../pages/web/web_login_page.dart';
 import '../pages/web/web_not_found_page.dart';
 import 'route_name.dart';
@@ -47,93 +42,92 @@ GoRouter router = GoRouter(
           context: context, state: state, child: const WebLoginPage()),
     ),
     GoRoute(
-      path: '/historyapp',
-      name: 'historyapp',
-      pageBuilder: (context, state) => buildPageWithDefaultTransition(
-          context: context, state: state, child: const HistoryChatPage()),
-    ),
-    GoRoute(
-      path: '/chatapp',
-      name: 'chatapp',
+      path: '/',
+      name: '/',
       pageBuilder: (context, state) {
-        final chatBloc = state.extra as ChatBloc;
-        final id = state.queryParameters["id"] ?? "";
+        if (FirebaseAuth.instance.currentUser == null) {
+          context.goNamed(RouteName.masuk);
+        }
         return buildPageWithDefaultTransition(
-          context: context,
-          state: state,
-          child: ChatPage(
-            id: id,
-            chatBloc: chatBloc,
-          ),
-        );
+            context: context, state: state, child: const WebMainPage());
       },
-    ),
-    ShellRoute(
-      navigatorKey: shellNavigatorKey,
-      pageBuilder: ((context, state, child) {
-        return buildPageWithDefaultTransition(
-          context: context,
-          state: state,
-          child: WebDashboardPage(widget: child, route: state.location),
-        );
-      }),
-      routes: [
-        GoRoute(
-          path: '/',
-          name: "/",
-          pageBuilder: (context, state) {
-            return NoTransitionPage(
-              child: Container(
-                color: Colors.blue,
-              ),
-            );
-          },
-          routes: [
-            GoRoute(
-              path: RouteName.home,
-              name: RouteName.home,
-              pageBuilder: (context, state) {
-                return NoTransitionPage(
-                  child: WebHomePage(
-                    route: state.location,
-                  ),
-                );
-              },
-            ),
-            GoRoute(
-              path: RouteName.chat,
-              name: RouteName.chat,
-              pageBuilder: (context, state) {
-                return NoTransitionPage(
-                    child: WebChatPage(
-                  route: state.location,
-                ));
-              },
-            ),
-            // GoRoute(
-            //   path: RouteName.history,
-            //   name: RouteName.history,
-            //   pageBuilder: (context, state) {
-            //     return const NoTransitionPage(child: HistoryPage());
-            //   },
-            // ),
-            GoRoute(
-              path: RouteName.train,
-              name: RouteName.train,
-              pageBuilder: (context, state) {
-                return NoTransitionPage(
-                  child: WebTrainPage(
-                    route: state.location,
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ],
+      // ShellRoute(
+      //   navigatorKey: shellNavigatorKey,
+      //   pageBuilder: ((context, state, child) {
+      //     return buildPageWithDefaultTransition(
+      //       context: context,
+      //       state: state,
+      //       child: WebDashboardPage(widget: child, route: state.location),
+      //     );
+      //   }),
+      //   routes: [
+      //     GoRoute(
+      //       path: '/',
+      //       name: "/",
+      //       pageBuilder: (context, state) {
+      //         return NoTransitionPage(
+      //           child: Container(
+      //             color: Colors.blue,
+      //           ),
+      //         );
+      //       },
+      //       routes: [
+      //         GoRoute(
+      //           path: RouteName.home,
+      //           name: RouteName.home,
+      //           pageBuilder: (context, state) {
+      //             return NoTransitionPage(
+      //               child: WebHomePage(
+      //                 route: state.location,
+      //               ),
+      //             );
+      //           },
+      //         ),
+      //         GoRoute(
+      //           path: RouteName.chat,
+      //           name: RouteName.chat,
+      //           pageBuilder: (context, state) {
+      //             return NoTransitionPage(
+      //                 child: WebChatPage(
+      //               route: state.location,
+      //             ));
+      //           },
+      //         ),
+      //         GoRoute(
+      //           path: RouteName.stream,
+      //           name: RouteName.stream,
+      //           pageBuilder: (context, state) {
+      //             return const NoTransitionPage(child: WebChatV2Page());
+      //           },
+      //         ),
+      //         GoRoute(
+      //           path: RouteName.train,
+      //           name: RouteName.train,
+      //           pageBuilder: (context, state) {
+      //             return NoTransitionPage(
+      //               child: WebTrainPage(
+      //                 route: state.location,
+      //               ),
+      //             );
+      //           },
+      //         ),
+      //         GoRoute(
+      //           path: RouteName.user,
+      //           name: RouteName.user,
+      //           pageBuilder: (context, state) {
+      //             return NoTransitionPage(
+      //               child: WebUserPage(
+      //                 route: state.location,
+      //               ),
+      //             );
+      //           },
+      //         ),
+      //       ],
+      //     ),
+      //   ],
     ),
   ],
-  initialLocation: "/halo",
+  initialLocation: "/",
   debugLogDiagnostics: true,
   routerNeglect: true,
 );

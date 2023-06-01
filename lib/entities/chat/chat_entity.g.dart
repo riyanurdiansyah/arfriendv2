@@ -10,6 +10,7 @@ _$_ChatEntity _$$_ChatEntityFromJson(Map<String, dynamic> json) =>
     _$_ChatEntity(
       idUser: json['idUser'] as String,
       idChat: json['idChat'] as String,
+      number: json['number'] as int,
       idTarget: json['idTarget'] as String? ?? "",
       target: json['target'] as String? ?? "",
       title: json['title'] as String? ?? "",
@@ -23,6 +24,7 @@ Map<String, dynamic> _$$_ChatEntityToJson(_$_ChatEntity instance) =>
     <String, dynamic>{
       'idUser': instance.idUser,
       'idChat': instance.idChat,
+      'number': instance.number,
       'idTarget': instance.idTarget,
       'target': instance.target,
       'title': instance.title,

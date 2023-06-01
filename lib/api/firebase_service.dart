@@ -23,10 +23,15 @@ abstract class FirebaseApiService {
 
   Future<Either<ErrorEntity, List<ChatEntity>>> getHistoryChat(String id);
 
+  Future<Either<ErrorEntity, ChatEntity>> getChats(String id);
+
   Future<Either<ErrorEntity, bool>> deleteHistoryById(String id);
 
   Future<Either<ErrorEntity, MessageEntity>> sendMessageToChatGPT(
-      Map<String, dynamic> headers, List<MessageEntity> messages);
+    Map<String, dynamic> headers,
+    List<MessageEntity> messages, {
+    double? temperature,
+  });
 
   Stream<ChatEntity> streamChat(String id);
 
@@ -37,4 +42,6 @@ abstract class FirebaseApiService {
   Stream<List<DivisiEntity>> streamDivisi();
 
   Stream<List<CategoryEntity>> streamCategory(String id);
+
+  Future<Either<ErrorEntity, bool>> streamCreateChat(Map<String, dynamic> body);
 }

@@ -1,6 +1,8 @@
 abstract class RouteName {
   static const String halo = "halo";
 
+  static const String main = "/";
+
   static const String masuk = "masuk";
 
   static const String home = "home";
@@ -8,6 +10,8 @@ abstract class RouteName {
   static const String user = "user";
 
   static const String chat = "chat";
+
+  static const String stream = "stream";
 
   static const String train = "train";
 

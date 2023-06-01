@@ -30,14 +30,14 @@ class WebDashboardPage extends StatelessWidget {
       // ),
       body: Stack(
         children: [
-          SizedBox(
-            width: double.infinity,
-            height: size.height,
-            child: Image.asset(
-              "assets/images/bg.webp",
-              fit: BoxFit.cover,
-            ),
-          ),
+          // SizedBox(
+          //   width: double.infinity,
+          //   height: size.height,
+          //   child: Image.asset(
+          //     "assets/images/bg.webp",
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           Row(
             children: [
               if (!AppResponsive.isMobile(context))

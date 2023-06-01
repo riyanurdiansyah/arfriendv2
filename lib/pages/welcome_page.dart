@@ -1,6 +1,5 @@
 import 'package:arfriendv2/utils/app_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -29,11 +28,7 @@ class _WelcomePageState extends State<WelcomePage>
       final user = FirebaseAuth.instance.currentUser;
       Future.delayed(const Duration(seconds: 3), () {
         if (user != null) {
-          if (kIsWeb) {
-            context.goNamed(RouteName.home);
-          } else {
-            context.goNamed(RouteName.historyapp);
-          }
+          context.goNamed(RouteName.main);
         } else {
           context.goNamed(RouteName.masuk);
         }

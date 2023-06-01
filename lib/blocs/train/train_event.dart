@@ -55,3 +55,5 @@ class TrainChooseExceptCsvFileEvent extends TrainEvent {
 
   final FilePickerResult file;
 }
+
+class TrainFromSheetEvent extends TrainEvent {}

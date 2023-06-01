@@ -29,6 +29,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  animate_do: ^3.0.2
   animated_text_kit: ^4.2.2
   cloud_firestore: ^4.6.0
   csv: ^5.0.2

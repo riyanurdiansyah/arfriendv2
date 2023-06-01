@@ -1,134 +1,135 @@
-import 'package:arfriendv2/pages/web/web_animation_cursor.dart';
-import 'package:arfriendv2/pages/web/web_side_bar.dart';
-import 'package:arfriendv2/utils/app_color.dart';
-import 'package:arfriendv2/utils/app_dialog.dart';
-import 'package:arfriendv2/utils/app_responsive.dart';
-import 'package:arfriendv2/utils/app_text.dart';
+import 'package:arfriendv2/blocs/chatv2/chatv2_bloc.dart';
+import 'package:arfriendv2/entities/chat/chat_entity.dart';
+import 'package:arfriendv2/utils/app_text_normal.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../blocs/chat/chat_bloc.dart';
-import '../../entities/chat/chat_entity.dart';
+import '../../utils/app_color.dart';
+import '../../utils/app_text.dart';
 import '../../utils/validators.dart';
+import 'web_animation_cursor.dart';
 import 'web_chat_widget.dart';
 
-class WebChatPage extends StatefulWidget {
-  const WebChatPage({
-    super.key,
-    required this.route,
-  });
-
-  final String route;
+class WebChatV2Page extends StatefulWidget {
+  const WebChatV2Page({super.key});
 
   @override
-  State<WebChatPage> createState() => _WebChatPageState();
+  State<WebChatV2Page> createState() => _WebChatV2PageState();
 }
 
-class _WebChatPageState extends State<WebChatPage> {
-  final _chatBloc = ChatBloc();
+class _WebChatV2PageState extends State<WebChatV2Page> {
+  final _chatV2Bloc = ChatV2Bloc();
 
   @override
   void initState() {
-    _chatBloc.add(ChatInitialEvent());
+    _chatV2Bloc.add(ChatV2InitialEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return BlocProvider(
-      create: (context) => _chatBloc,
+    return BlocProvider<ChatV2Bloc>(
+      create: (context) => _chatV2Bloc,
       child: Row(
         children: [
           Expanded(
             flex: 1,
-            child: Scaffold(
-              appBar: AppBar(
-                elevation: 0,
-                backgroundColor: colorPrimary.withOpacity(0.7),
-                automaticallyImplyLeading: false,
-                title: AppText.labelW600(
-                  "History",
-                  14,
-                  Colors.black,
-                ),
-                centerTitle: false,
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      AppDialog.dialogAddChat(
-                          context: context, chatBloc: _chatBloc);
-                    },
-                    icon: const Icon(
-                      Icons.add_rounded,
-                      color: Colors.black,
-                    ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  alignment: Alignment.centerLeft,
+                  width: double.infinity,
+                  color: colorPrimary.withOpacity(0.7),
+                  height: kToolbarHeight,
+                  child: AppText.labelBold(
+                    "History",
+                    16,
+                    Colors.black,
                   ),
-                ],
-              ),
-              body: BlocBuilder<ChatBloc, ChatState>(
-                builder: (context, state) {
-                  return Column(
-                    children: List.generate(
-                      state.listHistory.length,
-                      (index) => ListTile(
-                        onLongPress: () => _chatBloc.add(
-                            ChatOnDeleteHistoryMessageEvent(
-                                state.listHistory[index].idChat)),
-                        onTap: () => _chatBloc.add(ChatOnTapHistoryIdEvent(
-                            state.listHistory[index].idChat)),
-                        title: Text(
-                          state.listHistory[index].target,
-                          style: GoogleFonts.sourceSansPro(
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        subtitle: Text(
-                          state.listHistory[index].title,
-                          style: GoogleFonts.sourceSansPro(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 45,
+                  color: Colors.amber,
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                    ),
+                    onPressed: () =>
+                        _chatV2Bloc.add(ChatV2CreateNewChatEvent()),
+                    child: Text(
+                      "+ New Chat",
+                      style: GoogleFonts.sourceSansPro(
+                        fontSize: 16,
+                        color: colorPrimaryDark,
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+                StreamBuilder<List<ChatEntity>>(
+                  stream: _chatV2Bloc.apiService.streamHistoryChat(
+                      FirebaseAuth.instance.currentUser!.uid),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const SizedBox();
+                    }
+                    final data = snapshot.data ?? [];
+                    return SingleChildScrollView(
+                      child: BlocBuilder<ChatV2Bloc, ChatV2State>(
+                        builder: (context, state) {
+                          return Column(
+                            children: List.generate(
+                              data.length,
+                              (index) => ListTile(
+                                selected: state.idChat == data[index].idChat,
+                                selectedColor: Colors.grey,
+                                selectedTileColor: Colors.grey.shade300,
+                                onLongPress: () => _chatV2Bloc.add(
+                                    ChatV2DeleteHistoryEvent(
+                                        data[index].idChat)),
+                                onTap: () => _chatV2Bloc.add(
+                                    ChatV2OnTapHistoryEvent(
+                                        data[index].idChat)),
+                                hoverColor: Colors.grey.shade200,
+                                leading: const Icon(
+                                  Icons.message_rounded,
+                                ),
+                                title: AppTextNormal.labelW600(
+                                  data[index].title,
+                                  14,
+                                  Colors.black,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                )
+              ],
             ),
+          ),
+          Container(
+            width: 1,
+            color: Colors.grey.shade200,
           ),
           Expanded(
             flex: 3,
-            child: BlocBuilder<ChatBloc, ChatState>(
+            child: BlocBuilder<ChatV2Bloc, ChatV2State>(
               builder: (context, state) {
                 if (state.idChat.isEmpty) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Image.asset(
-                      //   "assets/images/logo.webp",
-                      //   width: 175,
-                      // ),
-                      // const SizedBox(
-                      //   height: 50,
-                      // ),
-                      AppText.labelW600(
-                        "Silahkan memulai percakapan",
-                        18,
-                        Colors.grey.shade600,
-                      ),
-                    ],
-                  );
+                  return const SizedBox();
                 }
                 return Scaffold(
-                  key: _chatBloc.globalKey,
-                  endDrawer: AppResponsive.isMobile(context)
-                      ? SideNavbar(route: widget.route)
-                      : null,
+                  key: _chatV2Bloc.globalKey,
                   appBar: AppBar(
                     automaticallyImplyLeading: false,
                     elevation: 0,
@@ -152,6 +153,15 @@ class _WebChatPageState extends State<WebChatPage> {
                         ),
                       ],
                     ),
+                    actions: [
+                      IconButton(
+                        onPressed: () =>
+                            _chatV2Bloc.add(ChatV2OnTapHistoryEvent("")),
+                        icon: const Icon(
+                          Icons.close_rounded,
+                        ),
+                      ),
+                    ],
                   ),
                   body: Stack(
                     children: [
@@ -163,30 +173,11 @@ class _WebChatPageState extends State<WebChatPage> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      BlocBuilder<ChatBloc, ChatState>(
-                        builder: (context, state) {
-                          if (state.isLoadingSetup) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const SpinKitThreeInOut(
-                                  color: Color(0xff004B7B),
-                                  size: 25.0,
-                                ),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                AppText.labelW500(
-                                  "Memuat chat...",
-                                  16,
-                                  Colors.grey,
-                                ),
-                              ],
-                            );
-                          }
+                      StreamBuilder(
+                        builder: (context, snapshot) {
                           return StreamBuilder<ChatEntity>(
                             stream:
-                                _chatBloc.apiService.streamChat(state.idChat),
+                                _chatV2Bloc.apiService.streamChat(state.idChat),
                             builder: (context, snapshot) {
                               return SingleChildScrollView(
                                 reverse: true,
@@ -196,7 +187,7 @@ class _WebChatPageState extends State<WebChatPage> {
                                       right: 16,
                                       left: 16,
                                       bottom: 50),
-                                  child: BlocBuilder<ChatBloc, ChatState>(
+                                  child: BlocBuilder<ChatV2Bloc, ChatV2State>(
                                     builder: (context, state) {
                                       final data = snapshot.data?.messages
                                           .where((e) => e.role != "system")
@@ -224,11 +215,7 @@ class _WebChatPageState extends State<WebChatPage> {
                                                                   .length -
                                                               1 &&
                                                       !data[index].isRead),
-                                                  onFinish: () {
-                                                    _chatBloc.add(
-                                                        ChatOnUpdateIsReadEvent(
-                                                            data[index].id));
-                                                  },
+                                                  onFinish: () {},
                                                 );
                                               },
                                             ),
@@ -249,7 +236,7 @@ class _WebChatPageState extends State<WebChatPage> {
                             },
                           );
                         },
-                      ),
+                      )
                     ],
                   ),
                   floatingActionButtonLocation:
@@ -257,21 +244,21 @@ class _WebChatPageState extends State<WebChatPage> {
                   floatingActionButton: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     height: 65,
-                    child: BlocBuilder<ChatBloc, ChatState>(
+                    child: BlocBuilder<ChatV2Bloc, ChatV2State>(
                       builder: (context, state) {
                         return Row(
                           children: [
-                            if (!state.isVoice)
+                            if (!state.isOnVoice)
                               Expanded(
                                 child: TextFormField(
-                                  controller: _chatBloc.tcQuestion,
+                                  controller: _chatV2Bloc.tcQuestion,
                                   validator: (val) =>
                                       Validators.requiredField(val!),
                                   style: GoogleFonts.montserrat(
                                     color: Colors.grey.shade600,
                                   ),
-                                  onEditingComplete: () =>
-                                      _chatBloc.add(ChatOnSendMessageEvent()),
+                                  onEditingComplete: () => _chatV2Bloc
+                                      .add(ChatV2CheckMessagesInDBEvent()),
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     filled: true,
@@ -298,11 +285,11 @@ class _WebChatPageState extends State<WebChatPage> {
                                   ),
                                 ),
                               ),
-                            if (!state.isVoice)
+                            if (!state.isOnVoice)
                               const SizedBox(
                                 width: 12,
                               ),
-                            if (state.isVoice)
+                            if (state.isOnVoice)
                               Expanded(
                                 child: AnimatedContainer(
                                   duration: const Duration(seconds: 1),
@@ -312,8 +299,7 @@ class _WebChatPageState extends State<WebChatPage> {
                                     color: Colors.red,
                                   ),
                                   child: IconButton(
-                                    onPressed: () =>
-                                        _chatBloc.add(ChatOnVoiceEvent()),
+                                    onPressed: () {},
                                     icon: const Icon(
                                       Icons.stop_rounded,
                                       color: Colors.white,
@@ -321,7 +307,7 @@ class _WebChatPageState extends State<WebChatPage> {
                                   ),
                                 ),
                               ),
-                            if (!state.isVoice)
+                            if (!state.isOnVoice)
                               AnimatedContainer(
                                 duration: const Duration(seconds: 1),
                                 height: 48,
@@ -331,8 +317,7 @@ class _WebChatPageState extends State<WebChatPage> {
                                   color: const Color(0xFF0E85D1),
                                 ),
                                 child: IconButton(
-                                  onPressed: () =>
-                                      _chatBloc.add(ChatOnVoiceEvent()),
+                                  onPressed: () {},
                                   icon: const Icon(
                                     Icons.mic_rounded,
                                     color: Colors.white,

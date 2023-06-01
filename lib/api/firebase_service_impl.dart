@@ -97,8 +97,10 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
           .collection("chat")
           .doc(body["idChat"])
           .update(body)
+          .onError((error, stackTrace) => Left("ERROR : ${error.toString()}"))
           .then((value) => const Right(true));
     } catch (e) {
+      print("ERRR : ${e.toString()}");
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }
   }
@@ -125,6 +127,7 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
         .where("idUser", isEqualTo: id)
         .snapshots();
     return stream.map((e) {
+      listChat.clear();
       for (var data in e.docs) {
         listChat.add(ChatEntity.fromJson(data.data()));
       }
@@ -165,7 +168,10 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
 
   @override
   Future<Either<ErrorEntity, MessageEntity>> sendMessageToChatGPT(
-      Map<String, dynamic> headers, List<MessageEntity> messages) async {
+    Map<String, dynamic> headers,
+    List<MessageEntity> messages, {
+    double? temperature,
+  }) async {
     Dio dio = Dio();
     List<Map<String, dynamic>> messagesJson = [];
     for (var data in messages) {
@@ -173,7 +179,7 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
     }
     final data = {
       "model": "gpt-3.5-turbo",
-      "temperature": 0,
+      "temperature": temperature ?? 0,
       "messages": messagesJson,
     };
 
@@ -252,5 +258,48 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       }
       return divisions;
     });
+  }
+
+  @override
+  Future<Either<ErrorEntity, bool>> streamCreateChat(
+      Map<String, dynamic> body) async {
+    try {
+      return await FirebaseFirestore.instance
+          .collection("streamChat")
+          .doc()
+          .set(body)
+          .then((value) => const Right(true));
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ErrorEntity, bool>> streamUpdateChat(
+      Map<String, dynamic> body) async {
+    try {
+      return await FirebaseFirestore.instance
+          .collection("streamChat")
+          .doc()
+          .set(body)
+          .then((value) => const Right(true));
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ErrorEntity, ChatEntity>> getChats(String idChat) async {
+    try {
+      final data =
+          await FirebaseFirestore.instance.collection("chat").doc(idChat).get();
+      if (data.exists) {
+        return Right(ChatEntity.fromJson(data.data()!));
+      } else {
+        return Left(ErrorEntity(code: 404, message: "Data not found"));
+      }
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
   }
 }
