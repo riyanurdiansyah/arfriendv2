@@ -75,7 +75,7 @@ class WebChatBotWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
-                  child: AppText.labelW600(
+                  child: AppText.labelW500(
                     DateFormat.jm('id').format(DateTime.parse(data.date)),
                     12,
                     Colors.grey,
@@ -140,7 +140,7 @@ class WebChatUserWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
-                  child: AppText.labelW600(
+                  child: AppText.labelW500(
                     DateFormat.jm('id').format(DateTime.parse(data.date)),
                     12,
                     Colors.grey,

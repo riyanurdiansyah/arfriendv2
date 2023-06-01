@@ -32,6 +32,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
   final tcDetail = TextEditingController();
   final tcFile = TextEditingController();
 
+  final tcSheetLink = TextEditingController();
   final tcSheetID = TextEditingController();
   final tcSheetName = TextEditingController();
   final tcTitleSheet = TextEditingController();
@@ -55,6 +56,8 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     on<TrainChooseTragetDivisiEvent>(_onChooseDivisi);
     on<TrainFromSheetEvent>(_onTrainFromSheet);
     on<TrainOnTapSourceEvent>(_onTapSource);
+    on<TrainOnAddEvent>(_onAdd);
+    on<TrainOnUnggahDataEvent>(_onTranUnggahData);
   }
 
   FutureOr<void> _onInitial(
@@ -347,8 +350,6 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
 
     final rows = await worksheet.values.map.allRows() ?? [];
     // List<Map<String, dynamic>> headers = rows[0];
-    print(
-        "CEKRES : ${rows.toString().replaceAll("[", "").replaceAll("]", "").replaceAll("{", "").replaceAll("}", "")}");
 
     var uuid = const Uuid().v4();
 
@@ -409,17 +410,25 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
 
   FutureOr<void> _onTapSource(
       TrainOnTapSourceEvent event, Emitter<TrainState> emit) {
-    if (event.source.trim().toLowerCase() == "text") {
-      AppDialog.dialogAddText(
-          context: globalKey.currentContext!, trainBloc: event.trainBloc);
+    emit(state.copyWith(source: event.source));
+  }
+
+  FutureOr<void> _onAdd(TrainOnAddEvent event, Emitter<TrainState> emit) {
+    emit(state.copyWith(isAdd: event.isAdd));
+  }
+
+  FutureOr<void> _onTranUnggahData(
+      TrainOnUnggahDataEvent event, Emitter<TrainState> emit) {
+    if (state.source == "file") {
+      add(TrainSaveFileDataEvent());
     }
-    if (event.source.trim().toLowerCase() == "file") {
-      AppDialog.dialogAddFile(
-          context: globalKey.currentContext!, trainBloc: event.trainBloc);
+
+    if (state.source == "text") {
+      add(TrainSaveTextDataEvent());
     }
-    if (event.source.trim().toLowerCase() == "sheet") {
-      AppDialog.dialogAddSheet(
-          context: globalKey.currentContext!, trainBloc: event.trainBloc);
+
+    if (state.source == "sheet") {
+      add(TrainFromSheetEvent());
     }
   }
 }

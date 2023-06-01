@@ -12,6 +12,8 @@ class TrainState extends Equatable {
     this.targetCategory = "",
     this.promptContent = "",
     this.isLoadingProses = false,
+    this.isAdd = false,
+    this.source = "file",
   });
 
   final bool isLoadingSetup;
@@ -24,6 +26,9 @@ class TrainState extends Equatable {
   final String targetCategory;
   final String promptContent;
   final bool isLoadingProses;
+  //baru
+  final bool isAdd;
+  final String source;
 
   TrainState copyWith({
     bool? isLoadingSetup,
@@ -36,6 +41,8 @@ class TrainState extends Equatable {
     String? targetCategory,
     String? promptContent,
     bool? isLoadingProses,
+    bool? isAdd,
+    String? source,
   }) =>
       TrainState(
         isLoadingSetup: isLoadingSetup ?? this.isLoadingSetup,
@@ -48,6 +55,8 @@ class TrainState extends Equatable {
         targetCategory: targetCategory ?? this.targetCategory,
         promptContent: promptContent ?? this.promptContent,
         isLoadingProses: isLoadingProses ?? this.isLoadingProses,
+        isAdd: isAdd ?? this.isAdd,
+        source: source ?? this.source,
       );
   @override
   List<Object?> get props => [
@@ -60,6 +69,8 @@ class TrainState extends Equatable {
         promptContent,
         targetDivisi,
         targetRole,
+        isAdd,
+        source,
       ];
 }
 

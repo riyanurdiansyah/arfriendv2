@@ -58,8 +58,15 @@ class TrainChooseExceptCsvFileEvent extends TrainEvent {
 
 class TrainFromSheetEvent extends TrainEvent {}
 
+class TrainOnAddEvent extends TrainEvent {
+  TrainOnAddEvent(this.isAdd);
+
+  final bool isAdd;
+}
+
 class TrainOnTapSourceEvent extends TrainEvent {
-  TrainOnTapSourceEvent(this.trainBloc, this.source);
-  final TrainBloc trainBloc;
+  TrainOnTapSourceEvent(this.source);
   final String source;
 }
+
+class TrainOnUnggahDataEvent extends TrainEvent {}

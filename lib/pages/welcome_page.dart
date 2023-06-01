@@ -52,7 +52,7 @@ class _WelcomePageState extends State<WelcomePage>
         statusBarColor: colorPrimary.withOpacity(0.4),
       ),
       child: Scaffold(
-        backgroundColor: Colors.lightBlue.shade300,
+        backgroundColor: colorPrimary,
         body: Center(
           child: FadeTransition(
             opacity: animation!,

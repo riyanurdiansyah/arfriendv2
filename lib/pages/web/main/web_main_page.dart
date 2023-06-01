@@ -394,7 +394,7 @@ class _WebMainPageState extends State<WebMainPage> {
                 ),
               ),
             Expanded(
-              flex: 10,
+              flex: 12,
               child: BlocBuilder<ChatV2Bloc, ChatV2State>(
                 builder: (context, state) {
                   if (state.idChat.isNotEmpty) {
