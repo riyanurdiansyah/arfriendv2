@@ -59,3 +59,10 @@ class ChatV2AddErrorMessageEvent extends ChatV2Event {
   final String errorMessage;
   bool? isTyping;
 }
+
+class ChatV2OnVoiceEvent extends ChatV2Event {}
+
+class ChatV2OnChangeStatusVoiceEvent extends ChatV2Event {
+  ChatV2OnChangeStatusVoiceEvent(this.isVoice);
+  final bool isVoice;
+}

@@ -34,6 +34,7 @@ class ChatV2State extends Equatable {
     String? idChat,
     bool? isTyping,
     String? errorMessage,
+    bool? isVoice,
   }) {
     return ChatV2State(
       isLoadingSetup: isLoadingSetup ?? this.isLoadingSetup,

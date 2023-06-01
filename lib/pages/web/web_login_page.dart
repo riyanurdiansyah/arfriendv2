@@ -62,12 +62,11 @@ class _WebLoginPageState extends State<WebLoginPage> {
           backgroundColor: Colors.white,
           body: Stack(
             children: [
-              SizedBox(
-                width: double.infinity,
-                height: size.height,
+              Center(
                 child: Image.asset(
                   "assets/images/bg.webp",
                   fit: BoxFit.cover,
+                  width: 250,
                 ),
               ),
               Center(

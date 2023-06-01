@@ -36,6 +36,18 @@ class _WebMainPageState extends State<WebMainPage> {
     return BlocProvider<ChatV2Bloc>(
       create: (context) => _chatV2Bloc,
       child: Scaffold(
+        // appBar: PreferredSize(
+        //   preferredSize: const Size.fromHeight(70.0),
+        //   child: Container(
+        //     alignment: Alignment.centerLeft,
+        //     color: colorPrimaryDark,
+        //     child: Image.asset(
+        //       "assets/images/logo.webp",
+        //       width: 200,
+        //       alignment: Alignment.centerLeft,
+        //     ),
+        //   ),
+        // ),
         appBar: AppBar(
           toolbarHeight: 60,
           backgroundColor: const Color(0xff004B7B),
@@ -44,7 +56,8 @@ class _WebMainPageState extends State<WebMainPage> {
           leadingWidth: 0,
           title: Image.asset(
             "assets/images/logo.webp",
-            width: 200,
+            width: 180,
+            alignment: Alignment.centerLeft,
           ),
           centerTitle: false,
         ),
@@ -76,7 +89,7 @@ class _WebMainPageState extends State<WebMainPage> {
                                       shape: BoxShape.circle,
                                       image: DecorationImage(
                                         image: AssetImage(
-                                          "images/pp.jpeg",
+                                          "assets/images/pp.webp",
                                         ),
                                         fit: BoxFit.cover,
                                       ),
@@ -275,9 +288,9 @@ class _WebMainPageState extends State<WebMainPage> {
                                       const SizedBox(
                                         width: 14,
                                       ),
-                                      const Icon(
-                                        Icons.book_rounded,
-                                        color: Colors.amber,
+                                      Image.asset(
+                                        "assets/images/bot.webp",
+                                        width: 30,
                                       ),
                                       const SizedBox(
                                         width: 16,
@@ -316,9 +329,9 @@ class _WebMainPageState extends State<WebMainPage> {
                                       const SizedBox(
                                         width: 14,
                                       ),
-                                      const Icon(
-                                        Icons.warning_rounded,
-                                        color: Colors.amber,
+                                      Image.asset(
+                                        "assets/images/ketentuan.webp",
+                                        width: 25,
                                       ),
                                       const SizedBox(
                                         width: 16,
@@ -357,9 +370,9 @@ class _WebMainPageState extends State<WebMainPage> {
                                       const SizedBox(
                                         width: 14,
                                       ),
-                                      const Icon(
-                                        Icons.book_rounded,
-                                        color: Colors.amber,
+                                      Image.asset(
+                                        "assets/images/panduan.webp",
+                                        width: 25,
                                       ),
                                       const SizedBox(
                                         width: 16,
@@ -521,78 +534,93 @@ class _WebMainPageState extends State<WebMainPage> {
                     bottomNavigationBar: SizedBox(
                       child: BlocBuilder<ChatV2Bloc, ChatV2State>(
                         builder: (context, state) {
-                          return Row(
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              if (!state.isOnVoice)
-                                Expanded(
-                                  child: SizedBox(
-                                    height: 60,
-                                    child: TextFormField(
-                                      readOnly: state.isTyping,
-                                      controller: _chatV2Bloc.tcQuestion,
-                                      validator: (val) =>
-                                          Validators.requiredField(val!),
-                                      style: GoogleFonts.montserrat(
-                                        color: Colors.grey.shade600,
-                                      ),
-                                      onEditingComplete: () => _chatV2Bloc
-                                          .add(ChatV2CheckMessagesInDBEvent()),
-                                      decoration: InputDecoration(
-                                        fillColor: Colors.white,
-                                        filled: true,
-                                        hintStyle: GoogleFonts.montserrat(
-                                          color: const Color(0xFFA2A4A8),
+                              Container(
+                                height: 2,
+                                color: Colors.grey.shade300,
+                              ),
+                              Container(
+                                color: colorPrimary,
+                                child: Row(
+                                  children: [
+                                    if (!state.isOnVoice)
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          child: TextFormField(
+                                            readOnly: state.isTyping,
+                                            controller: _chatV2Bloc.tcQuestion,
+                                            validator: (val) =>
+                                                Validators.requiredField(val!),
+                                            style: GoogleFonts.montserrat(
+                                              color: Colors.grey.shade600,
+                                            ),
+                                            onEditingComplete: () =>
+                                                _chatV2Bloc.add(
+                                                    ChatV2CheckMessagesInDBEvent()),
+                                            decoration: InputDecoration(
+                                              fillColor: colorPrimary,
+                                              filled: true,
+                                              hintStyle: GoogleFonts.montserrat(
+                                                color: const Color(0xFFA2A4A8),
+                                              ),
+                                              // contentPadding:
+                                              //     const EdgeInsets.symmetric(
+                                              //         vertical: 0, horizontal: 12),
+                                              hintText: "Ketik pertanyaan...",
+                                              enabledBorder: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
                                         ),
-                                        // contentPadding:
-                                        //     const EdgeInsets.symmetric(
-                                        //         vertical: 0, horizontal: 12),
-                                        hintText: "Ketik pertanyaan...",
-                                        enabledBorder: InputBorder.none,
-                                        focusedBorder: InputBorder.none,
-                                        border: InputBorder.none,
                                       ),
-                                    ),
-                                  ),
-                                ),
-                              if (!state.isOnVoice)
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                              if (state.isOnVoice)
-                                Expanded(
-                                  child: AnimatedContainer(
-                                    duration: const Duration(seconds: 1),
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Colors.red,
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(
-                                        Icons.stop_rounded,
-                                        color: Colors.white,
+                                    if (!state.isOnVoice)
+                                      const SizedBox(
+                                        width: 12,
                                       ),
+                                    if (state.isOnVoice)
+                                      Expanded(
+                                        child: AnimatedContainer(
+                                          duration: const Duration(seconds: 1),
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            color: Colors.red,
+                                          ),
+                                          child: IconButton(
+                                            onPressed: () => _chatV2Bloc
+                                                .add(ChatV2OnVoiceEvent()),
+                                            icon: const Icon(
+                                              Icons.stop_rounded,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    if (!state.isOnVoice)
+                                      AnimatedContainer(
+                                        duration: const Duration(seconds: 1),
+                                        width: 35,
+                                        color: colorPrimary,
+                                        child: InkWell(
+                                          onTap: () => _chatV2Bloc
+                                              .add(ChatV2OnVoiceEvent()),
+                                          child: Image.asset(
+                                            "assets/images/mic.webp",
+                                          ),
+                                        ),
+                                      ),
+                                    const SizedBox(
+                                      width: 14,
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              if (!state.isOnVoice)
-                                AnimatedContainer(
-                                  duration: const Duration(seconds: 1),
-                                  height: 48,
-                                  width: 48,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: const Color(0xFF0E85D1),
-                                  ),
-                                  child: IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      Icons.mic_rounded,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
+                              ),
                             ],
                           );
                         },

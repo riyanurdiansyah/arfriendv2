@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../api/firebase_service.dart';
@@ -23,6 +24,7 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
   final tcQuestion = TextEditingController();
   String apiKey = "";
   String idUser = "";
+  SpeechToText speech = SpeechToText();
 
   ChatV2Bloc() : super(ChatV2InitialState()) {
     on<ChatV2Event>((event, emit) async {
@@ -45,6 +47,9 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
     on<ChatV2UpdateIsReadEvent>(_onUpdateIsRead);
     on<ChatV2ChangeTypingEvent>(_onChangeTyping);
     on<ChatV2AddErrorMessageEvent>(_onAddErrorMessage);
+    on<ChatV2UpdateMessageToDBEvent>(_onUpdateMessageToDB);
+    on<ChatV2OnVoiceEvent>(_onVoice);
+    on<ChatV2OnChangeStatusVoiceEvent>(_onChangeStatusVoice);
   }
 
   FutureOr<void> _onSaveNewChat(
@@ -80,7 +85,6 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
     };
     final response = await apiService.createChat(body);
     response.fold((l) => debugPrint("Error : ${l.message}"), (r) {
-      // add(ChatV2ChangeTypingEvent(true));
       add(ChatV2OnTapHistoryEvent(id));
       add(ChatV2MessageToChatGPTFirstEvent());
     });
@@ -95,11 +99,11 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
       ChatV2CheckMessagesInDBEvent event, Emitter<ChatV2State> emit) async {
     final response = await apiService.getChats(state.idChat);
     response.fold((l) => null, (data) {
-      if (data.messages.isNotEmpty) {
-        add(ChatV2UpdateMessageToDBEvent());
-      } else {
-        add(ChatV2AddMessageToDBEvent(data));
-      }
+      // if (data.messages.isNotEmpty) {
+      //   add(ChatV2UpdateMessageToDBEvent());
+      // } else {
+      add(ChatV2AddMessageToDBEvent(data));
+      // }
     });
   }
 
@@ -123,12 +127,18 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
 
     final response = await apiService.updateChat({
       "idChat": state.idChat,
-      "title": text,
+      "title":
+          event.chat.messages.where((e) => e.role == "user").toList().isEmpty
+              ? text
+              : event.chat.title,
       "messages": messagesJson,
     });
 
-    response.fold((l) => debugPrint("ERROR :=> ${l.message}"),
-        (r) => add(ChatV2MessageToChatGPTEvent()));
+    response.fold((l) => debugPrint("ERROR :=> ${l.message}"), (r) {
+      tcQuestion.clear();
+      add(ChatV2ChangeTypingEvent(true));
+      add(ChatV2MessageToChatGPTEvent());
+    });
   }
 
   FutureOr<void> _onMessageToChatGPT(
@@ -163,9 +173,34 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
         messages.add(dataMessage.messages.last);
       }
 
-      // print("INI D : $messages");
-
       final response = await apiService.sendMessageToChatGPT(headers, messages);
+
+      response.fold((l) => null, (chat) async {
+        List<Map<String, dynamic>> messagesJson = [];
+        List<MessageEntity> messagesUp = [];
+        final dataJson = (await FirebaseFirestore.instance
+            .collection("chat")
+            .doc(state.idChat)
+            .get());
+        final dataChat = ChatEntity.fromJson(dataJson.data()!);
+        messagesUp = List.from(dataChat.messages);
+        messagesUp.add(MessageEntity(
+          role: chat.role,
+          content: chat.content,
+          isRead: false,
+          date: DateTime.now().toIso8601String(),
+          id: const Uuid().v4(),
+        ));
+        for (var data in messagesUp) {
+          messagesJson.add(data.toJson());
+        }
+        await apiService.updateChat({
+          "idChat": state.idChat,
+          "messages": messagesJson,
+        });
+
+        add(ChatV2ChangeTypingEvent(false));
+      });
     });
   }
 
@@ -241,5 +276,36 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
     emit(state.copyWith(
       isTyping: event.isTyping ?? false,
     ));
+  }
+
+  FutureOr<void> _onUpdateMessageToDB(
+      ChatV2UpdateMessageToDBEvent event, Emitter<ChatV2State> emit) async {}
+
+  FutureOr<void> _onVoice(
+      ChatV2OnVoiceEvent event, Emitter<ChatV2State> emit) async {
+    if (state.isOnVoice) {
+      speech.stop();
+      add(ChatV2OnChangeStatusVoiceEvent(false));
+      Future.delayed(const Duration(seconds: 1), () {
+        add(ChatV2CheckMessagesInDBEvent());
+      });
+    } else {
+      final ava = await speech.initialize();
+      if (ava) {
+        speech.listen(
+          onResult: (result) {
+            tcQuestion.text = result.recognizedWords;
+          },
+          listenMode: ListenMode.confirmation,
+          localeId: "id_ID",
+        );
+        add(ChatV2OnChangeStatusVoiceEvent(true));
+      }
+    }
+  }
+
+  FutureOr<void> _onChangeStatusVoice(
+      ChatV2OnChangeStatusVoiceEvent event, Emitter<ChatV2State> emit) {
+    emit(state.copyWith(isOnVoice: event.isVoice));
   }
 }
