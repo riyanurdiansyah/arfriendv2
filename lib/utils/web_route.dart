@@ -1,12 +1,10 @@
 import 'package:arfriendv2/pages/web/web_main_page.dart';
 import 'package:arfriendv2/pages/welcome_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../pages/web/web_login_page.dart';
 import '../pages/web/web_not_found_page.dart';
-import 'route_name.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -45,9 +43,9 @@ GoRouter router = GoRouter(
       path: '/',
       name: '/',
       pageBuilder: (context, state) {
-        if (FirebaseAuth.instance.currentUser == null) {
-          context.goNamed(RouteName.masuk);
-        }
+        // if (FirebaseAuth.instance.currentUser == null) {
+        //   context.goNamed(RouteName.masuk);
+        // }
         return buildPageWithDefaultTransition(
             context: context, state: state, child: const WebMainPage());
       },
