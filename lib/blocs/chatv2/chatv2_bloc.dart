@@ -50,6 +50,7 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
     on<ChatV2UpdateMessageToDBEvent>(_onUpdateMessageToDB);
     on<ChatV2OnVoiceEvent>(_onVoice);
     on<ChatV2OnChangeStatusVoiceEvent>(_onChangeStatusVoice);
+    on<ChatV2OnChangeRouteEvent>(_onChangeRoute);
   }
 
   FutureOr<void> _onSaveNewChat(
@@ -307,5 +308,10 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
   FutureOr<void> _onChangeStatusVoice(
       ChatV2OnChangeStatusVoiceEvent event, Emitter<ChatV2State> emit) {
     emit(state.copyWith(isOnVoice: event.isVoice));
+  }
+
+  FutureOr<void> _onChangeRoute(
+      ChatV2OnChangeRouteEvent event, Emitter<ChatV2State> emit) {
+    emit(state.copyWith(idChat: event.id, route: event.route));
   }
 }

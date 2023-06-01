@@ -1,4 +1,4 @@
-import 'package:arfriendv2/pages/web/web_main_page.dart';
+import 'package:arfriendv2/pages/web/main/web_main_page.dart';
 import 'package:arfriendv2/pages/welcome_page.dart';
 import 'package:arfriendv2/utils/route_name.dart';
 import 'package:firebase_auth/firebase_auth.dart';

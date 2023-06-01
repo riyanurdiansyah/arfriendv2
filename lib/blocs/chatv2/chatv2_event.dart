@@ -18,6 +18,13 @@ class ChatV2OnTapHistoryEvent extends ChatV2Event {
   final String id;
 }
 
+class ChatV2OnChangeRouteEvent extends ChatV2Event {
+  ChatV2OnChangeRouteEvent(this.id, this.route);
+
+  final String id;
+  final String route;
+}
+
 class ChatV2CheckMessagesInDBEvent extends ChatV2Event {}
 
 class ChatV2AddMessageToDBEvent extends ChatV2Event {

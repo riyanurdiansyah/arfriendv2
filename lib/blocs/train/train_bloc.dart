@@ -54,6 +54,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     on<TrainClearAllFieldEvent>(_onClearAllField);
     on<TrainChooseTragetDivisiEvent>(_onChooseDivisi);
     on<TrainFromSheetEvent>(_onTrainFromSheet);
+    on<TrainOnTapSourceEvent>(_onTapSource);
   }
 
   FutureOr<void> _onInitial(
@@ -404,5 +405,21 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
 
     // String jsonLines = rows.map((map) => jsonEncode(map)).join(' ');
     // print("CEKZ : $jsonLines");
+  }
+
+  FutureOr<void> _onTapSource(
+      TrainOnTapSourceEvent event, Emitter<TrainState> emit) {
+    if (event.source.trim().toLowerCase() == "text") {
+      AppDialog.dialogAddText(
+          context: globalKey.currentContext!, trainBloc: event.trainBloc);
+    }
+    if (event.source.trim().toLowerCase() == "file") {
+      AppDialog.dialogAddFile(
+          context: globalKey.currentContext!, trainBloc: event.trainBloc);
+    }
+    if (event.source.trim().toLowerCase() == "sheet") {
+      AppDialog.dialogAddSheet(
+          context: globalKey.currentContext!, trainBloc: event.trainBloc);
+    }
   }
 }
