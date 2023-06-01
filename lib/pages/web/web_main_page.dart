@@ -457,75 +457,65 @@ class _WebMainPageState extends State<WebMainPage> {
                             width: 350,
                           ),
                         ),
-                        StreamBuilder(
+                        StreamBuilder<ChatEntity>(
+                          stream:
+                              _chatV2Bloc.apiService.streamChat(state.idChat),
                           builder: (context, snapshot) {
-                            return StreamBuilder<ChatEntity>(
-                              stream: _chatV2Bloc.apiService
-                                  .streamChat(state.idChat),
-                              builder: (context, snapshot) {
-                                return SingleChildScrollView(
-                                  reverse: true,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 18.0,
-                                        right: 16,
-                                        left: 16,
-                                        bottom: 50),
-                                    child: BlocBuilder<ChatV2Bloc, ChatV2State>(
-                                      builder: (context, state) {
-                                        final data = snapshot.data?.messages
-                                            .where((e) => e.role != "system")
-                                            .toList();
+                            return SingleChildScrollView(
+                              reverse: true,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 18.0, right: 16, left: 16, bottom: 50),
+                                child: BlocBuilder<ChatV2Bloc, ChatV2State>(
+                                  builder: (context, state) {
+                                    final data = snapshot.data?.messages
+                                        .where((e) => e.role != "system")
+                                        .toList();
 
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
-                                              children: List.generate(
-                                                data?.length ?? 0,
-                                                (index) {
-                                                  if (data![index].role ==
-                                                      "user") {
-                                                    return WebChatUserWidget(
-                                                        data: data[index]);
-                                                  }
-                                                  return WebChatBotWidget(
-                                                      data: data[index],
-                                                      isLastMessage: (index ==
-                                                              snapshot
-                                                                      .data!
-                                                                      .messages
-                                                                      .length -
-                                                                  1 &&
-                                                          !data[index].isRead),
-                                                      onFinish: () =>
-                                                          _chatV2Bloc.add(
-                                                              ChatV2UpdateIsReadEvent(
-                                                                  snapshot.data!
-                                                                      .messages,
-                                                                  index)));
-                                                },
-                                              ),
-                                            ),
-                                            state.isTyping
-                                                ? const Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 18.0),
-                                                    child: WebAnimationCursor(),
-                                                  )
-                                                : const SizedBox(),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                );
-                              },
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          children: List.generate(
+                                            data?.length ?? 0,
+                                            (index) {
+                                              if (data![index].role == "user") {
+                                                return WebChatUserWidget(
+                                                    data: data[index]);
+                                              }
+                                              return WebChatBotWidget(
+                                                  data: data[index],
+                                                  isLastMessage: (index ==
+                                                          snapshot
+                                                                  .data!
+                                                                  .messages
+                                                                  .length -
+                                                              1 &&
+                                                      !data[index].isRead),
+                                                  onFinish: () => _chatV2Bloc.add(
+                                                      ChatV2UpdateIsReadEvent(
+                                                          snapshot
+                                                              .data!.messages,
+                                                          index)));
+                                            },
+                                          ),
+                                        ),
+                                        state.isTyping
+                                            ? const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 18.0),
+                                                child: WebAnimationCursor(),
+                                              )
+                                            : const SizedBox(),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
                             );
                           },
-                        )
+                        ),
                       ],
                     ),
                     bottomNavigationBar: SizedBox(
