@@ -256,7 +256,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
 
     listData.removeAt(0);
 
-    String jsonLines = listData.map((map) => jsonEncode(map)).join(' ');
+    String jsonLines = listData.map((map) => jsonEncode(map)).join('\n');
     emit(state.copyWith(promptContent: jsonLines));
   }
 
@@ -266,51 +266,52 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
       add(TrainClearAllFieldEvent());
       AppDialog.dialogNoAction(
           context: globalKey.currentContext!, title: "Silahkan upload file");
-    } else if (state.targetRole.isEmpty) {
-      add(TrainClearAllFieldEvent());
-      AppDialog.dialogNoAction(
-          context: globalKey.currentContext!,
-          title: "Silahkan pilih target role");
-    } else {
-      emit(state.copyWith(isLoadingProses: !state.isLoadingProses));
-      var uuid = const Uuid().v4();
-
-      final prompt = {
-        "konteks": tcTitleFile.text,
-        "respons": state.promptContent,
-      };
-
-      final data = {
-        "id": uuid,
-        "title": tcTitleFile.text,
-        "type": "file",
-        "addedBy": FirebaseAuth.instance.currentUser!.email!,
-        "to": state.targetRole,
-        "createdAt": DateTime.now().toIso8601String(),
-        "updatedAt": DateTime.now().toIso8601String(),
-        "messages": {
-          "role": "system",
-          "content": prompt.toString(),
-          "hidden": true,
-          "date": DateTime.now().toIso8601String(),
-        }
-      };
-
-      final response = await apiService.saveDataset(data);
-      response.fold((fail) {
-        emit(state.copyWith(isLoadingProses: false));
-        return AppDialog.dialogNoAction(
-            context: globalKey.currentContext!,
-            title: "Ooppss... terjadi kesalahan diserver. silahkan coba lagi");
-      }, (r) {
-        emit(state.copyWith(isLoadingProses: false));
-        add(TrainGetDataSetEvent());
-        add(TrainClearAllFieldEvent());
-        return AppDialog.dialogNoAction(
-            context: globalKey.currentContext!,
-            title: "Data berhasil ditambahkan");
-      });
     }
+    // else if (state.targetRole.isEmpty) {
+    //   add(TrainClearAllFieldEvent());
+    //   AppDialog.dialogNoAction(
+    //       context: globalKey.currentContext!,
+    //       title: "Silahkan pilih target role");
+    // } else {
+    emit(state.copyWith(isLoadingProses: !state.isLoadingProses));
+    var uuid = const Uuid().v4();
+
+    final prompt = {
+      "konteks": tcTitle.text,
+      "respons": state.promptContent,
+    };
+
+    final data = {
+      "id": uuid,
+      "title": tcTitle.text,
+      "type": "file",
+      "addedBy": FirebaseAuth.instance.currentUser!.email!,
+      "to": FirebaseAuth.instance.currentUser!.uid,
+      "createdAt": DateTime.now().toIso8601String(),
+      "updatedAt": DateTime.now().toIso8601String(),
+      "messages": {
+        "role": "system",
+        "content": '${jsonEncode(prompt)}\n',
+        "hidden": true,
+        "date": DateTime.now().toIso8601String(),
+      }
+    };
+
+    final response = await apiService.saveDataset(data);
+    response.fold((fail) {
+      emit(state.copyWith(isLoadingProses: false));
+      return AppDialog.dialogNoAction(
+          context: globalKey.currentContext!,
+          title: "Ooppss... terjadi kesalahan diserver. silahkan coba lagi");
+    }, (r) {
+      emit(state.copyWith(isLoadingProses: false));
+      add(TrainGetDataSetEvent());
+      add(TrainClearAllFieldEvent());
+      return AppDialog.dialogNoAction(
+          context: globalKey.currentContext!,
+          title: "Data berhasil ditambahkan");
+    });
+    // }
   }
 
   FutureOr<void> _onChooseTargetRole(

@@ -1,6 +1,6 @@
 # arfriendv2
 
-A new Flutter project.
+Arfriend can be a good friend
 
 ## Getting Started
 

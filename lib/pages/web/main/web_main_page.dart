@@ -216,7 +216,7 @@ class _WebMainPageState extends State<WebMainPage> {
                                                 width: 5,
                                                 color: state.idChat !=
                                                         data[index].idChat
-                                                    ? Colors.white
+                                                    ? colorPrimary
                                                     : colorPrimaryDark,
                                               ),
                                               const SizedBox(

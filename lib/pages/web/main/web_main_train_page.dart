@@ -505,7 +505,13 @@ class WebMainTrainPage extends StatelessWidget {
                                   vertical: 0, horizontal: 12),
                               hintText: "Isikan nama data",
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -514,7 +520,7 @@ class WebMainTrainPage extends StatelessWidget {
                           AppTextNormal.labelW400(
                             "*Nama file yang tersimpan akan menjadi acuan saat chat di Bot ",
                             12,
-                            colorPrimaryDark,
+                            Colors.grey.shade500,
                           ),
                           const SizedBox(
                             height: 35,

@@ -60,9 +60,7 @@ class _WebMainFileWidgetState extends State<WebMainFileWidget> {
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Colors.grey.shade400,
-                ),
+                border: Border.all(color: Colors.grey.shade300),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -120,7 +118,11 @@ class _WebMainFileWidgetState extends State<WebMainFileWidget> {
                 const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
             hintText: "...",
             border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.red.shade300),
+              borderSide: const BorderSide(color: Colors.black),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey.shade300),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
