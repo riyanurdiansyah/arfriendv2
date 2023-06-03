@@ -29,6 +29,7 @@ mixin _$DatasetEntity {
   String get to => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
+  int get token => throw _privateConstructorUsedError;
   int get page => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -53,6 +54,7 @@ abstract class $DatasetEntityCopyWith<$Res> {
       String to,
       String type,
       String updatedAt,
+      int token,
       int page});
 
   $MessageEntityCopyWith<$Res> get messages;
@@ -80,6 +82,7 @@ class _$DatasetEntityCopyWithImpl<$Res, $Val extends DatasetEntity>
     Object? to = null,
     Object? type = null,
     Object? updatedAt = null,
+    Object? token = null,
     Object? page = null,
   }) {
     return _then(_value.copyWith(
@@ -119,6 +122,10 @@ class _$DatasetEntityCopyWithImpl<$Res, $Val extends DatasetEntity>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as int,
       page: null == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
@@ -153,6 +160,7 @@ abstract class _$$_DatasetEntityCopyWith<$Res>
       String to,
       String type,
       String updatedAt,
+      int token,
       int page});
 
   @override
@@ -179,6 +187,7 @@ class __$$_DatasetEntityCopyWithImpl<$Res>
     Object? to = null,
     Object? type = null,
     Object? updatedAt = null,
+    Object? token = null,
     Object? page = null,
   }) {
     return _then(_$_DatasetEntity(
@@ -218,6 +227,10 @@ class __$$_DatasetEntityCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as int,
       page: null == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
@@ -239,6 +252,7 @@ class _$_DatasetEntity implements _DatasetEntity {
       required this.to,
       required this.type,
       required this.updatedAt,
+      this.token = 0,
       this.page = 1});
 
   factory _$_DatasetEntity.fromJson(Map<String, dynamic> json) =>
@@ -264,11 +278,14 @@ class _$_DatasetEntity implements _DatasetEntity {
   final String updatedAt;
   @override
   @JsonKey()
+  final int token;
+  @override
+  @JsonKey()
   final int page;
 
   @override
   String toString() {
-    return 'DatasetEntity(addedBy: $addedBy, createdAt: $createdAt, id: $id, messages: $messages, number: $number, title: $title, to: $to, type: $type, updatedAt: $updatedAt, page: $page)';
+    return 'DatasetEntity(addedBy: $addedBy, createdAt: $createdAt, id: $id, messages: $messages, number: $number, title: $title, to: $to, type: $type, updatedAt: $updatedAt, token: $token, page: $page)';
   }
 
   @override
@@ -288,13 +305,14 @@ class _$_DatasetEntity implements _DatasetEntity {
             (identical(other.type, type) || other.type == type) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
+            (identical(other.token, token) || other.token == token) &&
             (identical(other.page, page) || other.page == page));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, addedBy, createdAt, id, messages,
-      number, title, to, type, updatedAt, page);
+      number, title, to, type, updatedAt, token, page);
 
   @JsonKey(ignore: true)
   @override
@@ -321,6 +339,7 @@ abstract class _DatasetEntity implements DatasetEntity {
       required final String to,
       required final String type,
       required final String updatedAt,
+      final int token,
       final int page}) = _$_DatasetEntity;
 
   factory _DatasetEntity.fromJson(Map<String, dynamic> json) =
@@ -344,6 +363,8 @@ abstract class _DatasetEntity implements DatasetEntity {
   String get type;
   @override
   String get updatedAt;
+  @override
+  int get token;
   @override
   int get page;
   @override

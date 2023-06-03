@@ -70,3 +70,9 @@ class TrainOnTapSourceEvent extends TrainEvent {
 }
 
 class TrainOnUnggahDataEvent extends TrainEvent {}
+
+class TrainOnCheckTokenGPTEvent extends TrainEvent {
+  TrainOnCheckTokenGPTEvent(this.prompt);
+
+  final String prompt;
+}

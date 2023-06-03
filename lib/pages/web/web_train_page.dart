@@ -209,7 +209,7 @@ class _WebTrainPageState extends State<WebTrainPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SpinKitThreeInOut(
-                        color: Color(0xff004B7B),
+                        color: colorPrimaryDark,
                         size: 25.0,
                       ),
                       const SizedBox(

@@ -149,60 +149,95 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
       "Content-Type": "application/json",
       "Authorization": "Bearer $apiKey",
     };
+    //ambil data history chat terakhir
+    //untuk diambil last message assistan jika ada
+    final historyMessage = await FirebaseFirestore.instance
+        .collection("chat")
+        .doc(state.idChat)
+        .get();
     final responseDataset = await apiService.getDataset();
-    responseDataset.fold(
-        (l) => AppDialog.dialogNoAction(
-            context: globalKey.currentContext!,
-            title: "Gagal memuat dataset..."), (data) async {
-      //ambil data history chat terakhir
-      //untuk diambil last message assistan jika ada
-      final historyMessage = await FirebaseFirestore.instance
-          .collection("chat")
-          .doc(state.idChat)
-          .get();
-      final dataMessage = ChatEntity.fromJson(historyMessage.data()!);
+    final dataMessage = ChatEntity.fromJson(historyMessage.data()!);
 
-      List<MessageEntity> messages = [];
-      List<DatasetEntity> datasets =
-          data.where((e) => e.to == "all" || e.to == idUser).toList();
-
-      for (var d in datasets) {
-        messages.add(d.messages);
-      }
-
-      if (dataMessage.messages.isNotEmpty) {
-        messages.add(dataMessage.messages.last);
-      }
-
-      final response = await apiService.sendMessageToChatGPT(headers, messages);
-
-      response.fold((l) => null, (chat) async {
+    ///cek jika ada perintah khusus
+    if (dataMessage.messages.last.content.contains("##")) {
+      ///jika meminta perintah lanjutkan
+      ///tp tidak ada history dari assistant
+      if (dataMessage.messages
+              .where((e) => e.role == "assistant")
+              .toList()
+              .length <=
+          2) {
+        List<MessageEntity> messages = List.from(dataMessage.messages);
         List<Map<String, dynamic>> messagesJson = [];
-        List<MessageEntity> messagesUp = [];
-        final dataJson = (await FirebaseFirestore.instance
-            .collection("chat")
-            .doc(state.idChat)
-            .get());
-        final dataChat = ChatEntity.fromJson(dataJson.data()!);
-        messagesUp = List.from(dataChat.messages);
-        messagesUp.add(MessageEntity(
-          role: chat.role,
-          content: chat.content,
+        tcQuestion.clear();
+        messages.add(MessageEntity(
+          role: "system",
+          content: "Maaf anda tidak memiliki kalimat yang bisa dilanjutkan.",
           isRead: false,
+          hidden: false,
           date: DateTime.now().toIso8601String(),
           id: const Uuid().v4(),
         ));
-        for (var data in messagesUp) {
+        for (var data in messages) {
           messagesJson.add(data.toJson());
         }
-        await apiService.updateChat({
+        final response = await apiService.updateChat({
           "idChat": state.idChat,
           "messages": messagesJson,
         });
+        response.fold((l) => add(ChatV2AddErrorMessageEvent(l.message)),
+            (r) => add(ChatV2ChangeTypingEvent(false)));
+      }
+    } else {
+      responseDataset.fold(
+          (l) => AppDialog.dialogNoAction(
+              context: globalKey.currentContext!,
+              title: "Gagal memuat dataset..."), (data) async {
+        List<MessageEntity> messages = [];
+        List<DatasetEntity> datasets =
+            data.where((e) => e.to == "all" || e.to == idUser).toList();
 
-        add(ChatV2ChangeTypingEvent(false));
+        for (var d in datasets) {
+          messages.add(d.messages);
+        }
+
+        if (dataMessage.messages.isNotEmpty) {
+          messages.add(dataMessage.messages.last);
+        }
+
+        final response =
+            await apiService.sendMessageToChatGPT(headers, messages);
+
+        response.fold((l) {
+          add(ChatV2ChangeTypingEvent(false));
+        }, (chat) async {
+          List<Map<String, dynamic>> messagesJson = [];
+          List<MessageEntity> messagesUp = [];
+          final dataJson = (await FirebaseFirestore.instance
+              .collection("chat")
+              .doc(state.idChat)
+              .get());
+          final dataChat = ChatEntity.fromJson(dataJson.data()!);
+          messagesUp = List.from(dataChat.messages);
+          messagesUp.add(MessageEntity(
+            role: chat.role,
+            content: chat.content,
+            isRead: false,
+            date: DateTime.now().toIso8601String(),
+            id: const Uuid().v4(),
+          ));
+          for (var data in messagesUp) {
+            messagesJson.add(data.toJson());
+          }
+          await apiService.updateChat({
+            "idChat": state.idChat,
+            "messages": messagesJson,
+          });
+
+          add(ChatV2ChangeTypingEvent(false));
+        });
       });
-    });
+    }
   }
 
   FutureOr<void> _onMessageToChatGPTFirst(
@@ -230,6 +265,7 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
         role: "assistant",
         content: data.content,
         isRead: false,
+        hidden: false,
         date: DateTime.now().toIso8601String(),
         id: const Uuid().v4(),
       ));
@@ -254,7 +290,7 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
       content: messages[event.index].content,
       date: messages[event.index].date,
       isRead: true,
-      hidden: true,
+      hidden: false,
       id: messages[event.index].id,
     );
 

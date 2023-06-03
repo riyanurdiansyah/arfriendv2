@@ -54,12 +54,7 @@ final List<String> items = [
   'Sheet',
 ];
 
-List<String> listRole = [
-  "All",
-  "CEO",
-  "Manager",
-  "Staff",
-];
+List<String> listRole = ["All", "Personal"];
 
 List<String> listDivisi = [
   "SOP",

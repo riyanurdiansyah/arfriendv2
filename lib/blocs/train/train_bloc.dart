@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:arfriendv2/api/firebase_service.dart';
 import 'package:arfriendv2/api/firebase_service_impl.dart';
 import 'package:arfriendv2/entities/dataset/dataset_entity.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gsheets/gsheets.dart';
 import 'package:uuid/uuid.dart';
 
@@ -37,6 +39,8 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
   final tcSheetName = TextEditingController();
   final tcTitleSheet = TextEditingController();
 
+  String apiKey = "";
+
   TrainBloc() : super(TrainInitialState()) {
     on<TrainEvent>((event, emit) {});
     on<TrainInitialEvent>(_onInitial);
@@ -58,10 +62,16 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     on<TrainOnTapSourceEvent>(_onTapSource);
     on<TrainOnAddEvent>(_onAdd);
     on<TrainOnUnggahDataEvent>(_onTranUnggahData);
+    on<TrainOnCheckTokenGPTEvent>(_onCheckToken);
   }
 
   FutureOr<void> _onInitial(
       TrainInitialEvent event, Emitter<TrainState> emit) async {
+    final data = (await FirebaseFirestore.instance
+        .collection("config")
+        .doc("configs")
+        .get());
+    apiKey = data.data()!["api_key"];
     add(TrainGetDataSetEvent());
   }
 
@@ -152,6 +162,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
                       context: globalKey.currentContext!,
                       title: "Gagal menghapus data"), (r) {
                 add(TrainGetDataSetEvent());
+                add(TrainClearAllFieldEvent());
                 AppDialog.dialogNoAction(
                     context: globalKey.currentContext!,
                     title: "Data berhasil dihapus");
@@ -166,33 +177,46 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
 
   FutureOr<void> _onSaveTextData(
       TrainSaveTextDataEvent event, Emitter<TrainState> emit) async {
+    AppDialog.dialogLoading(context: globalKey.currentContext!);
     var uuid = const Uuid().v4();
 
-    final body = {
-      "id": uuid,
-      "title": tcTitle.text,
-      "type": "text",
-      "addedBy": FirebaseAuth.instance.currentUser!.email!,
-      "to": state.targetRole,
-      "createdAt": DateTime.now().toIso8601String(),
-      "updatedAt": DateTime.now().toIso8601String(),
-      "messages": {
-        "role": "system",
-        "content": tcDetail.text,
-        "hidden": true,
-        "date": DateTime.now().toIso8601String(),
-      }
+    final headers = {
+      "Accept": "*/*",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $apiKey",
     };
 
-    final response = await apiService.saveDataset(body);
-    response.fold(
-        (l) => AppDialog.dialogNoAction(
+    final resToken = await apiService.checkTokenPrompt(headers, tcDetail.text);
+
+    resToken.fold((l) => globalKey.currentContext!.pop(), (token) async {
+      final body = {
+        "id": uuid,
+        "title": tcTitle.text,
+        "type": "text",
+        "token": token,
+        "addedBy": FirebaseAuth.instance.currentUser!.email!,
+        "to": state.targetRole,
+        "createdAt": DateTime.now().toIso8601String(),
+        "updatedAt": DateTime.now().toIso8601String(),
+        "messages": {
+          "role": "system",
+          "content": tcDetail.text,
+          "hidden": true,
+          "date": DateTime.now().toIso8601String(),
+        }
+      };
+
+      final response = await apiService.saveDataset(body);
+      response.fold(
+          (l) => AppDialog.dialogNoAction(
+              context: globalKey.currentContext!,
+              title: "Gagal manambahkan data"), (r) {
+        add(TrainGetDataSetEvent());
+        globalKey.currentContext!.pop();
+        AppDialog.dialogNoAction(
             context: globalKey.currentContext!,
-            title: "Gagal manambahkan data"), (r) {
-      add(TrainGetDataSetEvent());
-      AppDialog.dialogNoAction(
-          context: globalKey.currentContext!,
-          title: "Data berhasil ditambahkan");
+            title: "Data berhasil ditambahkan");
+      });
     });
   }
 
@@ -218,46 +242,58 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
       TrainChooseExceptCsvFileEvent event, Emitter<TrainState> emit) async {
     // emit(state.copyWith(isLoadingProses: !state.isLoadingProses));
     final response = await uploadFile(event.file);
-    emit(state.copyWith(promptContent: "Data ${tcTitleFile.text} $response"));
+    emit(state.copyWith(promptContent: "Data ${tcTitleFile.text}: $response"));
   }
 
   Future<String> uploadFile(FilePickerResult result) async {
     PlatformFile filex = result.files.first;
     Uint8List fileData = filex.bytes!;
     final storage = FirebaseStorage.instance;
-    final storageRef = storage.ref().child('nama_folder/abcde.pdf');
+    final storageRef = storage.ref().child("train/${result.files.first.name}");
 
-    storageRef.putData(fileData).then((_) {
+    return storageRef.putData(fileData).then((_) {
       print('File uploaded successfully.');
-      storageRef.getDownloadURL().then((url) {
+      return storageRef.getDownloadURL().then((url) {
         print('Download URL: $url');
+        return url;
       });
     }).catchError((error) {
       print('Error uploading file: $error');
+      return "";
     });
-    String downloadUrl = await storageRef.getDownloadURL();
-
-    return downloadUrl;
   }
 
   FutureOr<void> _onChooseCsvFile(
-      TrainChooseCsvFileEvent event, Emitter<TrainState> emit) {
-    final bytes = utf8.decode(event.file.files.first.bytes!);
-    List<List<dynamic>> rows = const CsvToListConverter().convert(bytes);
-    List<dynamic> headers = rows[0];
+      TrainChooseCsvFileEvent event, Emitter<TrainState> emit) async {
+    AppDialog.dialogLoading(
+        context: globalKey.currentContext!,
+        text: "Mengunggah\nMohon tunggu yaa...");
 
-    List<Map<String, dynamic>> listData = rows.map((list) {
-      Map<String, dynamic> map = {};
-      for (int i = 0; i < headers.length; i++) {
-        map[headers[i]] = list[i];
-      }
-      return map;
-    }).toList();
+    await uploadFile(event.file).then((link) {
+      globalKey.currentContext!.pop();
+      final bytes = utf8.decode(event.file.files.first.bytes!);
+      List<List<dynamic>> rows = const CsvToListConverter().convert(bytes);
+      List<dynamic> headers = rows[0];
 
-    listData.removeAt(0);
+      List<Map<String, dynamic>> listData = rows.map((list) {
+        Map<String, dynamic> map = {};
+        for (int i = 0; i < headers.length; i++) {
+          map[headers[i]] = list[i];
+        }
+        return map;
+      }).toList();
 
-    String jsonLines = listData.map((map) => jsonEncode(map)).join('\n');
-    emit(state.copyWith(promptContent: jsonLines));
+      listData.removeAt(0);
+
+      String jsonLines = listData.map((map) => jsonEncode(map)).join('.');
+      emit(state.copyWith(
+          urlFile: link,
+          promptContent: jsonLines
+              .replaceAll("{", "")
+              .replaceAll("}", "")
+              .replaceAll('"', "")));
+      // return;
+    });
   }
 
   FutureOr<void> _onSaveFileData(
@@ -272,46 +308,59 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     //   AppDialog.dialogNoAction(
     //       context: globalKey.currentContext!,
     //       title: "Silahkan pilih target role");
-    // } else {
-    emit(state.copyWith(isLoadingProses: !state.isLoadingProses));
-    var uuid = const Uuid().v4();
-
-    final prompt = {
-      "konteks": tcTitle.text,
-      "respons": state.promptContent,
-    };
-
-    final data = {
-      "id": uuid,
-      "title": tcTitle.text,
-      "type": "file",
-      "addedBy": FirebaseAuth.instance.currentUser!.email!,
-      "to": FirebaseAuth.instance.currentUser!.uid,
-      "createdAt": DateTime.now().toIso8601String(),
-      "updatedAt": DateTime.now().toIso8601String(),
-      "messages": {
-        "role": "system",
-        "content": '${jsonEncode(prompt)}\n',
-        "hidden": true,
-        "date": DateTime.now().toIso8601String(),
-      }
-    };
-
-    final response = await apiService.saveDataset(data);
-    response.fold((fail) {
-      emit(state.copyWith(isLoadingProses: false));
-      return AppDialog.dialogNoAction(
-          context: globalKey.currentContext!,
-          title: "Ooppss... terjadi kesalahan diserver. silahkan coba lagi");
-    }, (r) {
-      emit(state.copyWith(isLoadingProses: false));
-      add(TrainGetDataSetEvent());
-      add(TrainClearAllFieldEvent());
-      return AppDialog.dialogNoAction(
-          context: globalKey.currentContext!,
-          title: "Data berhasil ditambahkan");
-    });
     // }
+    else {
+      // emit(state.copyWith(isLoadingProses: !state.isLoadingProses));
+      AppDialog.dialogLoading(context: globalKey.currentContext!);
+      var uuid = const Uuid().v4();
+
+      String prompt =
+          "konteks: ${tcTitle.text}. respons: ${state.promptContent}";
+      final headers = {
+        "Accept": "*/*",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $apiKey",
+      };
+
+      final resToken = await apiService.checkTokenPrompt(headers, prompt);
+      resToken.fold((l) => globalKey.currentContext!.pop(), (token) async {
+        globalKey.currentContext!.pop();
+        final data = {
+          "id": uuid,
+          "title": tcTitle.text,
+          "type": "file",
+          "token": token,
+          "urlFile": state.urlFile,
+          "addedBy": FirebaseAuth.instance.currentUser!.email!,
+          "to": FirebaseAuth.instance.currentUser!.uid,
+          "createdAt": DateTime.now().toIso8601String(),
+          "updatedAt": DateTime.now().toIso8601String(),
+          "messages": {
+            "role": "system",
+            "content": prompt,
+            "hidden": true,
+            "date": DateTime.now().toIso8601String(),
+          }
+        };
+
+        final response = await apiService.saveDataset(data);
+
+        response.fold((fail) {
+          globalKey.currentContext!.pop();
+          return AppDialog.dialogNoAction(
+              context: globalKey.currentContext!,
+              title:
+                  "Ooppss... terjadi kesalahan diserver. silahkan coba lagi");
+        }, (r) {
+          // emit(state.copyWith(isLoadingProses: false));
+          add(TrainGetDataSetEvent());
+          add(TrainClearAllFieldEvent());
+          return AppDialog.dialogNoAction(
+              context: globalKey.currentContext!,
+              title: "Data berhasil ditambahkan");
+        });
+      });
+    }
   }
 
   FutureOr<void> _onChooseTargetRole(
@@ -330,83 +379,92 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     tcFile.clear();
     tcTitle.clear();
     tcTitleFile.clear();
-    emit(state.copyWith(targetRole: "", listId: [], promptContent: ""));
+    tcSheetLink.clear();
+    emit(state.copyWith(
+        targetRole: "",
+        listId: [],
+        promptContent: "",
+        urlFile: "",
+        isAdd: false));
   }
 
   static Future<Worksheet> _getWorkSheet(
-      Spreadsheet spreadsheet, String title) async {
+      Spreadsheet spreadsheet, String sheetId) async {
     try {
-      return await spreadsheet.addWorksheet(title);
+      return await spreadsheet.addWorksheet(sheetId);
     } catch (e) {
-      return spreadsheet.worksheetByTitle(title)!;
+      return spreadsheet.worksheetById(int.parse(sheetId))!;
     }
   }
 
   FutureOr<void> _onTrainFromSheet(
       TrainFromSheetEvent event, Emitter<TrainState> emit) async {
-    emit(state.copyWith(isLoadingProses: !state.isLoadingProses));
+    AppDialog.dialogLoading(
+      context: globalKey.currentContext!,
+    );
     final gsheet = GSheets(credentialSheet);
-    final spredsheet = await gsheet.spreadsheet(tcSheetID.text);
-    final worksheet = await _getWorkSheet(spredsheet, tcSheetName.text);
-
-    final rows = await worksheet.values.map.allRows() ?? [];
-    // List<Map<String, dynamic>> headers = rows[0];
-
-    var uuid = const Uuid().v4();
-
-    final prompt = {
-      "konteks": tcTitle.text,
-      "respons": rows
-          .toString()
-          .replaceAll("[", "")
-          .replaceAll("]", "")
-          .replaceAll("{", "")
-          .replaceAll("}", ""),
-    };
-
-    final data = {
-      "id": uuid,
-      "title": tcTitleSheet.text,
-      "type": "sheet",
-      "addedBy": FirebaseAuth.instance.currentUser!.email!,
-      "to": state.targetRole,
-      "createdAt": DateTime.now().toIso8601String(),
-      "updatedAt": DateTime.now().toIso8601String(),
-      "messages": {
-        "role": "system",
-        "content": prompt.toString(),
-        "hidden": true,
-        "date": DateTime.now().toIso8601String(),
-      }
-    };
-
-    final response = await apiService.saveDataset(data);
-    response.fold((fail) {
-      emit(state.copyWith(isLoadingProses: false));
-      return AppDialog.dialogNoAction(
+    if (!tcSheetLink.text.contains("https://docs.google.com/spreadsheets/d/")) {
+      AppDialog.dialogNoAction(
           context: globalKey.currentContext!,
-          title: "Ooppss... terjadi kesalahan diserver. silahkan coba lagi");
-    }, (r) {
-      emit(state.copyWith(isLoadingProses: false));
-      add(TrainGetDataSetEvent());
-      add(TrainClearAllFieldEvent());
-      return AppDialog.dialogNoAction(
-          context: globalKey.currentContext!,
-          title: "Data berhasil ditambahkan");
-    });
+          title: "Masukkan link sheet yang sesuai yahh");
+    } else {
+      final spreadSheetId = tcSheetLink.text
+          .split("/edit#gid=")[0]
+          .replaceAll("https://docs.google.com/spreadsheets/d/", "");
+      final sheetId = tcSheetLink.text.split("edit#gid=")[1];
 
-    // List<Map<String, dynamic>> listData = rows.map((list) {
-    //   Map<String, dynamic> map = {};
-    //   for (int i = 0; i < headers.length; i++) {
-    //     map[headers[i]] = list[i];
-    //   }
-    //   return map;
-    // }).toList();
+      final spredsheet = await gsheet.spreadsheet(spreadSheetId.trim());
+      final worksheet = await _getWorkSheet(spredsheet, sheetId.trim());
 
-    // rows.removeAt(0);
+      final rows = await worksheet.values.map.allRows() ?? [];
+      // List<Map<String, dynamic>> headers = rows[0];
 
-    // String jsonLines = rows.map((map) => jsonEncode(map)).join(' ');
-    // print("CEKZ : $jsonLines");
+      var uuid = const Uuid().v4();
+
+      final headers = {
+        "Accept": "*/*",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $apiKey",
+      };
+      final prompt =
+          "konteks: ${tcTitle.text}. respons: ${rows.toString().replaceAll("[", "").replaceAll("]", "").replaceAll("{", "").replaceAll("}", "")}";
+      final resToken =
+          await apiService.checkTokenPrompt(headers, prompt.trim());
+      resToken.fold((l) => globalKey.currentContext!.pop(), (token) async {
+        final data = {
+          "id": uuid,
+          "token": token,
+          "title": tcTitle.text,
+          "type": "sheet",
+          "addedBy": FirebaseAuth.instance.currentUser!.email!,
+          "to": "all",
+          "createdAt": DateTime.now().toIso8601String(),
+          "updatedAt": DateTime.now().toIso8601String(),
+          "messages": {
+            "role": "system",
+            "content": prompt,
+            "hidden": true,
+            "date": DateTime.now().toIso8601String(),
+          }
+        };
+
+        final response = await apiService.saveDataset(data);
+        response.fold((fail) {
+          globalKey.currentContext!.pop();
+          return AppDialog.dialogNoAction(
+              context: globalKey.currentContext!,
+              title:
+                  "Ooppss... terjadi kesalahan diserver. silahkan coba lagi");
+        }, (r) {
+          add(TrainGetDataSetEvent());
+          add(TrainClearAllFieldEvent());
+          globalKey.currentContext!.pop();
+          return AppDialog.dialogNoAction(
+              context: globalKey.currentContext!,
+              title: "Data berhasil ditambahkan");
+        });
+      });
+    }
   }
 
   FutureOr<void> _onTapSource(
@@ -431,5 +489,15 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     if (state.source == "sheet") {
       add(TrainFromSheetEvent());
     }
+  }
+
+  FutureOr<void> _onCheckToken(
+      TrainOnCheckTokenGPTEvent event, Emitter<TrainState> emit) async {
+    final headers = {
+      "Accept": "*/*",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $apiKey",
+    };
+    final response = await apiService.checkTokenPrompt(headers, event.prompt);
   }
 }

@@ -190,7 +190,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                                   child: BlocBuilder<ChatV2Bloc, ChatV2State>(
                                     builder: (context, state) {
                                       final data = snapshot.data?.messages
-                                          .where((e) => e.role != "system")
+                                          .where((e) => e.hidden == false)
                                           .toList();
 
                                       return Column(

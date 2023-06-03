@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import '../../../blocs/chatv2/chatv2_bloc.dart';
 import '../../../blocs/train/train_bloc.dart';
 import '../../../utils/app_color.dart';
+import '../../../utils/app_constanta.dart';
 import '../../../utils/app_responsive.dart';
 import '../../../utils/app_text.dart';
 import '../../../utils/validators.dart';
@@ -115,6 +116,7 @@ class WebMainTrainPage extends StatelessWidget {
             );
           }
           return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 flex: 4,
@@ -267,6 +269,15 @@ class WebMainTrainPage extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
+                                SizedBox(
+                                  width: 60,
+                                  child: AppText.labelW500(
+                                    "Token",
+                                    13,
+                                    Colors.black,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                                 Expanded(
                                   child: AppText.labelW500(
                                     "Tanggal Unggah",
@@ -293,67 +304,80 @@ class WebMainTrainPage extends StatelessWidget {
                               final data = state.datasets
                                   .where((e) => e.page == state.page)
                                   .toList()[index];
-                              return Container(
-                                color: index.isOdd
-                                    ? Colors.grey.shade100
-                                    : Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 6),
-                                child: Row(
-                                  children: [
-                                    Checkbox(
-                                      value: state.listId.contains(data.id),
-                                      activeColor: colorPrimaryDark,
-                                      onChanged: (val) => trainBloc
-                                          .add(TrainAddSingleIdEvent(data.id)),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                        side: BorderSide(
-                                          color: Colors.red.shade300,
-                                          width: 0.1,
+                              return InkWell(
+                                onTap: () {},
+                                child: Container(
+                                  color: index.isOdd
+                                      ? Colors.grey.shade100
+                                      : Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14, vertical: 10),
+                                  child: Row(
+                                    children: [
+                                      Checkbox(
+                                        value: state.listId.contains(data.id),
+                                        activeColor: colorPrimaryDark,
+                                        onChanged: (val) => trainBloc.add(
+                                            TrainAddSingleIdEvent(data.id)),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          side: BorderSide(
+                                            color: Colors.red.shade300,
+                                            width: 0.1,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 14,
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: AppText.labelW500(
-                                        data.title,
-                                        14,
-                                        Colors.black,
+                                      const SizedBox(
+                                        width: 14,
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: AppText.labelW500(
-                                        data.to.toLowerCase() != "all" ||
-                                                data.to.toLowerCase() !=
-                                                    "confidential"
-                                            ? "Personal"
-                                            : data.to,
-                                        14,
-                                        Colors.black,
-                                        textAlign: TextAlign.center,
+                                      Expanded(
+                                        flex: 2,
+                                        child: AppTextNormal.labelW500(
+                                          data.title,
+                                          14,
+                                          Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: AppText.labelW500(
-                                        data.addedBy,
-                                        14,
-                                        Colors.black,
-                                        textAlign: TextAlign.center,
+                                      Expanded(
+                                        child: AppTextNormal.labelW500(
+                                          data.to.toLowerCase() != "all" &&
+                                                  data.to.toLowerCase() !=
+                                                      "confidential"
+                                              ? "Personal"
+                                              : data.to.toUpperCase(),
+                                          14,
+                                          Colors.black,
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: AppText.labelW500(
-                                        "${DateFormat.yMMMd('id').add_jm().format(DateTime.parse(data.createdAt))} WIB",
-                                        14,
-                                        Colors.black,
-                                        textAlign: TextAlign.center,
+                                      Expanded(
+                                        child: AppTextNormal.labelW500(
+                                          data.addedBy,
+                                          14,
+                                          Colors.black,
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(
+                                        width: 60,
+                                        child: AppTextNormal.labelW500(
+                                          data.token.toString(),
+                                          13,
+                                          Colors.black,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: AppTextNormal.labelW500(
+                                          "${DateFormat.yMMMd('id').format(DateTime.parse(data.createdAt))} WIB",
+                                          14,
+                                          Colors.black,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             }),
@@ -391,170 +415,215 @@ class WebMainTrainPage extends StatelessWidget {
                       ),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 18,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Stack(
-                                  children: [
-                                    Center(
-                                      child: AppTextNormal.labelBold(
-                                        "Tambah Data",
-                                        18,
-                                        colorPrimaryDark,
-                                      ),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.centerRight,
-                                      child: InkWell(
-                                        onTap: () => trainBloc
-                                            .add(TrainOnAddEvent(false)),
-                                        child: const Icon(
-                                          Icons.close_rounded,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 18,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Stack(
+                                    children: [
+                                      Center(
+                                        child: AppTextNormal.labelBold(
+                                          "Tambah Data",
+                                          18,
+                                          colorPrimaryDark,
                                         ),
                                       ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 35,
-                          ),
-                          AppTextNormal.labelW600(
-                            "Pilih Source",
-                            14,
-                            colorPrimaryDark,
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: RadioListTile<String>(
-                                  title: AppTextNormal.labelW600(
-                                    "File",
-                                    14,
-                                    colorPrimaryDark,
+                                      Container(
+                                        alignment: Alignment.centerRight,
+                                        child: InkWell(
+                                          onTap: () => trainBloc
+                                              .add(TrainOnAddEvent(false)),
+                                          child: const Icon(
+                                            Icons.close_rounded,
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  activeColor: colorPrimaryDark,
-                                  value: "file",
-                                  groupValue: state.source,
-                                  onChanged: (value) => trainBloc
-                                      .add(TrainOnTapSourceEvent(value!)),
-                                ),
-                              ),
-                              Expanded(
-                                child: RadioListTile<String>(
-                                  title: AppTextNormal.labelW600(
-                                    "Sheet",
-                                    14,
-                                    colorPrimaryDark,
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 35,
+                            ),
+                            AppTextNormal.labelW600(
+                              "Pilih Source",
+                              14,
+                              colorPrimaryDark,
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: RadioListTile<String>(
+                                    title: AppTextNormal.labelW600(
+                                      "File",
+                                      14,
+                                      colorPrimaryDark,
+                                    ),
+                                    activeColor: colorPrimaryDark,
+                                    value: "file",
+                                    groupValue: state.source,
+                                    onChanged: (value) => trainBloc
+                                        .add(TrainOnTapSourceEvent(value!)),
                                   ),
-                                  activeColor: colorPrimaryDark,
-                                  value: "sheet",
-                                  groupValue: state.source,
-                                  onChanged: (value) => trainBloc
-                                      .add(TrainOnTapSourceEvent(value!)),
                                 ),
-                              ),
-                              Expanded(
-                                child: RadioListTile(
-                                  title: AppTextNormal.labelW600(
-                                    "Text",
-                                    14,
-                                    colorPrimaryDark,
+                                Expanded(
+                                  child: RadioListTile<String>(
+                                    title: AppTextNormal.labelW600(
+                                      "Sheet",
+                                      14,
+                                      colorPrimaryDark,
+                                    ),
+                                    activeColor: colorPrimaryDark,
+                                    value: "sheet",
+                                    groupValue: state.source,
+                                    onChanged: (value) => trainBloc
+                                        .add(TrainOnTapSourceEvent(value!)),
                                   ),
-                                  activeColor: colorPrimaryDark,
-                                  value: "text",
-                                  groupValue: state.source,
-                                  onChanged: (value) => trainBloc
-                                      .add(TrainOnTapSourceEvent(value!)),
                                 ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          AppTextNormal.labelW600(
-                            "Nama Data",
-                            14,
-                            colorPrimaryDark,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
-                            controller: trainBloc.tcTitle,
-                            validator: (val) => Validators.requiredField(val!),
-                            style: GoogleFonts.poppins(
-                              height: 1.4,
+                                Expanded(
+                                  child: RadioListTile(
+                                    title: AppTextNormal.labelW600(
+                                      "Text",
+                                      14,
+                                      colorPrimaryDark,
+                                    ),
+                                    activeColor: colorPrimaryDark,
+                                    value: "text",
+                                    groupValue: state.source,
+                                    onChanged: (value) => trainBloc
+                                        .add(TrainOnTapSourceEvent(value!)),
+                                  ),
+                                )
+                              ],
                             ),
-                            decoration: InputDecoration(
-                              hintStyle: GoogleFonts.poppins(),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 12),
-                              hintText: "Isikan nama data",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                            const SizedBox(
+                              height: 15,
                             ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          AppTextNormal.labelW400(
-                            "*Nama file yang tersimpan akan menjadi acuan saat chat di Bot ",
-                            12,
-                            Colors.grey.shade500,
-                          ),
-                          const SizedBox(
-                            height: 35,
-                          ),
-                          if (state.source == "sheet")
-                            WebMainSheetWidget(
-                              trainBloc: trainBloc,
+                            AppTextNormal.labelW600(
+                              "Kategori",
+                              14,
+                              colorPrimaryDark,
                             ),
-                          if (state.source == "file")
-                            WebMainFileWidget(
-                              trainBloc: trainBloc,
+                            const SizedBox(
+                              height: 12,
                             ),
-                          if (state.source == "text")
-                            WebMaintextWidget(trainBloc: trainBloc),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 45,
-                            child: ElevatedButton(
-                              onPressed: () =>
-                                  trainBloc.add(TrainOnUnggahDataEvent()),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: colorPrimaryDark,
-                              ),
-                              child: AppTextNormal.labelBold(
-                                "Unggah",
-                                16,
-                                Colors.white,
+                            DropdownButtonFormField<String>(
+                              items: listRole.map((String data) {
+                                return DropdownMenuItem<String>(
+                                  value: data,
+                                  child: Row(
+                                    children: <Widget>[
+                                      AppText.labelW600(
+                                        data,
+                                        14,
+                                        Colors.grey.shade600,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (val) {},
+                              decoration: InputDecoration(
+                                hintStyle: GoogleFonts.poppins(),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 12),
+                                hintText: ".....",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            AppTextNormal.labelW600(
+                              "Nama Data",
+                              14,
+                              colorPrimaryDark,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            TextFormField(
+                              controller: trainBloc.tcTitle,
+                              validator: (val) =>
+                                  Validators.requiredField(val!),
+                              style: GoogleFonts.poppins(
+                                height: 1.4,
+                              ),
+                              decoration: InputDecoration(
+                                hintStyle: GoogleFonts.poppins(),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 12),
+                                hintText: "Isikan nama data",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            AppTextNormal.labelW400(
+                              "*Nama file yang tersimpan akan menjadi acuan saat chat di Bot ",
+                              12,
+                              Colors.grey.shade500,
+                            ),
+                            const SizedBox(
+                              height: 35,
+                            ),
+                            if (state.source == "sheet")
+                              WebMainSheetWidget(
+                                trainBloc: trainBloc,
+                              ),
+                            if (state.source == "file")
+                              WebMainFileWidget(
+                                trainBloc: trainBloc,
+                              ),
+                            if (state.source == "text")
+                              WebMaintextWidget(trainBloc: trainBloc),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 45,
+                              child: ElevatedButton(
+                                onPressed: () =>
+                                    trainBloc.add(TrainOnUnggahDataEvent()),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorPrimaryDark,
+                                ),
+                                child: AppTextNormal.labelBold(
+                                  "Unggah",
+                                  16,
+                                  Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

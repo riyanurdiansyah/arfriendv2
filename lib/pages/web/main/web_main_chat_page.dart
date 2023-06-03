@@ -93,7 +93,7 @@ class WebMainChatPage extends StatelessWidget {
                       child: BlocBuilder<ChatV2Bloc, ChatV2State>(
                         builder: (context, state) {
                           final data = snapshot.data?.messages
-                              .where((e) => e.role != "system")
+                              .where((e) => e.hidden == false)
                               .toList();
 
                           return Column(

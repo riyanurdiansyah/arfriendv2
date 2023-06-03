@@ -100,7 +100,6 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
           .onError((error, stackTrace) => Left("ERROR : ${error.toString()}"))
           .then((value) => const Right(true));
     } catch (e) {
-      print("ERRR : ${e.toString()}");
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }
   }
@@ -298,6 +297,55 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
         return Left(ErrorEntity(code: 404, message: "Data not found"));
       }
     } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ErrorEntity, int>> checkTokenPrompt(
+      Map<String, dynamic> headers, String prompt) async {
+    Dio dio = Dio();
+    final data = {
+      "model": "gpt-3.5-turbo",
+      "temperature": 0,
+      "max_tokens": 1,
+      "messages": [
+        {
+          "role": "user",
+          "content": prompt,
+        }
+      ],
+    };
+
+    try {
+      final response = await dio.post(
+        "https://api.openai.com/v1/chat/completions",
+        data: data,
+        options: Options(
+          headers: headers,
+        ),
+      );
+      int code = response.statusCode ?? 500;
+      if (code == 200) {
+        final stringInput = response.data["choices"][0]["message"].toString();
+        if (stringInput.contains("https")) {
+          List<String> links = stringInput.split('https://');
+          if (stringInput.startsWith('https://')) {
+            links.removeAt(0);
+          }
+          launchUrlString("https://${links[1]}");
+          // js.context.callMethod('open', [links[1]]);
+        }
+        print("RES CHECK TOKEN : ${response.data}");
+        return Right(response.data["usage"]["prompt_tokens"] ?? 0);
+      }
+
+      return Left(ErrorEntity(
+          code: 400,
+          message: response.data["error"]["message"] ??
+              "Terjadi kesalahan silahkan coba lagi"));
+    } catch (e) {
+      debugPrint("CEK ERROR : ${e.toString()}");
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }
   }

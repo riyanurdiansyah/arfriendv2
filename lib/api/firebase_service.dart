@@ -44,4 +44,7 @@ abstract class FirebaseApiService {
   Stream<List<CategoryEntity>> streamCategory(String id);
 
   Future<Either<ErrorEntity, bool>> streamCreateChat(Map<String, dynamic> body);
+
+  Future<Either<ErrorEntity, int>> checkTokenPrompt(
+      Map<String, dynamic> headers, String prompt);
 }

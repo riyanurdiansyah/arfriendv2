@@ -17,6 +17,7 @@ class DatasetEntity with _$DatasetEntity {
     required String to,
     required String type,
     required String updatedAt,
+    @Default(0) int token,
     @Default(1) int page,
   }) = _DatasetEntity;
 

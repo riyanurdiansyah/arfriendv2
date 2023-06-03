@@ -18,6 +18,7 @@ _$_DatasetEntity _$$_DatasetEntityFromJson(Map<String, dynamic> json) =>
       to: json['to'] as String,
       type: json['type'] as String,
       updatedAt: json['updatedAt'] as String,
+      token: json['token'] as int? ?? 0,
       page: json['page'] as int? ?? 1,
     );
 
@@ -32,5 +33,6 @@ Map<String, dynamic> _$$_DatasetEntityToJson(_$_DatasetEntity instance) =>
       'to': instance.to,
       'type': instance.type,
       'updatedAt': instance.updatedAt,
+      'token': instance.token,
       'page': instance.page,
     };

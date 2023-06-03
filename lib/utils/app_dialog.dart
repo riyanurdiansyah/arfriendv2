@@ -5,6 +5,7 @@ import 'package:arfriendv2/utils/app_color.dart';
 import 'package:arfriendv2/utils/app_constanta.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -969,6 +970,39 @@ class AppDialog {
                 ],
               ),
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  static dialogLoading({
+    required BuildContext context,
+    String? text,
+  }) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SpinKitThreeInOut(
+                color: colorPrimaryDark,
+                size: 25.0,
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              AppText.labelW500(
+                text ?? "Verifikasi \nMohon tunggu yaa..",
+                16,
+                Colors.grey,
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         );
       },

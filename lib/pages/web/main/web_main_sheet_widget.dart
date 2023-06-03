@@ -38,7 +38,7 @@ class WebMainSheetWidget extends StatelessWidget {
             hintStyle: GoogleFonts.poppins(),
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-            hintText: "Isikan link",
+            hintText: "co: https://docs.google.com/spreadsheets/d/",
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.grey.shade300),
