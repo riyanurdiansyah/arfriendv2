@@ -14,6 +14,7 @@ class ChatEntity with _$ChatEntity {
       @Default("") String idTarget,
       @Default("") String target,
       @Default("") String title,
+      @Default([]) List<String> listIdDataset,
       @Default([]) List<MessageEntity> messages}) = _ChatEntity;
 
   factory ChatEntity.fromJson(Map<String, dynamic> json) =>

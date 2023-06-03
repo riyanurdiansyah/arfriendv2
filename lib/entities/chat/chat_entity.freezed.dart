@@ -26,6 +26,7 @@ mixin _$ChatEntity {
   String get idTarget => throw _privateConstructorUsedError;
   String get target => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
+  List<String> get listIdDataset => throw _privateConstructorUsedError;
   List<MessageEntity> get messages => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -47,6 +48,7 @@ abstract class $ChatEntityCopyWith<$Res> {
       String idTarget,
       String target,
       String title,
+      List<String> listIdDataset,
       List<MessageEntity> messages});
 }
 
@@ -69,6 +71,7 @@ class _$ChatEntityCopyWithImpl<$Res, $Val extends ChatEntity>
     Object? idTarget = null,
     Object? target = null,
     Object? title = null,
+    Object? listIdDataset = null,
     Object? messages = null,
   }) {
     return _then(_value.copyWith(
@@ -96,6 +99,10 @@ class _$ChatEntityCopyWithImpl<$Res, $Val extends ChatEntity>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
+      listIdDataset: null == listIdDataset
+          ? _value.listIdDataset
+          : listIdDataset // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       messages: null == messages
           ? _value.messages
           : messages // ignore: cast_nullable_to_non_nullable
@@ -119,6 +126,7 @@ abstract class _$$_ChatEntityCopyWith<$Res>
       String idTarget,
       String target,
       String title,
+      List<String> listIdDataset,
       List<MessageEntity> messages});
 }
 
@@ -139,6 +147,7 @@ class __$$_ChatEntityCopyWithImpl<$Res>
     Object? idTarget = null,
     Object? target = null,
     Object? title = null,
+    Object? listIdDataset = null,
     Object? messages = null,
   }) {
     return _then(_$_ChatEntity(
@@ -166,6 +175,10 @@ class __$$_ChatEntityCopyWithImpl<$Res>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
+      listIdDataset: null == listIdDataset
+          ? _value._listIdDataset
+          : listIdDataset // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       messages: null == messages
           ? _value._messages
           : messages // ignore: cast_nullable_to_non_nullable
@@ -184,8 +197,10 @@ class _$_ChatEntity implements _ChatEntity {
       this.idTarget = "",
       this.target = "",
       this.title = "",
+      final List<String> listIdDataset = const [],
       final List<MessageEntity> messages = const []})
-      : _messages = messages;
+      : _listIdDataset = listIdDataset,
+        _messages = messages;
 
   factory _$_ChatEntity.fromJson(Map<String, dynamic> json) =>
       _$$_ChatEntityFromJson(json);
@@ -205,6 +220,15 @@ class _$_ChatEntity implements _ChatEntity {
   @override
   @JsonKey()
   final String title;
+  final List<String> _listIdDataset;
+  @override
+  @JsonKey()
+  List<String> get listIdDataset {
+    if (_listIdDataset is EqualUnmodifiableListView) return _listIdDataset;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_listIdDataset);
+  }
+
   final List<MessageEntity> _messages;
   @override
   @JsonKey()
@@ -216,7 +240,7 @@ class _$_ChatEntity implements _ChatEntity {
 
   @override
   String toString() {
-    return 'ChatEntity(idUser: $idUser, idChat: $idChat, number: $number, idTarget: $idTarget, target: $target, title: $title, messages: $messages)';
+    return 'ChatEntity(idUser: $idUser, idChat: $idChat, number: $number, idTarget: $idTarget, target: $target, title: $title, listIdDataset: $listIdDataset, messages: $messages)';
   }
 
   @override
@@ -231,13 +255,23 @@ class _$_ChatEntity implements _ChatEntity {
                 other.idTarget == idTarget) &&
             (identical(other.target, target) || other.target == target) &&
             (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality()
+                .equals(other._listIdDataset, _listIdDataset) &&
             const DeepCollectionEquality().equals(other._messages, _messages));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, idUser, idChat, number, idTarget,
-      target, title, const DeepCollectionEquality().hash(_messages));
+  int get hashCode => Object.hash(
+      runtimeType,
+      idUser,
+      idChat,
+      number,
+      idTarget,
+      target,
+      title,
+      const DeepCollectionEquality().hash(_listIdDataset),
+      const DeepCollectionEquality().hash(_messages));
 
   @JsonKey(ignore: true)
   @override
@@ -261,6 +295,7 @@ abstract class _ChatEntity implements ChatEntity {
       final String idTarget,
       final String target,
       final String title,
+      final List<String> listIdDataset,
       final List<MessageEntity> messages}) = _$_ChatEntity;
 
   factory _ChatEntity.fromJson(Map<String, dynamic> json) =
@@ -278,6 +313,8 @@ abstract class _ChatEntity implements ChatEntity {
   String get target;
   @override
   String get title;
+  @override
+  List<String> get listIdDataset;
   @override
   List<MessageEntity> get messages;
   @override

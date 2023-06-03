@@ -4,7 +4,11 @@ abstract class ChatV2Event {}
 
 class ChatV2InitialEvent extends ChatV2Event {}
 
-class ChatV2CreateNewChatEvent extends ChatV2Event {}
+class ChatV2CreateNewChatEvent extends ChatV2Event {
+  ChatV2CreateNewChatEvent(this.listId);
+
+  final List<String> listId;
+}
 
 class ChatV2SaveNewChatEvent extends ChatV2Event {}
 
@@ -69,7 +73,14 @@ class ChatV2AddErrorMessageEvent extends ChatV2Event {
 
 class ChatV2OnVoiceEvent extends ChatV2Event {}
 
+class ChatV2CheckTokenBeforeNewChatEvent extends ChatV2Event {}
+
 class ChatV2OnChangeStatusVoiceEvent extends ChatV2Event {
   ChatV2OnChangeStatusVoiceEvent(this.isVoice);
   final bool isVoice;
+}
+
+class ChatV2OnUpdateListIdDatasetEvent extends ChatV2Event {
+  ChatV2OnUpdateListIdDatasetEvent(this.listIdDataset);
+  final List<String> listIdDataset;
 }

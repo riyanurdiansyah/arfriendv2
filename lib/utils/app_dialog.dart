@@ -3,6 +3,7 @@ import 'package:arfriendv2/entities/divisi/divisi_entity.dart';
 import 'package:arfriendv2/entities/role/role_entity.dart';
 import 'package:arfriendv2/utils/app_color.dart';
 import 'package:arfriendv2/utils/app_constanta.dart';
+import 'package:arfriendv2/utils/app_text_normal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -10,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../blocs/chat/chat_bloc.dart';
+import '../entities/dataset/dataset_entity.dart';
 import 'app_text.dart';
 import 'validators.dart';
 
@@ -1006,6 +1008,187 @@ class AppDialog {
           ),
         );
       },
+    );
+  }
+
+  static dialogChoosDataset({
+    required BuildContext context,
+    required Function(List<String>) onTap,
+    required List<DatasetEntity> listData,
+  }) {
+    final size = MediaQuery.of(context).size;
+    List<String> listId = [];
+    int token = 0;
+    for (var data in listData) {
+      listId.add(data.id);
+      token += data.token;
+    }
+    return showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    AppTextNormal.labelBold(
+                      "Pilih Dataset",
+                      16,
+                      colorPrimaryDark,
+                    ),
+                    const Spacer(),
+                    AppTextNormal.labelBold(
+                      "$token token",
+                      16,
+                      colorPrimaryDark,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: List.generate(listData.length, (index) {
+                        if (index.isEven) {
+                          return Container(
+                              margin: const EdgeInsets.only(bottom: 5),
+                              width: size.width / 4,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              color: Colors.grey.shade200,
+                              height: 50,
+                              child: Row(
+                                children: [
+                                  Checkbox(
+                                    activeColor: colorPrimaryDark,
+                                    value: listId.contains(listData[index].id),
+                                    onChanged: (val) {
+                                      if (listId.contains(listData[index].id)) {
+                                        listId.remove(listData[index].id);
+                                        token = token - listData[index].token;
+                                      } else {
+                                        listId.add(listData[index].id);
+                                        token = token + listData[index].token;
+                                      }
+
+                                      setState(() {});
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    width: 14,
+                                  ),
+                                  AppTextNormal.labelNormal(
+                                    listData[index].title,
+                                    12,
+                                    Colors.grey.shade500,
+                                  ),
+                                ],
+                              ));
+                        }
+                        return const SizedBox();
+                      }),
+                    ),
+                    const SizedBox(
+                      width: 14,
+                    ),
+                    Column(
+                      children: List.generate(listData.length, (index) {
+                        if (index.isOdd) {
+                          return Container(
+                              margin: const EdgeInsets.only(bottom: 5),
+                              width: size.width / 4,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              color: Colors.grey.shade200,
+                              height: 50,
+                              child: Row(
+                                children: [
+                                  Checkbox(
+                                    activeColor: colorPrimaryDark,
+                                    value: listId.contains(listData[index].id),
+                                    onChanged: (val) {
+                                      if (listId.contains(listData[index].id)) {
+                                        listId.remove(listData[index].id);
+                                        token = token - listData[index].token;
+                                      } else {
+                                        listId.add(listData[index].id);
+                                        token = token + listData[index].token;
+                                      }
+
+                                      setState(() {});
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    width: 14,
+                                  ),
+                                  AppTextNormal.labelNormal(
+                                    listData[index].title,
+                                    12,
+                                    Colors.grey.shade500,
+                                  ),
+                                ],
+                              ));
+                        }
+                        return const SizedBox();
+                      }),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: size.width / 4,
+                      height: 45,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: colorPrimaryDark)),
+                        onPressed: () => context.pop(),
+                        child: AppTextNormal.labelBold(
+                          "Batal",
+                          14,
+                          colorPrimaryDark,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 14,
+                    ),
+                    SizedBox(
+                      width: size.width / 4,
+                      height: 45,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colorPrimaryDark,
+                        ),
+                        onPressed: () {
+                          context.pop();
+                          onTap(listId);
+                        },
+                        child: AppTextNormal.labelBold(
+                          "Lanjutkan",
+                          14,
+                          Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

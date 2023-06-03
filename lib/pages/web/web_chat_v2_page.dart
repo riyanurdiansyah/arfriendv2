@@ -63,7 +63,7 @@ class _WebChatV2PageState extends State<WebChatV2Page> {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () =>
-                        _chatV2Bloc.add(ChatV2CreateNewChatEvent()),
+                        _chatV2Bloc.add(ChatV2CheckTokenBeforeNewChatEvent()),
                     child: Text(
                       "+ New Chat",
                       style: GoogleFonts.sourceSansPro(

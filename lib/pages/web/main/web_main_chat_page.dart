@@ -1,11 +1,12 @@
 import 'package:arfriendv2/blocs/chatv2/chatv2_bloc.dart';
+import 'package:arfriendv2/utils/app_dialog.dart';
+import 'package:arfriendv2/utils/app_text_normal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../entities/chat/chat_entity.dart';
 import '../../../utils/app_color.dart';
-import '../../../utils/app_text_normal.dart';
 import '../../../utils/validators.dart';
 import '../web_animation_cursor.dart';
 import '../web_chat_widget.dart';
@@ -59,18 +60,46 @@ class WebMainChatPage extends StatelessWidget {
                     color: colorPrimaryDark,
                   ),
                 ),
-                if (state.isTyping)
-                  AppTextNormal.labelW600(
-                    "   -   ",
-                    18,
-                    Colors.black,
-                  ),
-                if (state.isTyping)
-                  AppTextNormal.labelW600(
-                    "Sedang mengetik...",
-                    18,
-                    Colors.black,
-                  ),
+                const Spacer(),
+                StreamBuilder<ChatEntity>(
+                  stream: chatV2Bloc.apiService.streamChat(state.idChat),
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return const SizedBox();
+                    }
+                    return OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        side: BorderSide(
+                          color: colorPrimaryDark.withOpacity(0.6),
+                          width: 1.6,
+                        ),
+                      ),
+                      onPressed: () async {
+                        final response =
+                            await chatV2Bloc.apiService.getDataset();
+                        response.fold(
+                            (l) => AppDialog.dialogNoAction(
+                                context: context,
+                                title: "Gagal memuat dataset"), (dataset) {
+                          AppDialog.dialogChoosDataset(
+                            context: context,
+                            onTap: (data) => chatV2Bloc
+                                .add(ChatV2OnUpdateListIdDatasetEvent(data)),
+                            listData: dataset,
+                          );
+                        });
+                      },
+                      child: AppTextNormal.labelBold(
+                        "${snapshot.data!.listIdDataset.length.toString()} data",
+                        14,
+                        colorPrimaryDark.withOpacity(0.6),
+                      ),
+                    );
+                  },
+                )
               ],
             ),
           ),

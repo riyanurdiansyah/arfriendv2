@@ -51,6 +51,8 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
     on<ChatV2OnVoiceEvent>(_onVoice);
     on<ChatV2OnChangeStatusVoiceEvent>(_onChangeStatusVoice);
     on<ChatV2OnChangeRouteEvent>(_onChangeRoute);
+    on<ChatV2CheckTokenBeforeNewChatEvent>(_onCheckTokenBeforeNewChat);
+    on<ChatV2OnUpdateListIdDatasetEvent>(_onUpdateListIdDataset);
   }
 
   FutureOr<void> _onSaveNewChat(
@@ -80,6 +82,7 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
     final body = {
       "idUser": FirebaseAuth.instance.currentUser!.uid,
       "idChat": id,
+      "listIdDataset": event.listId,
       "title": "New Chat",
       "number": count + 1,
       "createdAt": DateTime.now().toIso8601String(),
@@ -194,8 +197,10 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
               context: globalKey.currentContext!,
               title: "Gagal memuat dataset..."), (data) async {
         List<MessageEntity> messages = [];
-        List<DatasetEntity> datasets =
-            data.where((e) => e.to == "all" || e.to == idUser).toList();
+        List<DatasetEntity> datasets = data
+            .where((e) => ((e.to == "all" || e.to == idUser) &&
+                dataMessage.listIdDataset.contains(e.id)))
+            .toList();
 
         for (var d in datasets) {
           messages.add(d.messages);
@@ -349,5 +354,49 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
   FutureOr<void> _onChangeRoute(
       ChatV2OnChangeRouteEvent event, Emitter<ChatV2State> emit) {
     emit(state.copyWith(idChat: event.id, route: event.route));
+  }
+
+  FutureOr<void> _onCheckTokenBeforeNewChat(
+      ChatV2CheckTokenBeforeNewChatEvent event,
+      Emitter<ChatV2State> emit) async {
+    final cekToken =
+        (await FirebaseFirestore.instance.collection("dataset").get()).docs;
+
+    int token = 0;
+
+    List<DatasetEntity> dataset = [];
+    for (var data in cekToken) {
+      dataset.add(DatasetEntity.fromJson(data.data()));
+    }
+
+    for (var cek in dataset) {
+      token += cek.token;
+    }
+
+    if (token > 3000) {
+      AppDialog.dialogChoosDataset(
+          context: globalKey.currentContext!,
+          listData: dataset,
+          onTap: (data) {
+            add(ChatV2CreateNewChatEvent(data));
+          });
+    } else {
+      add(ChatV2CreateNewChatEvent([]));
+    }
+  }
+
+  FutureOr<void> _onUpdateListIdDataset(
+      ChatV2OnUpdateListIdDatasetEvent event, Emitter<ChatV2State> emit) async {
+    final response = await apiService.updateChat({
+      "idChat": state.idChat,
+      "listIdDataset": event.listIdDataset,
+    });
+
+    response.fold(
+      (l) => AppDialog.dialogNoAction(
+          context: globalKey.currentContext!,
+          title: "Gagal memperbarui dataset"),
+      (r) {},
+    );
   }
 }

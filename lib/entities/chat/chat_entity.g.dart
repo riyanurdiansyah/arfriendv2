@@ -14,6 +14,10 @@ _$_ChatEntity _$$_ChatEntityFromJson(Map<String, dynamic> json) =>
       idTarget: json['idTarget'] as String? ?? "",
       target: json['target'] as String? ?? "",
       title: json['title'] as String? ?? "",
+      listIdDataset: (json['listIdDataset'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       messages: (json['messages'] as List<dynamic>?)
               ?.map((e) => MessageEntity.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -28,5 +32,6 @@ Map<String, dynamic> _$$_ChatEntityToJson(_$_ChatEntity instance) =>
       'idTarget': instance.idTarget,
       'target': instance.target,
       'title': instance.title,
+      'listIdDataset': instance.listIdDataset,
       'messages': instance.messages,
     };
