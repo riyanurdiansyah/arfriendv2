@@ -8,7 +8,7 @@ class ChatV2State extends Equatable {
     this.idChat = "",
     this.isTyping = false,
     this.errorMessage = "",
-    this.route = "train",
+    this.route = "",
   });
 
   final bool isLoadingSetup;

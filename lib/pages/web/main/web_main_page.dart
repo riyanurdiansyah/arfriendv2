@@ -44,10 +44,20 @@ class _WebMainPageState extends State<WebMainPage> {
         key: _chatV2Bloc.globalKey,
         body: Stack(
           children: [
-            Container(
-              color: colorPrimaryDark,
-              height: 125,
-              width: double.infinity,
+            Column(
+              children: [
+                Container(
+                  color: colorPrimaryDark,
+                  height: 125,
+                  width: double.infinity,
+                ),
+                Expanded(
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    width: double.infinity,
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.all(18.0),
@@ -181,12 +191,26 @@ class _WebMainPageState extends State<WebMainPage> {
                                         return Column(
                                           children: List.generate(data.length,
                                               (index) {
-                                            String text = data[index]
-                                                        .title
-                                                        .length >
-                                                    20
-                                                ? "${data[index].title.substring(0, 20)}..."
-                                                : data[index].title;
+                                            String text = "";
+
+                                            if (AppResponsive.isDesktop(
+                                                context)) {
+                                              if (data[index].title.length >
+                                                  20) {
+                                                text =
+                                                    "${data[index].title.substring(0, 20)}...";
+                                              } else {
+                                                text = data[index].title;
+                                              }
+                                            } else {
+                                              if (data[index].title.length >
+                                                  8) {
+                                                text =
+                                                    "${data[index].title.substring(0, 8)}...";
+                                              } else {
+                                                text = data[index].title;
+                                              }
+                                            }
                                             return OutlinedButton(
                                               onLongPress: () => _chatV2Bloc
                                                   .add(ChatV2DeleteHistoryEvent(
@@ -258,143 +282,182 @@ class _WebMainPageState extends State<WebMainPage> {
                                 },
                               ),
                             ),
-                            Expanded(
-                              flex: 3,
-                              child: Column(
-                                children: [
-                                  OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      backgroundColor: colorPrimary,
-                                      side: const BorderSide(
-                                        width: 0,
-                                        color: colorPrimary,
-                                      ),
+                            Column(
+                              children: [
+                                OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    backgroundColor: colorPrimary,
+                                    side: const BorderSide(
+                                      width: 0,
+                                      color: colorPrimary,
                                     ),
-                                    onPressed: () => _chatV2Bloc.add(
-                                        ChatV2OnChangeRouteEvent("", "train")),
-                                    child: SizedBox(
-                                      width: double.infinity,
-                                      height: 60,
-                                      child: Center(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const SizedBox(
-                                              width: 14,
+                                  ),
+                                  onPressed: () => _chatV2Bloc.add(
+                                      ChatV2OnChangeRouteEvent("", "train")),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 60,
+                                    child: Center(
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(
+                                            width: 14,
+                                          ),
+                                          Image.asset(
+                                            "assets/images/bot.webp",
+                                            width: 30,
+                                          ),
+                                          const SizedBox(
+                                            width: 16,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 5),
+                                            child: AppTextNormal.labelW600(
+                                              "Latih Bot Disini...",
+                                              16,
+                                              colorPrimaryDark,
                                             ),
-                                            Image.asset(
-                                              "assets/images/bot.webp",
-                                              width: 30,
-                                            ),
-                                            const SizedBox(
-                                              width: 16,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 5),
-                                              child: AppTextNormal.labelW600(
-                                                "Latih Bot Disini...",
-                                                16,
-                                                colorPrimaryDark,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                  OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      backgroundColor: colorPrimary,
-                                      side: const BorderSide(
-                                        width: 0,
-                                        color: colorPrimary,
-                                      ),
+                                ),
+                                OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    backgroundColor: colorPrimary,
+                                    side: const BorderSide(
+                                      width: 0,
+                                      color: colorPrimary,
                                     ),
-                                    onPressed: () => _chatV2Bloc.add(
-                                        ChatV2OnChangeRouteEvent(
-                                            "", "ketentuan")),
-                                    child: SizedBox(
-                                      width: double.infinity,
-                                      height: 60,
-                                      child: Center(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const SizedBox(
-                                              width: 14,
+                                  ),
+                                  onPressed: () => _chatV2Bloc.add(
+                                      ChatV2OnChangeRouteEvent(
+                                          "", "ketentuan")),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 60,
+                                    child: Center(
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(
+                                            width: 14,
+                                          ),
+                                          Image.asset(
+                                            "assets/images/ketentuan.webp",
+                                            width: 25,
+                                          ),
+                                          const SizedBox(
+                                            width: 16,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 5),
+                                            child: AppTextNormal.labelW600(
+                                              "Ketentuan",
+                                              16,
+                                              colorPrimaryDark,
                                             ),
-                                            Image.asset(
-                                              "assets/images/ketentuan.webp",
-                                              width: 25,
-                                            ),
-                                            const SizedBox(
-                                              width: 16,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 5),
-                                              child: AppTextNormal.labelW600(
-                                                "Ketentuan",
-                                                16,
-                                                colorPrimaryDark,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                  OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      backgroundColor: colorPrimary,
-                                      side: const BorderSide(
-                                        width: 0,
-                                        color: colorPrimary,
-                                      ),
+                                ),
+                                OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    backgroundColor: colorPrimary,
+                                    side: const BorderSide(
+                                      width: 0,
+                                      color: colorPrimary,
                                     ),
-                                    onPressed: () => _chatV2Bloc.add(
-                                        ChatV2OnChangeRouteEvent(
-                                            "", "panduan")),
-                                    child: SizedBox(
-                                      width: double.infinity,
-                                      height: 60,
-                                      child: Center(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const SizedBox(
-                                              width: 14,
+                                  ),
+                                  onPressed: () => _chatV2Bloc.add(
+                                      ChatV2OnChangeRouteEvent("", "panduan")),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 60,
+                                    child: Center(
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(
+                                            width: 14,
+                                          ),
+                                          Image.asset(
+                                            "assets/images/panduan.webp",
+                                            width: 25,
+                                          ),
+                                          const SizedBox(
+                                            width: 16,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 5),
+                                            child: AppTextNormal.labelW600(
+                                              "Panduan",
+                                              16,
+                                              colorPrimaryDark,
                                             ),
-                                            Image.asset(
-                                              "assets/images/panduan.webp",
-                                              width: 25,
-                                            ),
-                                            const SizedBox(
-                                              width: 16,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 5),
-                                              child: AppTextNormal.labelW600(
-                                                "Panduan",
-                                                16,
-                                                colorPrimaryDark,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                                OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    backgroundColor: colorPrimary,
+                                    side: const BorderSide(
+                                      width: 0,
+                                      color: colorPrimary,
+                                    ),
+                                  ),
+                                  onPressed: () => _chatV2Bloc.add(
+                                      ChatV2OnChangeRouteEvent("", "panduan")),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 60,
+                                    child: Center(
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(
+                                            width: 14,
+                                          ),
+                                          const Icon(
+                                            Icons.logout_outlined,
+                                            color: Colors.red,
+                                          ),
+                                          const SizedBox(
+                                            width: 16,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 5),
+                                            child: AppTextNormal.labelW600(
+                                              "Keluar",
+                                              16,
+                                              colorPrimaryDark,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -419,12 +482,18 @@ class _WebMainPageState extends State<WebMainPage> {
                             color: Colors.red,
                           );
                         }
-                        return Container(
-                          color: Colors.white,
-                          child: Image.asset(
-                            "assets/images/bg.webp",
-                            width: 350,
-                          ),
+                        return Stack(
+                          children: [
+                            Container(
+                              color: Colors.white,
+                            ),
+                            Center(
+                              child: Image.asset(
+                                "assets/images/bg.webp",
+                                width: 350,
+                              ),
+                            ),
+                          ],
                         );
                       },
                     ),

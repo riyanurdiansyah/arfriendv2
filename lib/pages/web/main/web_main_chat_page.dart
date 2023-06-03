@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:arfriendv2/blocs/chatv2/chatv2_bloc.dart';
 import 'package:arfriendv2/utils/app_dialog.dart';
 import 'package:arfriendv2/utils/app_text_normal.dart';
@@ -8,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../entities/chat/chat_entity.dart';
 import '../../../utils/app_color.dart';
 import '../../../utils/validators.dart';
-import '../web_animation_cursor.dart';
 import '../web_chat_widget.dart';
 
 class WebMainChatPage extends StatelessWidget {
@@ -149,13 +149,38 @@ class WebMainChatPage extends StatelessWidget {
                                   },
                                 ),
                               ),
-                              state.isTyping
-                                  ? const Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 18.0),
-                                      child: WebAnimationCursor(),
-                                    )
-                                  : const SizedBox(),
+                              if (state.isTyping)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 18.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Mempersiapkan jawaban terbaik untukmu",
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14,
+                                          color: Colors.grey.shade600,
+                                          height: 1.6,
+                                        ),
+                                      ),
+                                      AnimatedTextKit(
+                                        repeatForever: true,
+                                        animatedTexts: [
+                                          TyperAnimatedText(
+                                            speed: const Duration(
+                                                milliseconds: 400),
+                                            " . . . .",
+                                            textStyle: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              color: Colors.grey.shade600,
+                                              height: 1.6,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
                             ],
                           );
                         },

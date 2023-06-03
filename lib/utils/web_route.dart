@@ -127,7 +127,7 @@ GoRouter router = GoRouter(
       //   ],
     ),
   ],
-  initialLocation: "/",
+  initialLocation: "/halo",
   debugLogDiagnostics: true,
   routerNeglect: true,
 );

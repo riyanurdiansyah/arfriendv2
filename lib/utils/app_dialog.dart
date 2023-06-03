@@ -1039,8 +1039,22 @@ class AppDialog {
                       colorPrimaryDark,
                     ),
                     const Spacer(),
+                    Row(
+                      children: [
+                        AppTextNormal.labelBold(
+                          "$token/",
+                          16,
+                          token > 3700 ? Colors.red : colorPrimaryDark,
+                        ),
+                        AppTextNormal.labelBold(
+                          "3700",
+                          12,
+                          colorPrimaryDark,
+                        ),
+                      ],
+                    ),
                     AppTextNormal.labelBold(
-                      "$token token",
+                      " Token",
                       16,
                       colorPrimaryDark,
                     ),
@@ -1171,10 +1185,12 @@ class AppDialog {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: colorPrimaryDark,
                         ),
-                        onPressed: () {
-                          context.pop();
-                          onTap(listId);
-                        },
+                        onPressed: token > 3700
+                            ? null
+                            : () {
+                                context.pop();
+                                onTap(listId);
+                              },
                         child: AppTextNormal.labelBold(
                           "Lanjutkan",
                           14,

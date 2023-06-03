@@ -190,6 +190,48 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
         });
         response.fold((l) => add(ChatV2AddErrorMessageEvent(l.message)),
             (r) => add(ChatV2ChangeTypingEvent(false)));
+      } else {
+        ///PROSES LANJUTKAN TEXT TERPOTONG
+        List<MessageEntity> messages = [];
+
+        if (dataMessage.messages.isNotEmpty) {
+          messages.add(dataMessage.messages
+              .where((e) => e.role == "assistant")
+              .toList()
+              .last);
+        }
+
+        final response =
+            await apiService.sendMessageToChatGPT(headers, messages);
+
+        response.fold((l) {
+          add(ChatV2ChangeTypingEvent(false));
+        }, (chat) async {
+          List<Map<String, dynamic>> messagesJson = [];
+          List<MessageEntity> messagesUp = [];
+          final dataJson = (await FirebaseFirestore.instance
+              .collection("chat")
+              .doc(state.idChat)
+              .get());
+          final dataChat = ChatEntity.fromJson(dataJson.data()!);
+          messagesUp = List.from(dataChat.messages);
+          messagesUp.add(MessageEntity(
+            role: chat.role,
+            content: chat.content,
+            isRead: false,
+            date: DateTime.now().toIso8601String(),
+            id: const Uuid().v4(),
+          ));
+          for (var data in messagesUp) {
+            messagesJson.add(data.toJson());
+          }
+          await apiService.updateChat({
+            "idChat": state.idChat,
+            "messages": messagesJson,
+          });
+
+          add(ChatV2ChangeTypingEvent(false));
+        });
       }
     } else {
       responseDataset.fold(
@@ -373,7 +415,7 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
       token += cek.token;
     }
 
-    if (token > 3000) {
+    if (token > 3700) {
       AppDialog.dialogChoosDataset(
           context: globalKey.currentContext!,
           listData: dataset,
@@ -381,7 +423,11 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
             add(ChatV2CreateNewChatEvent(data));
           });
     } else {
-      add(ChatV2CreateNewChatEvent([]));
+      List<String> listIdDataset = [];
+      for (var data in dataset) {
+        listIdDataset.add(data.id);
+      }
+      add(ChatV2CreateNewChatEvent(listIdDataset));
     }
   }
 
