@@ -26,6 +26,7 @@ mixin _$MessageEntity {
   String get id => throw _privateConstructorUsedError;
   bool get isRead => throw _privateConstructorUsedError;
   String get date => throw _privateConstructorUsedError;
+  int get token => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,7 +46,8 @@ abstract class $MessageEntityCopyWith<$Res> {
       bool hidden,
       String id,
       bool isRead,
-      String date});
+      String date,
+      int token});
 }
 
 /// @nodoc
@@ -67,6 +69,7 @@ class _$MessageEntityCopyWithImpl<$Res, $Val extends MessageEntity>
     Object? id = null,
     Object? isRead = null,
     Object? date = null,
+    Object? token = null,
   }) {
     return _then(_value.copyWith(
       role: null == role
@@ -93,6 +96,10 @@ class _$MessageEntityCopyWithImpl<$Res, $Val extends MessageEntity>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as String,
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -111,7 +118,8 @@ abstract class _$$_MessageEntityCopyWith<$Res>
       bool hidden,
       String id,
       bool isRead,
-      String date});
+      String date,
+      int token});
 }
 
 /// @nodoc
@@ -131,6 +139,7 @@ class __$$_MessageEntityCopyWithImpl<$Res>
     Object? id = null,
     Object? isRead = null,
     Object? date = null,
+    Object? token = null,
   }) {
     return _then(_$_MessageEntity(
       role: null == role
@@ -157,6 +166,10 @@ class __$$_MessageEntityCopyWithImpl<$Res>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as String,
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -170,7 +183,8 @@ class _$_MessageEntity implements _MessageEntity {
       this.hidden = false,
       this.id = "",
       this.isRead = false,
-      this.date = ""});
+      this.date = "",
+      this.token = 0});
 
   factory _$_MessageEntity.fromJson(Map<String, dynamic> json) =>
       _$$_MessageEntityFromJson(json);
@@ -191,10 +205,13 @@ class _$_MessageEntity implements _MessageEntity {
   @override
   @JsonKey()
   final String date;
+  @override
+  @JsonKey()
+  final int token;
 
   @override
   String toString() {
-    return 'MessageEntity(role: $role, content: $content, hidden: $hidden, id: $id, isRead: $isRead, date: $date)';
+    return 'MessageEntity(role: $role, content: $content, hidden: $hidden, id: $id, isRead: $isRead, date: $date, token: $token)';
   }
 
   @override
@@ -207,13 +224,14 @@ class _$_MessageEntity implements _MessageEntity {
             (identical(other.hidden, hidden) || other.hidden == hidden) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.isRead, isRead) || other.isRead == isRead) &&
-            (identical(other.date, date) || other.date == date));
+            (identical(other.date, date) || other.date == date) &&
+            (identical(other.token, token) || other.token == token));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, role, content, hidden, id, isRead, date);
+      Object.hash(runtimeType, role, content, hidden, id, isRead, date, token);
 
   @JsonKey(ignore: true)
   @override
@@ -236,7 +254,8 @@ abstract class _MessageEntity implements MessageEntity {
       final bool hidden,
       final String id,
       final bool isRead,
-      final String date}) = _$_MessageEntity;
+      final String date,
+      final int token}) = _$_MessageEntity;
 
   factory _MessageEntity.fromJson(Map<String, dynamic> json) =
       _$_MessageEntity.fromJson;
@@ -253,6 +272,8 @@ abstract class _MessageEntity implements MessageEntity {
   bool get isRead;
   @override
   String get date;
+  @override
+  int get token;
   @override
   @JsonKey(ignore: true)
   _$$_MessageEntityCopyWith<_$_MessageEntity> get copyWith =>

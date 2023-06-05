@@ -219,8 +219,9 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
             role: chat.role,
             content: chat.content,
             isRead: false,
-            date: DateTime.now().toIso8601String(),
-            id: const Uuid().v4(),
+            date: chat.date,
+            id: chat.id,
+            token: chat.token,
           ));
           for (var data in messagesUp) {
             messagesJson.add(data.toJson());
@@ -244,11 +245,27 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
                 dataMessage.listIdDataset.contains(e.id)))
             .toList();
 
+        // if (dataMessage.messages
+        //     .where((e) => e.role == "assistant")
+        //     .last
+        //     .content
+        //     .toLowerCase()
+        //     .contains(dataMessage.messages.last.content)) {
+        //   print("WASU");
+        // }
+
         for (var d in datasets) {
           messages.add(d.messages);
         }
 
-        if (dataMessage.messages.isNotEmpty) {
+        if (dataMessage.messages
+            .where((e) => e.role == "assistant")
+            .isNotEmpty) {
+          messages.add(
+              dataMessage.messages.where((e) => e.role == "assistant").last);
+        }
+
+        if (dataMessage.messages.where((e) => e.role == "user").isNotEmpty) {
           messages.add(dataMessage.messages.last);
         }
 
@@ -270,8 +287,9 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
             role: chat.role,
             content: chat.content,
             isRead: false,
-            date: DateTime.now().toIso8601String(),
-            id: const Uuid().v4(),
+            date: chat.date,
+            id: chat.id,
+            token: chat.token,
           ));
           for (var data in messagesUp) {
             messagesJson.add(data.toJson());
@@ -313,8 +331,9 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
         content: data.content,
         isRead: false,
         hidden: false,
-        date: DateTime.now().toIso8601String(),
-        id: const Uuid().v4(),
+        date: data.date,
+        id: data.id,
+        token: data.token,
       ));
       for (var data in messages) {
         messagesJson.add(data.toJson());

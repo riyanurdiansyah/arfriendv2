@@ -192,20 +192,24 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       );
       int code = response.statusCode ?? 500;
       if (code == 200) {
-        final stringInput = response.data["choices"][0]["message"].toString();
-        if (stringInput.contains("https")) {
-          List<String> links = stringInput.split('https://');
-          if (stringInput.startsWith('https://')) {
-            links.removeAt(0);
-          }
-          launchUrlString("https://${links[1]}");
-          // js.context.callMethod('open', [links[1]]);
-        }
+        // final stringInput = response.data["choices"][0]["message"].toString();
+        // if (stringInput.contains("https")) {
+        //   List<String> links = stringInput.split('https://');
+        //   if (stringInput.startsWith('https://')) {
+        //     links.removeAt(0);
+        //   }
+        //   launchUrlString("https://${links[1]}");
+        //   // js.context.callMethod('open', [links[1]]);
+        // }
+        int token =
+            int.parse(response.data["usage"]["completion_tokens"].toString());
+        print("CEK : ${response.data["usage"]["completion_tokens"]}");
         return Right(
           MessageEntity.fromJson(response.data["choices"][0]["message"])
               .copyWith(
             id: const Uuid().v4(),
             date: DateTime.now().toIso8601String(),
+            token: response.data["usage"]["completion_tokens"],
           ),
         );
       }

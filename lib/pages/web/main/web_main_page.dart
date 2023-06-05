@@ -3,6 +3,7 @@ import 'package:arfriendv2/blocs/train/train_bloc.dart';
 import 'package:arfriendv2/pages/web/main/web_main_chat_page.dart';
 import 'package:arfriendv2/pages/web/main/web_main_train_page.dart';
 import 'package:arfriendv2/utils/app_color.dart';
+import 'package:arfriendv2/utils/app_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -259,12 +260,25 @@ class _WebMainPageState extends State<WebMainPage> {
                                                       ),
                                                     ),
                                                     const Spacer(),
-                                                    const Center(
-                                                      child: Icon(
-                                                        Icons
-                                                            .arrow_forward_ios_rounded,
-                                                        size: 18,
-                                                        color: colorPrimaryDark,
+                                                    Center(
+                                                      child: IconButton(
+                                                        onPressed: () {
+                                                          AppDialog.dialogWithActionHapus(
+                                                              context: context,
+                                                              title:
+                                                                  "Ingin menghapus chat ini?",
+                                                              onTap: () => _chatV2Bloc.add(
+                                                                  ChatV2DeleteHistoryEvent(
+                                                                      data[index]
+                                                                          .idChat)));
+                                                        },
+                                                        icon: const Icon(
+                                                          Icons
+                                                              .delete_outline_rounded,
+                                                          size: 18,
+                                                          color:
+                                                              colorPrimaryDark,
+                                                        ),
                                                       ),
                                                     ),
                                                     const SizedBox(

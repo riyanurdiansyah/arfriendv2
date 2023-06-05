@@ -14,6 +14,7 @@ _$_MessageEntity _$$_MessageEntityFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String? ?? "",
       isRead: json['isRead'] as bool? ?? false,
       date: json['date'] as String? ?? "",
+      token: json['token'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$$_MessageEntityToJson(_$_MessageEntity instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$$_MessageEntityToJson(_$_MessageEntity instance) =>
       'id': instance.id,
       'isRead': instance.isRead,
       'date': instance.date,
+      'token': instance.token,
     };

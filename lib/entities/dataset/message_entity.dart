@@ -12,6 +12,7 @@ class MessageEntity with _$MessageEntity {
     @Default("") String id,
     @Default(false) bool isRead,
     @Default("") String date,
+    @Default(0) int token,
   }) = _MessageEntity;
 
   factory MessageEntity.fromJson(Map<String, dynamic> json) =>
