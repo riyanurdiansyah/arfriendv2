@@ -1,4 +1,3 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:arfriendv2/blocs/chatv2/chatv2_bloc.dart';
 import 'package:arfriendv2/utils/app_dialog.dart';
 import 'package:arfriendv2/utils/app_text_normal.dart';
@@ -153,33 +152,38 @@ class WebMainChatPage extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 18.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "Mempersiapkan jawaban terbaik untukmu",
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 14,
-                                          color: Colors.grey.shade600,
-                                          height: 1.6,
-                                        ),
-                                      ),
-                                      AnimatedTextKit(
-                                        repeatForever: true,
-                                        animatedTexts: [
-                                          TyperAnimatedText(
-                                            speed: const Duration(
-                                                milliseconds: 400),
-                                            " . . . .",
-                                            textStyle: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              color: Colors.grey.shade600,
-                                              height: 1.6,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
+                                  child: Image.asset(
+                                    "assets/gif/typing.gif",
+                                    width: 60,
                                   ),
+
+                                  //  Row(
+                                  //   children: [
+                                  //     Text(
+                                  //       "Mempersiapkan jawaban terbaik untukmu",
+                                  //       style: GoogleFonts.poppins(
+                                  //         fontSize: 14,
+                                  //         color: Colors.grey.shade600,
+                                  //         height: 1.6,
+                                  //       ),
+                                  //     ),
+                                  //     AnimatedTextKit(
+                                  //       repeatForever: true,
+                                  //       animatedTexts: [
+                                  //         TyperAnimatedText(
+                                  //           speed: const Duration(
+                                  //               milliseconds: 400),
+                                  //           " . . . .",
+                                  //           textStyle: GoogleFonts.poppins(
+                                  //             fontSize: 14,
+                                  //             color: Colors.grey.shade600,
+                                  //             height: 1.6,
+                                  //           ),
+                                  //         )
+                                  //       ],
+                                  //     ),
+                                  //   ],
+                                  // ),
                                 )
                             ],
                           );
@@ -211,15 +215,18 @@ class WebMainChatPage extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 10),
                                 child: TextFormField(
-                                  readOnly: state.isTyping,
                                   controller: chatV2Bloc.tcQuestion,
                                   validator: (val) =>
                                       Validators.requiredField(val!),
                                   style: GoogleFonts.montserrat(
                                     color: Colors.grey.shade600,
                                   ),
-                                  onEditingComplete: () => chatV2Bloc
-                                      .add(ChatV2CheckMessagesInDBEvent()),
+                                  onEditingComplete: () {
+                                    if (!state.isTyping) {
+                                      chatV2Bloc
+                                          .add(ChatV2CheckMessagesInDBEvent());
+                                    }
+                                  },
                                   decoration: InputDecoration(
                                     fillColor: colorPrimary,
                                     filled: true,

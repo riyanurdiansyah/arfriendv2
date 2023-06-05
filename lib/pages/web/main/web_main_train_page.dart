@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:arfriendv2/pages/web/main/web_main_file_widget.dart';
 import 'package:arfriendv2/utils/app_text_normal.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -10,11 +10,11 @@ import 'package:intl/intl.dart';
 import '../../../blocs/chatv2/chatv2_bloc.dart';
 import '../../../blocs/train/train_bloc.dart';
 import '../../../utils/app_color.dart';
-import '../../../utils/app_constanta.dart';
 import '../../../utils/app_responsive.dart';
 import '../../../utils/app_text.dart';
 import '../../../utils/validators.dart';
 import '../web_pagination.dart';
+import 'web_main_file_widget.dart';
 import 'web_main_sheet_widget.dart';
 import 'web_main_text_widget.dart';
 
@@ -255,7 +255,7 @@ class WebMainTrainPage extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: AppText.labelW500(
-                                    "Kategori",
+                                    "User Akses",
                                     13,
                                     Colors.black,
                                     textAlign: TextAlign.center,
@@ -511,41 +511,99 @@ class WebMainTrainPage extends StatelessWidget {
                               height: 15,
                             ),
                             AppTextNormal.labelW600(
-                              "Kategori",
+                              "User Akses",
                               14,
                               colorPrimaryDark,
                             ),
+                            if (state.userAccessSelected.isNotEmpty)
+                              const SizedBox(
+                                height: 12,
+                              ),
+                            if (state.userAccessSelected.isNotEmpty)
+                              Wrap(
+                                runSpacing: 5,
+                                spacing: 5,
+                                children: List.generate(
+                                  state.userAccessSelected.length,
+                                  (index) => Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 8),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Colors.grey.shade200,
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          AppTextNormal.labelW600(
+                                            state.userAccessSelected[index],
+                                            14,
+                                            Colors.grey.shade400,
+                                          ),
+                                          const SizedBox(
+                                            width: 16,
+                                          ),
+                                          InkWell(
+                                            onTap: () {},
+                                            child: Icon(
+                                              Icons.close_rounded,
+                                              size: 18,
+                                              color: Colors.grey.shade400,
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                ),
+                              ),
                             const SizedBox(
                               height: 12,
                             ),
-                            DropdownButtonFormField<String>(
-                              items: listRole.map((String data) {
-                                return DropdownMenuItem<String>(
-                                  value: data,
-                                  child: Row(
-                                    children: <Widget>[
-                                      AppText.labelW600(
-                                        data,
-                                        14,
-                                        Colors.grey.shade600,
-                                      ),
-                                    ],
+                            SizedBox(
+                              width: double.infinity,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  hint: Text(
+                                    "Pilih user",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      wordSpacing: 4,
+                                    ),
                                   ),
-                                );
-                              }).toList(),
-                              onChanged: (val) {},
-                              decoration: InputDecoration(
-                                hintStyle: GoogleFonts.poppins(),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 0, horizontal: 12),
-                                hintText: ".....",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(8),
+                                  items: state.userAccess
+                                      .map(
+                                        (item) => DropdownMenuItem<String>(
+                                          value: item,
+                                          child: AppTextNormal.labelW500(
+                                            item,
+                                            14,
+                                            Colors.black,
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (value) => trainBloc
+                                      .add(TrainOnSelectUserAksesEvent(value!)),
+                                  buttonStyleData: ButtonStyleData(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.grey.shade300),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    height: 50,
+                                    padding: const EdgeInsets.only(right: 10),
+                                  ),
+                                  iconStyleData: const IconStyleData(
+                                    icon: Icon(
+                                      Icons.arrow_drop_down_rounded,
+                                      color: Colors.black45,
+                                    ),
+                                    iconSize: 30,
+                                  ),
+                                  dropdownStyleData: DropdownStyleData(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -568,7 +626,10 @@ class WebMainTrainPage extends StatelessWidget {
                                 height: 1.4,
                               ),
                               decoration: InputDecoration(
-                                hintStyle: GoogleFonts.poppins(),
+                                hintStyle: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  wordSpacing: 4,
+                                ),
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 0, horizontal: 12),
                                 hintText: "Isikan nama data",

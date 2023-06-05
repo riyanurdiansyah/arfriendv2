@@ -15,6 +15,14 @@ class TrainState extends Equatable {
     this.isAdd = false,
     this.source = "file",
     this.urlFile = "",
+    this.userAccess = const [
+      "All",
+      "CEO",
+      "Manager",
+      "Deputy Manager",
+      "Staff"
+    ],
+    this.userAccessSelected = const [],
   });
 
   final bool isLoadingSetup;
@@ -31,6 +39,8 @@ class TrainState extends Equatable {
   final bool isAdd;
   final String source;
   final String urlFile;
+  final List<String> userAccess;
+  final List<String> userAccessSelected;
 
   TrainState copyWith({
     bool? isLoadingSetup,
@@ -46,6 +56,8 @@ class TrainState extends Equatable {
     bool? isAdd,
     String? source,
     String? urlFile,
+    List<String>? userAccess,
+    List<String>? userAccessSelected,
   }) =>
       TrainState(
         isLoadingSetup: isLoadingSetup ?? this.isLoadingSetup,
@@ -61,6 +73,8 @@ class TrainState extends Equatable {
         isAdd: isAdd ?? this.isAdd,
         source: source ?? this.source,
         urlFile: urlFile ?? this.urlFile,
+        userAccess: userAccess ?? this.userAccess,
+        userAccessSelected: userAccessSelected ?? this.userAccessSelected,
       );
   @override
   List<Object?> get props => [
@@ -76,6 +90,8 @@ class TrainState extends Equatable {
         isAdd,
         source,
         urlFile,
+        userAccess,
+        userAccessSelected,
       ];
 }
 

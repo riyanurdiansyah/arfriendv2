@@ -1,4 +1,3 @@
-import 'dart:html';
 
 import 'package:arfriendv2/blocs/train/train_bloc.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +36,10 @@ class _WebMainFileWidgetState extends State<WebMainFileWidget> {
         ),
         Stack(
           children: [
-            if (!window.navigator.userAgent
-                .toString()
-                .toLowerCase()
-                .contains("mac"))
+            // if (!window.navigator.userAgent
+            //     .toString()
+            //     .toLowerCase()
+            //     .contains("mac"))
               DropzoneView(
                 onCreated: ((cont) {
                   controller = cont;

@@ -76,3 +76,8 @@ class TrainOnCheckTokenGPTEvent extends TrainEvent {
 
   final String prompt;
 }
+
+class TrainOnSelectUserAksesEvent extends TrainEvent {
+  TrainOnSelectUserAksesEvent(this.user);
+  final String user;
+}

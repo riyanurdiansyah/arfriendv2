@@ -63,6 +63,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
     on<TrainOnAddEvent>(_onAdd);
     on<TrainOnUnggahDataEvent>(_onTranUnggahData);
     on<TrainOnCheckTokenGPTEvent>(_onCheckToken);
+    on<TrainOnSelectUserAksesEvent>(_onSelectUserAkses);
   }
 
   FutureOr<void> _onInitial(
@@ -499,5 +500,15 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
       "Authorization": "Bearer $apiKey",
     };
     final response = await apiService.checkTokenPrompt(headers, event.prompt);
+  }
+
+  FutureOr<void> _onSelectUserAkses(
+      TrainOnSelectUserAksesEvent event, Emitter<TrainState> emit) {
+    List<String> userAkses = List.from(state.userAccess);
+    List<String> userAksesSelected = List.from(state.userAccessSelected);
+    userAksesSelected.add(event.user);
+    userAkses.remove(event.user);
+    emit(state.copyWith(
+        userAccessSelected: userAksesSelected, userAccess: userAkses));
   }
 }
