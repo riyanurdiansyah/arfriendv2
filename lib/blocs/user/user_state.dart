@@ -30,3 +30,7 @@ class UserState extends Equatable {
 }
 
 class UserInitialState extends UserState {}
+
+class UserLogoutState extends UserState {}
+
+class UserNotAuthenticatedState extends UserState {}

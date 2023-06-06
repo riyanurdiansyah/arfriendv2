@@ -13,3 +13,5 @@ class UserOnChangeRoleEvent extends UserEvent {
 
   final RoleEntity role;
 }
+
+class UserLogoutEvent extends UserEvent {}

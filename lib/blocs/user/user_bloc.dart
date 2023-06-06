@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:arfriendv2/entities/user/user_entity.dart';
 import 'package:arfriendv2/utils/app_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -27,6 +28,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UserGetDataEvent>(_onGetData);
     on<UserRegistEvent>(_onRegist);
     on<UserOnChangeRoleEvent>(_onChangeRole);
+    on<UserLogoutEvent>(_onLogout);
   }
 
   FutureOr<void> _onGetData(
@@ -37,8 +39,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
   }
 
-  FutureOr<void> _onInitial(UserInitialEvent event, Emitter<UserState> emit) {
-    add(UserGetDataEvent());
+  FutureOr<void> _onInitial(
+      UserInitialEvent event, Emitter<UserState> emit) async {
+    final response = FirebaseAuth.instance.currentUser;
+    if (response == null) {
+      emit(UserNotAuthenticatedState());
+    } else {
+      add(UserGetDataEvent());
+    }
   }
 
   FutureOr<void> _onRegist(
@@ -73,5 +81,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       UserOnChangeRoleEvent event, Emitter<UserState> emit) {
     tcRole.text = event.role.roleName;
     role = event.role.role;
+  }
+
+  FutureOr<void> _onLogout(
+      UserLogoutEvent event, Emitter<UserState> emit) async {
+    await FirebaseAuth.instance.signOut();
+    emit(UserLogoutState());
   }
 }

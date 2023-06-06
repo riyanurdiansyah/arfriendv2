@@ -114,7 +114,7 @@ class AppDialog {
                         onTap();
                       },
                       child: Text(
-                        'Hapus',
+                        text ?? 'Hapus',
                         style: GoogleFonts.sourceSansPro(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w700,
