@@ -6,6 +6,7 @@ import 'package:arfriendv2/entities/dataset/message_entity.dart';
 import 'package:arfriendv2/entities/divisi/divisi_entity.dart';
 import 'package:arfriendv2/entities/error_entity.dart';
 import 'package:arfriendv2/entities/role/role_entity.dart';
+import 'package:arfriendv2/entities/user/user_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -25,6 +26,35 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
         return const Right(true);
       }
       return Left(ErrorEntity(code: 404, message: "User is not found"));
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ErrorEntity, String>> regist(Map<String, dynamic> body) async {
+    try {
+      return await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: body["email"],
+        password: "arkademi2809com",
+      )
+          .then((value) {
+        if (value.user != null) {
+          return Right(value.user!.uid);
+        }
+        return const Right("");
+      });
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = "";
+      if (e.code == 'weak-password') {
+        errorMessage = "Password terlalu lemah";
+      } else if (e.code == 'email-already-in-use') {
+        errorMessage = "Email sudah terdaftar";
+      } else {
+        errorMessage = "Terjadi kesalahan silahkan coba lagi...";
+      }
+      return Left(ErrorEntity(code: 400, message: errorMessage));
     } catch (e) {
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }
@@ -350,6 +380,38 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
               "Terjadi kesalahan silahkan coba lagi"));
     } catch (e) {
       debugPrint("CEK ERROR : ${e.toString()}");
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ErrorEntity, List<UserEntity>>> getUsers() async {
+    List<UserEntity> dataset = [];
+    try {
+      final response =
+          await FirebaseFirestore.instance.collection("users").get();
+
+      for (var data in response.docs) {
+        dataset.add(UserEntity.fromJson(data.data()));
+      }
+      return Right(dataset);
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ErrorEntity, bool>> registUser(
+      Map<String, dynamic> body) async {
+    try {
+      return FirebaseFirestore.instance
+          .collection("users")
+          .doc(body["id"])
+          .set(body)
+          .then((_) {
+        return const Right(true);
+      });
+    } catch (e) {
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }
   }

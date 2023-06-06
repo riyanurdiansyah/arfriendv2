@@ -1,3 +1,5 @@
+import 'package:arfriendv2/entities/role/role_entity.dart';
+
 import '../entities/sidebar/sidebar_entity.dart';
 
 const credentialSheet = {
@@ -54,7 +56,33 @@ final List<String> items = [
   'Sheet',
 ];
 
-List<String> listRole = ["All", "Personal"];
+List<RoleEntity> listRole = [
+  const RoleEntity(
+    id: "0",
+    role: 0,
+    roleName: "Super Admin",
+  ),
+  const RoleEntity(
+    id: "1",
+    role: 1,
+    roleName: "CEO",
+  ),
+  const RoleEntity(
+    id: "2",
+    role: 2,
+    roleName: "Manager",
+  ),
+  const RoleEntity(
+    id: "3",
+    role: 3,
+    roleName: "Deputy Manager",
+  ),
+  const RoleEntity(
+    id: "4",
+    role: 4,
+    roleName: "Staff",
+  ),
+];
 
 List<String> listDivisi = [
   "SOP",

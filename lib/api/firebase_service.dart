@@ -4,12 +4,17 @@ import 'package:arfriendv2/entities/dataset/dataset_entity.dart';
 import 'package:arfriendv2/entities/dataset/message_entity.dart';
 import 'package:arfriendv2/entities/divisi/divisi_entity.dart';
 import 'package:arfriendv2/entities/error_entity.dart';
+import 'package:arfriendv2/entities/user/user_entity.dart';
 import 'package:dartz/dartz.dart';
 
 import '../entities/role/role_entity.dart';
 
 abstract class FirebaseApiService {
   Future<Either<ErrorEntity, bool>> login(String email, String password);
+
+  Future<Either<ErrorEntity, String>> regist(Map<String, dynamic> body);
+
+  Future<Either<ErrorEntity, List<UserEntity>>> getUsers();
 
   Future<Either<ErrorEntity, List<DatasetEntity>>> getDataset();
 
@@ -28,10 +33,8 @@ abstract class FirebaseApiService {
   Future<Either<ErrorEntity, bool>> deleteHistoryById(String id);
 
   Future<Either<ErrorEntity, MessageEntity>> sendMessageToChatGPT(
-    Map<String, dynamic> headers,
-    List<MessageEntity> messages, {
-    double? temperature,
-  });
+      Map<String, dynamic> headers, List<MessageEntity> messages,
+      {double? temperature});
 
   Stream<ChatEntity> streamChat(String id);
 
@@ -47,4 +50,6 @@ abstract class FirebaseApiService {
 
   Future<Either<ErrorEntity, int>> checkTokenPrompt(
       Map<String, dynamic> headers, String prompt);
+
+  Future<Either<ErrorEntity, bool>> registUser(Map<String, dynamic> body);
 }

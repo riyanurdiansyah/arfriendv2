@@ -1,4 +1,5 @@
 import 'package:arfriendv2/blocs/train/train_bloc.dart';
+import 'package:arfriendv2/blocs/user/user_bloc.dart';
 import 'package:arfriendv2/entities/divisi/divisi_entity.dart';
 import 'package:arfriendv2/entities/role/role_entity.dart';
 import 'package:arfriendv2/utils/app_color.dart';
@@ -174,13 +175,13 @@ class AppDialog {
                     height: 12,
                   ),
                   DropdownButtonFormField<String>(
-                    items: listRole.map((String data) {
+                    items: listRole.map((RoleEntity data) {
                       return DropdownMenuItem<String>(
-                        value: data,
+                        value: data.roleName,
                         child: Row(
                           children: <Widget>[
                             AppText.labelW600(
-                              data,
+                              data.roleName,
                               14,
                               Colors.grey.shade600,
                             ),
@@ -348,13 +349,13 @@ class AppDialog {
                     height: 12,
                   ),
                   DropdownButtonFormField<String>(
-                    items: listRole.map((String data) {
+                    items: listRole.map((RoleEntity data) {
                       return DropdownMenuItem<String>(
-                        value: data,
+                        value: data.roleName,
                         child: Row(
                           children: <Widget>[
                             AppText.labelW600(
-                              data,
+                              data.roleName,
                               14,
                               Colors.grey.shade600,
                             ),
@@ -556,7 +557,7 @@ class AppDialog {
                       builder: (context, snapshot) {
                         final data = snapshot.data ?? [];
                         data.add(const RoleEntity(
-                            id: "add", role: "TAMBAH ROLE", roleId: -1));
+                            id: "add", role: 99, roleName: "TAMBAH ROLE"));
                         return DropdownButtonFormField<RoleEntity>(
                           items: List.generate(
                             snapshot.data?.length ?? 0,
@@ -566,7 +567,7 @@ class AppDialog {
                                 child: Row(
                                   children: <Widget>[
                                     AppText.labelW600(
-                                      snapshot.data![index].role,
+                                      snapshot.data![index].roleName,
                                       14,
                                       Colors.grey.shade600,
                                     ),
@@ -576,7 +577,7 @@ class AppDialog {
                             },
                           ),
                           onChanged: (val) => trainBloc
-                              .add(TrainChooseTragetRoleEvent(val!.role)),
+                              .add(TrainChooseTragetRoleEvent(val!.roleName)),
                           decoration: InputDecoration(
                             hintStyle: GoogleFonts.poppins(),
                             contentPadding: const EdgeInsets.symmetric(
@@ -1204,6 +1205,160 @@ class AppDialog {
             ),
           );
         },
+      ),
+    );
+  }
+
+  static dialogAddUser({
+    required BuildContext context,
+    required UserBloc userBloc,
+  }) {
+    final size = MediaQuery.of(context).size;
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: AppTextNormal.labelBold(
+          "Tambah User",
+          16,
+          Colors.black,
+        ),
+        content: SizedBox(
+          width: size.width / 4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppText.labelW700(
+                "Nama User",
+                14,
+                Colors.black,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              TextFormField(
+                controller: userBloc.tcNama,
+                validator: (val) => Validators.requiredField(val!),
+                style: GoogleFonts.poppins(
+                  height: 1.4,
+                ),
+                decoration: InputDecoration(
+                  hintStyle: GoogleFonts.poppins(
+                    fontSize: 14,
+                    wordSpacing: 4,
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                  hintText: "Nama",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              AppText.labelW700(
+                "Email User",
+                14,
+                Colors.black,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              TextFormField(
+                controller: userBloc.tcEmail,
+                validator: (val) => Validators.requiredField(val!),
+                style: GoogleFonts.poppins(
+                  height: 1.4,
+                ),
+                decoration: InputDecoration(
+                  hintStyle: GoogleFonts.poppins(
+                    fontSize: 14,
+                    wordSpacing: 4,
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                  hintText: "ex: johndoe@gmail.com",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              AppText.labelW700(
+                "Role User",
+                14,
+                Colors.black,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              DropdownButtonFormField<RoleEntity>(
+                items: listRole.map((RoleEntity data) {
+                  return DropdownMenuItem<RoleEntity>(
+                    value: data,
+                    child: Row(
+                      children: <Widget>[
+                        AppText.labelW600(
+                          data.roleName,
+                          14,
+                          Colors.grey.shade600,
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (val) => userBloc.add(UserOnChangeRoleEvent(val!)),
+                decoration: InputDecoration(
+                  hintStyle: GoogleFonts.poppins(),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                  hintText: ".....",
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                    color: Colors.grey.shade300,
+                  )),
+                ),
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorPrimaryDark,
+                  ),
+                  onPressed: () {
+                    context.pop();
+                    userBloc.add(UserRegistEvent());
+                    // trainBloc.add(TrainSaveTextDataEvent());
+                  },
+                  child: Text(
+                    'Simpan',
+                    style: GoogleFonts.sourceSansPro(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

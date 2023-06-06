@@ -53,7 +53,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         .doc("configs")
         .get());
     apiKey = data.data()!["api_key"];
-    print("object");
     add(ChatOnGetListHistoryMessageEvent());
     add(ChatOnStreamHistoryEvent());
     emit(state.copyWith(isLoadingSetup: false));

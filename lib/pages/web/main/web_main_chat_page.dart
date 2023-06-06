@@ -53,7 +53,7 @@ class WebMainChatPage extends StatelessWidget {
                   width: 12,
                 ),
                 Text(
-                  "ArBot",
+                  "ARFriend",
                   style: GoogleFonts.montserrat(
                     fontWeight: FontWeight.bold,
                     color: colorPrimaryDark,

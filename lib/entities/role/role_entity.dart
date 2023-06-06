@@ -7,8 +7,8 @@ part 'role_entity.g.dart';
 class RoleEntity with _$RoleEntity {
   const factory RoleEntity({
     required String id,
-    required String role,
-    required int roleId,
+    required int role,
+    required String roleName,
   }) = _RoleEntity;
 
   factory RoleEntity.fromJson(Map<String, dynamic> json) =>

@@ -1,5 +1,6 @@
 import 'package:arfriendv2/blocs/chatv2/chatv2_bloc.dart';
 import 'package:arfriendv2/blocs/train/train_bloc.dart';
+import 'package:arfriendv2/blocs/user/user_bloc.dart';
 import 'package:arfriendv2/pages/web/main/web_main_chat_page.dart';
 import 'package:arfriendv2/pages/web/main/web_main_train_page.dart';
 import 'package:arfriendv2/utils/app_color.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../entities/chat/chat_entity.dart';
 import '../../../utils/app_responsive.dart';
 import '../../../utils/app_text_normal.dart';
+import 'web_main_user_page.dart';
 
 class WebMainPage extends StatefulWidget {
   const WebMainPage({super.key});
@@ -22,11 +24,13 @@ class WebMainPage extends StatefulWidget {
 class _WebMainPageState extends State<WebMainPage> {
   final _chatV2Bloc = ChatV2Bloc();
   final _trainBloc = TrainBloc();
+  final _userBloc = UserBloc();
 
   @override
   void initState() {
     _chatV2Bloc.add(ChatV2InitialEvent());
     _trainBloc.add(TrainInitialEvent());
+    _userBloc.add(UserInitialEvent());
     super.initState();
   }
 
@@ -39,6 +43,9 @@ class _WebMainPageState extends State<WebMainPage> {
         ),
         BlocProvider<TrainBloc>(
           create: (context) => _trainBloc,
+        ),
+        BlocProvider<UserBloc>(
+          create: (context) => _userBloc,
         ),
       ],
       child: Scaffold(
@@ -494,6 +501,13 @@ class _WebMainPageState extends State<WebMainPage> {
                         if (state.route == "panduan") {
                           return Container(
                             color: Colors.red,
+                          );
+                        }
+
+                        if (state.route == "ketentuan") {
+                          return WebMainUserPage(
+                            chatV2Bloc: _chatV2Bloc,
+                            userBloc: _userBloc,
                           );
                         }
                         return Stack(
