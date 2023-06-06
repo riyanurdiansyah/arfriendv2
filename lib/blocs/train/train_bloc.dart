@@ -286,7 +286,16 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
 
       listData.removeAt(0);
 
-      String jsonLines = listData.map((map) => jsonEncode(map)).join('.');
+      List<String> convertedList = listData
+          .asMap()
+          .map((index, element) {
+            return MapEntry(index, '${index + 1}. $element');
+          })
+          .values
+          .toList();
+      String jsonLines = convertedList.map((map) => jsonEncode(map)).join('.');
+      print(
+          "CEK UY : ${jsonLines.replaceAll("{", "").replaceAll("}", "").replaceAll('"', "")}");
       emit(state.copyWith(
           urlFile: link,
           promptContent: jsonLines
@@ -427,6 +436,9 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
         "Content-Type": "application/json",
         "Authorization": "Bearer $apiKey",
       };
+
+      String jsonLines = rows.map((map) => jsonEncode(map)).join('.');
+      print("CEK JSL : $jsonLines");
       final prompt =
           "konteks: ${tcTitle.text}. respons: ${rows.toString().replaceAll("[", "").replaceAll("]", "").replaceAll("{", "").replaceAll("}", "")}";
       final resToken =

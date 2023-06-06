@@ -434,7 +434,7 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
       token += cek.token;
     }
 
-    if (token > 3700) {
+    if (token > 4000) {
       AppDialog.dialogChoosDataset(
           context: globalKey.currentContext!,
           listData: dataset,

@@ -1045,10 +1045,10 @@ class AppDialog {
                         AppTextNormal.labelBold(
                           "$token/",
                           16,
-                          token > 3700 ? Colors.red : colorPrimaryDark,
+                          token > 4000 ? Colors.red : colorPrimaryDark,
                         ),
                         AppTextNormal.labelBold(
-                          "3700",
+                          "4000",
                           12,
                           colorPrimaryDark,
                         ),
@@ -1186,7 +1186,7 @@ class AppDialog {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: colorPrimaryDark,
                         ),
-                        onPressed: token > 3700
+                        onPressed: token > 4000
                             ? null
                             : () {
                                 context.pop();

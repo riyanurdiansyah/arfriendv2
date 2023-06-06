@@ -392,50 +392,50 @@ class _WebMainPageState extends State<WebMainPage> {
                                         ),
                                       ),
                                     ),
-                                    // OutlinedButton(
-                                    //   style: OutlinedButton.styleFrom(
-                                    //     padding: EdgeInsets.zero,
-                                    //     backgroundColor: colorPrimary,
-                                    //     side: const BorderSide(
-                                    //       width: 0,
-                                    //       color: colorPrimary,
-                                    //     ),
-                                    //   ),
-                                    //   onPressed: () => _chatV2Bloc.add(
-                                    //       ChatV2OnChangeRouteEvent(
-                                    //           "", "ketentuan")),
-                                    //   child: SizedBox(
-                                    //     width: double.infinity,
-                                    //     height: 60,
-                                    //     child: Center(
-                                    //       child: Row(
-                                    //         crossAxisAlignment:
-                                    //             CrossAxisAlignment.start,
-                                    //         children: [
-                                    //           const SizedBox(
-                                    //             width: 14,
-                                    //           ),
-                                    //           Image.asset(
-                                    //             "assets/images/ketentuan.webp",
-                                    //             width: 25,
-                                    //           ),
-                                    //           const SizedBox(
-                                    //             width: 16,
-                                    //           ),
-                                    //           Padding(
-                                    //             padding: const EdgeInsets.only(
-                                    //                 top: 5),
-                                    //             child: AppTextNormal.labelW600(
-                                    //               "Ketentuan",
-                                    //               16,
-                                    //               colorPrimaryDark,
-                                    //             ),
-                                    //           ),
-                                    //         ],
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // ),
+                                    OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        backgroundColor: colorPrimary,
+                                        side: const BorderSide(
+                                          width: 0,
+                                          color: colorPrimary,
+                                        ),
+                                      ),
+                                      onPressed: () => _chatV2Bloc.add(
+                                          ChatV2OnChangeRouteEvent(
+                                              "", "ketentuan")),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 60,
+                                        child: Center(
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(
+                                                width: 14,
+                                              ),
+                                              Image.asset(
+                                                "assets/images/ketentuan.webp",
+                                                width: 25,
+                                              ),
+                                              const SizedBox(
+                                                width: 16,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 5),
+                                                child: AppTextNormal.labelW600(
+                                                  "Ketentuan",
+                                                  16,
+                                                  colorPrimaryDark,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     // OutlinedButton(
                                     //   style: OutlinedButton.styleFrom(
                                     //     padding: EdgeInsets.zero,

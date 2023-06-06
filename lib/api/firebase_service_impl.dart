@@ -37,7 +37,7 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       return await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
         email: body["email"],
-        password: "arkademi2809com",
+        password: "arfriend",
       )
           .then((value) {
         if (value.user != null) {
@@ -231,9 +231,6 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
         //   launchUrlString("https://${links[1]}");
         //   // js.context.callMethod('open', [links[1]]);
         // }
-        int token =
-            int.parse(response.data["usage"]["completion_tokens"].toString());
-        print("CEK : ${response.data["usage"]["completion_tokens"]}");
         return Right(
           MessageEntity.fromJson(response.data["choices"][0]["message"])
               .copyWith(
