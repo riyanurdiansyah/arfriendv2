@@ -196,7 +196,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
         "type": "text",
         "token": token,
         "addedBy": FirebaseAuth.instance.currentUser!.email!,
-        "to": state.targetRole,
+        "to": "all",
         "createdAt": DateTime.now().toIso8601String(),
         "updatedAt": DateTime.now().toIso8601String(),
         "messages": {
@@ -294,8 +294,6 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
           .values
           .toList();
       String jsonLines = convertedList.map((map) => jsonEncode(map)).join('.');
-      print(
-          "CEK UY : ${jsonLines.replaceAll("{", "").replaceAll("}", "").replaceAll('"', "")}");
       emit(state.copyWith(
           urlFile: link,
           promptContent: jsonLines
@@ -342,7 +340,7 @@ class TrainBloc extends Bloc<TrainEvent, TrainState> {
           "token": token,
           "urlFile": state.urlFile,
           "addedBy": FirebaseAuth.instance.currentUser!.email!,
-          "to": FirebaseAuth.instance.currentUser!.uid,
+          "to": "all",
           "createdAt": DateTime.now().toIso8601String(),
           "updatedAt": DateTime.now().toIso8601String(),
           "messages": {

@@ -272,7 +272,7 @@ class WebMainTrainPage extends StatelessWidget {
                                 SizedBox(
                                   width: 60,
                                   child: AppText.labelW500(
-                                    "Token",
+                                    "Data",
                                     13,
                                     Colors.black,
                                     textAlign: TextAlign.center,

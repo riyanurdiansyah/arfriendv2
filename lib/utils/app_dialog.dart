@@ -1016,13 +1016,21 @@ class AppDialog {
     required BuildContext context,
     required Function(List<String>) onTap,
     required List<DatasetEntity> listData,
+    List<String>? listIdSelected,
   }) {
     final size = MediaQuery.of(context).size;
     List<String> listId = [];
     int token = 0;
-    for (var data in listData) {
-      listId.add(data.id);
-      token += data.token;
+    if (listIdSelected != null && listIdSelected.isNotEmpty) {
+      for (var data in listData.where((e) => listIdSelected.contains(e.id))) {
+        listId.add(data.id);
+        token += data.token;
+      }
+    } else {
+      // for (var data in listData) {
+      //   listId.add(data.id);
+      //   token += data.token;
+      // }
     }
     return showDialog(
       context: context,
@@ -1055,7 +1063,7 @@ class AppDialog {
                       ],
                     ),
                     AppTextNormal.labelBold(
-                      " Token",
+                      " Data",
                       16,
                       colorPrimaryDark,
                     ),

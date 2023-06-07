@@ -88,6 +88,7 @@ class WebMainChatPage extends StatelessWidget {
                             onTap: (data) => chatV2Bloc
                                 .add(ChatV2OnUpdateListIdDatasetEvent(data)),
                             listData: dataset,
+                            listIdSelected: snapshot.data!.listIdDataset,
                           );
                         });
                       },
