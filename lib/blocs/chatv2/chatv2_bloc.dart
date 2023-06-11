@@ -241,7 +241,7 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
               title: "Gagal memuat dataset..."), (data) async {
         List<MessageEntity> messages = [];
         List<DatasetEntity> datasets = data
-            .where((e) => ((e.to == "all" || e.to == idUser) &&
+            .where((e) => ((e.to.toLowerCase() == "all" || e.to == idUser) &&
                 dataMessage.listIdDataset.contains(e.id)))
             .toList();
 

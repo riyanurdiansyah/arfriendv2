@@ -151,20 +151,20 @@ class _WebMainPageState extends State<WebMainPage> {
                                                   height: 6,
                                                 ),
                                                 AppTextNormal.labelW400(
-                                                  "CEO",
+                                                  "",
                                                   12.5,
                                                   colorPrimaryDark,
                                                 ),
                                               ],
                                             ),
                                             const Spacer(),
-                                            IconButton(
-                                              onPressed: () {},
-                                              icon: const Icon(
-                                                Icons.settings_rounded,
-                                                color: colorPrimaryDark,
-                                              ),
-                                            ),
+                                            // IconButton(
+                                            //   onPressed: () {},
+                                            //   icon: const Icon(
+                                            //     Icons.settings_rounded,
+                                            //     color: colorPrimaryDark,
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                       ),
@@ -346,6 +346,10 @@ class _WebMainPageState extends State<WebMainPage> {
                                     },
                                   ),
                                 ),
+                                Container(
+                                  height: 2.6,
+                                  color: Colors.white,
+                                ),
                                 Column(
                                   children: [
                                     OutlinedButton(
@@ -426,7 +430,7 @@ class _WebMainPageState extends State<WebMainPage> {
                                                 padding: const EdgeInsets.only(
                                                     top: 5),
                                                 child: AppTextNormal.labelW600(
-                                                  "Ketentuan",
+                                                  "Kelola User",
                                                   16,
                                                   colorPrimaryDark,
                                                 ),

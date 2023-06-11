@@ -166,7 +166,7 @@ class _WebPaginationState extends State<WebPagination> {
           ),
         ),
         InkWell(
-          onTap: currentPage > totalPage
+          onTap: currentPage >= totalPage
               ? null
               : () {
                   _updatePage(currentPage + 1);

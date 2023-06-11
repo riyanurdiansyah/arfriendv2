@@ -25,6 +25,7 @@ mixin _$MessageEntity {
   bool get hidden => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError;
   bool get isRead => throw _privateConstructorUsedError;
+  bool get isError => throw _privateConstructorUsedError;
   String get date => throw _privateConstructorUsedError;
   int get token => throw _privateConstructorUsedError;
 
@@ -46,6 +47,7 @@ abstract class $MessageEntityCopyWith<$Res> {
       bool hidden,
       String id,
       bool isRead,
+      bool isError,
       String date,
       int token});
 }
@@ -68,6 +70,7 @@ class _$MessageEntityCopyWithImpl<$Res, $Val extends MessageEntity>
     Object? hidden = null,
     Object? id = null,
     Object? isRead = null,
+    Object? isError = null,
     Object? date = null,
     Object? token = null,
   }) {
@@ -91,6 +94,10 @@ class _$MessageEntityCopyWithImpl<$Res, $Val extends MessageEntity>
       isRead: null == isRead
           ? _value.isRead
           : isRead // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isError: null == isError
+          ? _value.isError
+          : isError // ignore: cast_nullable_to_non_nullable
               as bool,
       date: null == date
           ? _value.date
@@ -118,6 +125,7 @@ abstract class _$$_MessageEntityCopyWith<$Res>
       bool hidden,
       String id,
       bool isRead,
+      bool isError,
       String date,
       int token});
 }
@@ -138,6 +146,7 @@ class __$$_MessageEntityCopyWithImpl<$Res>
     Object? hidden = null,
     Object? id = null,
     Object? isRead = null,
+    Object? isError = null,
     Object? date = null,
     Object? token = null,
   }) {
@@ -162,6 +171,10 @@ class __$$_MessageEntityCopyWithImpl<$Res>
           ? _value.isRead
           : isRead // ignore: cast_nullable_to_non_nullable
               as bool,
+      isError: null == isError
+          ? _value.isError
+          : isError // ignore: cast_nullable_to_non_nullable
+              as bool,
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -183,6 +196,7 @@ class _$_MessageEntity implements _MessageEntity {
       this.hidden = false,
       this.id = "",
       this.isRead = false,
+      this.isError = false,
       this.date = "",
       this.token = 0});
 
@@ -204,6 +218,9 @@ class _$_MessageEntity implements _MessageEntity {
   final bool isRead;
   @override
   @JsonKey()
+  final bool isError;
+  @override
+  @JsonKey()
   final String date;
   @override
   @JsonKey()
@@ -211,7 +228,7 @@ class _$_MessageEntity implements _MessageEntity {
 
   @override
   String toString() {
-    return 'MessageEntity(role: $role, content: $content, hidden: $hidden, id: $id, isRead: $isRead, date: $date, token: $token)';
+    return 'MessageEntity(role: $role, content: $content, hidden: $hidden, id: $id, isRead: $isRead, isError: $isError, date: $date, token: $token)';
   }
 
   @override
@@ -224,14 +241,15 @@ class _$_MessageEntity implements _MessageEntity {
             (identical(other.hidden, hidden) || other.hidden == hidden) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.isRead, isRead) || other.isRead == isRead) &&
+            (identical(other.isError, isError) || other.isError == isError) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.token, token) || other.token == token));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, role, content, hidden, id, isRead, date, token);
+  int get hashCode => Object.hash(
+      runtimeType, role, content, hidden, id, isRead, isError, date, token);
 
   @JsonKey(ignore: true)
   @override
@@ -254,6 +272,7 @@ abstract class _MessageEntity implements MessageEntity {
       final bool hidden,
       final String id,
       final bool isRead,
+      final bool isError,
       final String date,
       final int token}) = _$_MessageEntity;
 
@@ -270,6 +289,8 @@ abstract class _MessageEntity implements MessageEntity {
   String get id;
   @override
   bool get isRead;
+  @override
+  bool get isError;
   @override
   String get date;
   @override

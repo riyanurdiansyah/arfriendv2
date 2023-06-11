@@ -11,6 +11,7 @@ class MessageEntity with _$MessageEntity {
     @Default(false) bool hidden,
     @Default("") String id,
     @Default(false) bool isRead,
+    @Default(false) bool isError,
     @Default("") String date,
     @Default(0) int token,
   }) = _MessageEntity;

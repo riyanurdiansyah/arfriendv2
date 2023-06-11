@@ -84,3 +84,9 @@ class ChatV2OnUpdateListIdDatasetEvent extends ChatV2Event {
   ChatV2OnUpdateListIdDatasetEvent(this.listIdDataset);
   final List<String> listIdDataset;
 }
+
+class ChatV2CustomChatErrorMessageEvent extends ChatV2Event {
+  ChatV2CustomChatErrorMessageEvent(this.chats);
+
+  final List<MessageEntity> chats;
+}

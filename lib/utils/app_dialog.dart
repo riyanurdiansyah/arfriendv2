@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../blocs/chat/chat_bloc.dart';
 import '../entities/dataset/dataset_entity.dart';
+import '../pages/web/web_pagination.dart';
 import 'app_text.dart';
 import 'validators.dart';
 
@@ -1021,6 +1022,8 @@ class AppDialog {
     final size = MediaQuery.of(context).size;
     List<String> listId = [];
     int token = 0;
+    int pageSelected = 1;
+    double page = 0;
     if (listIdSelected != null && listIdSelected.isNotEmpty) {
       for (var data in listData.where((e) => listIdSelected.contains(e.id))) {
         listId.add(data.id);
@@ -1032,10 +1035,18 @@ class AppDialog {
       //   token += data.token;
       // }
     }
+
+    listData.sort((a, b) => a.title.compareTo(b.title));
+    for (int i = 0; i < listData.length; i++) {
+      page = (i + 1) / 8;
+      listData[i] = listData[i].copyWith(page: page.ceil());
+    }
     return showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
+          final listFix =
+              listData.where((e) => e.page == pageSelected).toList();
           return AlertDialog(
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1043,31 +1054,25 @@ class AppDialog {
                 Row(
                   children: [
                     AppTextNormal.labelBold(
-                      "Pilih Dataset",
-                      16,
+                      "Pilih Sub Topik",
+                      18,
                       colorPrimaryDark,
                     ),
                     const Spacer(),
-                    Row(
-                      children: [
-                        AppTextNormal.labelBold(
-                          "$token/",
-                          16,
-                          token > 4000 ? Colors.red : colorPrimaryDark,
-                        ),
-                        AppTextNormal.labelBold(
-                          "4000",
-                          12,
-                          colorPrimaryDark,
-                        ),
-                      ],
-                    ),
-                    AppTextNormal.labelBold(
-                      " Data",
-                      16,
-                      colorPrimaryDark,
+                    IconButton(
+                      onPressed: () => context.pop(),
+                      icon: const Icon(
+                        Icons.close,
+                      ),
                     ),
                   ],
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Container(
+                  height: 1.6,
+                  color: Colors.grey.shade300,
                 )
               ],
             ),
@@ -1076,30 +1081,68 @@ class AppDialog {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
+                  children: [
+                    // Checkbox(
+                    //   shape: RoundedRectangleBorder(
+                    //     borderRadius: BorderRadius.circular(2.6),
+                    //   ),
+                    //   value: true,
+                    //   onChanged: (val) {},
+                    // ),
+                    // const SizedBox(
+                    //   width: 14,
+                    // ),
+                    // AppTextNormal.labelBold(
+                    //   "Pilih Semua",
+                    //   16,
+                    //   token > 3700 ? Colors.red : colorPrimaryDark,
+                    // ),
+                    const Spacer(),
+                    AppTextNormal.labelW500(
+                      "Storage : ",
+                      16,
+                      token > 3700 ? Colors.red : colorPrimaryDark,
+                    ),
+                    AppTextNormal.labelBold(
+                      "$token/3700",
+                      16,
+                      token > 3700 ? Colors.red : colorPrimaryDark,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(
-                      children: List.generate(listData.length, (index) {
+                      children: List.generate(listFix.length, (index) {
                         if (index.isEven) {
                           return Container(
-                              margin: const EdgeInsets.only(bottom: 5),
+                              margin: const EdgeInsets.only(bottom: 12),
                               width: size.width / 4,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 4),
-                              color: Colors.grey.shade200,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
                               height: 50,
                               child: Row(
                                 children: [
                                   Checkbox(
                                     activeColor: colorPrimaryDark,
-                                    value: listId.contains(listData[index].id),
+                                    value: listId.contains(listFix[index].id),
                                     onChanged: (val) {
-                                      if (listId.contains(listData[index].id)) {
-                                        listId.remove(listData[index].id);
-                                        token = token - listData[index].token;
+                                      if (listId.contains(listFix[index].id)) {
+                                        listId.remove(listFix[index].id);
+                                        token = token - listFix[index].token;
                                       } else {
-                                        listId.add(listData[index].id);
-                                        token = token + listData[index].token;
+                                        listId.add(listFix[index].id);
+                                        token = token + listFix[index].token;
                                       }
 
                                       setState(() {});
@@ -1108,10 +1151,13 @@ class AppDialog {
                                   const SizedBox(
                                     width: 14,
                                   ),
-                                  AppTextNormal.labelNormal(
-                                    listData[index].title,
-                                    12,
-                                    Colors.grey.shade500,
+                                  FittedBox(
+                                    child: AppTextNormal.labelW500(
+                                      listFix[index].title,
+                                      14,
+                                      Colors.black,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ],
                               ));
@@ -1123,27 +1169,32 @@ class AppDialog {
                       width: 14,
                     ),
                     Column(
-                      children: List.generate(listData.length, (index) {
+                      children: List.generate(listFix.length, (index) {
                         if (index.isOdd) {
                           return Container(
-                              margin: const EdgeInsets.only(bottom: 5),
+                              margin: const EdgeInsets.only(bottom: 12),
                               width: size.width / 4,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 4),
-                              color: Colors.grey.shade200,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
                               height: 50,
                               child: Row(
                                 children: [
                                   Checkbox(
                                     activeColor: colorPrimaryDark,
-                                    value: listId.contains(listData[index].id),
+                                    value: listId.contains(listFix[index].id),
                                     onChanged: (val) {
-                                      if (listId.contains(listData[index].id)) {
-                                        listId.remove(listData[index].id);
-                                        token = token - listData[index].token;
+                                      if (listId.contains(listFix[index].id)) {
+                                        listId.remove(listFix[index].id);
+                                        token = token - listFix[index].token;
                                       } else {
-                                        listId.add(listData[index].id);
-                                        token = token + listData[index].token;
+                                        listId.add(listFix[index].id);
+                                        token = token + listFix[index].token;
                                       }
 
                                       setState(() {});
@@ -1152,10 +1203,11 @@ class AppDialog {
                                   const SizedBox(
                                     width: 14,
                                   ),
-                                  AppTextNormal.labelNormal(
-                                    listData[index].title,
-                                    12,
-                                    Colors.grey.shade500,
+                                  AppTextNormal.labelW500(
+                                    listFix[index].title,
+                                    14,
+                                    Colors.black,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ));
@@ -1167,6 +1219,19 @@ class AppDialog {
                 ),
                 const SizedBox(
                   height: 16,
+                ),
+                WebPagination(
+                  currentPage: 1,
+                  totalPage: (listData.length / 8).ceil(),
+                  displayItemCount: 8,
+                  onPageChanged: (page) {
+                    setState(() {
+                      pageSelected = page;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 25,
                 ),
                 Row(
                   children: [
@@ -1208,7 +1273,7 @@ class AppDialog {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           );
