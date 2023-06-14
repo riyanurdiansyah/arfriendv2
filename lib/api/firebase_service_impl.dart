@@ -207,7 +207,7 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       messagesJson.add({"role": data.role, "content": data.content});
     }
     final data = {
-      "model": "gpt-3.5-turbo",
+      "model": "gpt-3.5-turbo-16k",
       "temperature": temperature ?? 0.4,
       "messages": messagesJson,
     };

@@ -1102,12 +1102,12 @@ class AppDialog {
                     AppTextNormal.labelW500(
                       "Storage : ",
                       16,
-                      token > 3700 ? Colors.red : colorPrimaryDark,
+                      token > 15000 ? Colors.red : colorPrimaryDark,
                     ),
                     AppTextNormal.labelBold(
-                      "$token/3700",
+                      "$token/15000",
                       16,
-                      token > 3700 ? Colors.red : colorPrimaryDark,
+                      token > 15000 ? Colors.red : colorPrimaryDark,
                     ),
                   ],
                 ),
@@ -1318,7 +1318,7 @@ class AppDialog {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: colorPrimaryDark,
                         ),
-                        onPressed: token > 4000
+                        onPressed: token > 15000
                             ? null
                             : () {
                                 context.pop();
