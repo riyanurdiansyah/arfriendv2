@@ -15,3 +15,5 @@ class UserOnChangeRoleEvent extends UserEvent {
 }
 
 class UserLogoutEvent extends UserEvent {}
+
+class UserLoadFromSessionEvent extends UserEvent {}

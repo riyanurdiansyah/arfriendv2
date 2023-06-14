@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../api/firebase_service.dart';
 import '../../api/firebase_service_impl.dart';
@@ -22,6 +23,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final tcNama = TextEditingController();
   int role = 99;
 
+  late SharedPreferences _prefs;
+
   UserBloc() : super(UserInitialState()) {
     on<UserEvent>((event, emit) {});
     on<UserInitialEvent>(_onInitial);
@@ -29,6 +32,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UserRegistEvent>(_onRegist);
     on<UserOnChangeRoleEvent>(_onChangeRole);
     on<UserLogoutEvent>(_onLogout);
+    on<UserLoadFromSessionEvent>(_onLoadUserFromSession);
   }
 
   FutureOr<void> _onGetData(
@@ -46,6 +50,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(UserNotAuthenticatedState());
     } else {
       add(UserGetDataEvent());
+      add(UserLoadFromSessionEvent());
     }
   }
 
@@ -85,7 +90,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   FutureOr<void> _onLogout(
       UserLogoutEvent event, Emitter<UserState> emit) async {
+    _prefs = await SharedPreferences.getInstance();
     await FirebaseAuth.instance.signOut();
+    _prefs.clear();
     emit(UserLogoutState());
+  }
+
+  FutureOr<void> _onLoadUserFromSession(
+      UserLoadFromSessionEvent event, Emitter<UserState> emit) async {
+    _prefs = await SharedPreferences.getInstance();
+    final id = _prefs.getString("id") ?? "...";
+    final nama = _prefs.getString("nama") ?? "...";
+    final email = _prefs.getString("email") ?? "...";
+    final roleName = _prefs.getString("role_name") ?? "...";
+
+    var user = UserEntity(
+        id: id, email: email, nama: nama, role: role, roleName: roleName);
+    emit(state.copyWith(user: user));
   }
 }

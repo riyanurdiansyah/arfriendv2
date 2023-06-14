@@ -14,6 +14,8 @@ abstract class FirebaseApiService {
 
   Future<Either<ErrorEntity, String>> regist(Map<String, dynamic> body);
 
+  Future<Either<ErrorEntity, UserEntity>> getUserById(String id);
+
   Future<Either<ErrorEntity, List<UserEntity>>> getUsers();
 
   Future<Either<ErrorEntity, List<DatasetEntity>>> getDataset();

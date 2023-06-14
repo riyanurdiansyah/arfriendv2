@@ -36,7 +36,11 @@ class WebChatBotWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: colorPrimaryDark,
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                        bottomLeft: Radius.circular(20),
+                      ),
                       border: Border.all(
                         color: Colors.grey.shade300,
                       ),
@@ -50,8 +54,8 @@ class WebChatBotWidget extends StatelessWidget {
                                 textStyle: GoogleFonts.sourceSansPro(
                                   fontSize: 16,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.6,
+                                  fontWeight: FontWeight.w400,
+                                  height: 2,
                                 ),
                                 speed: const Duration(milliseconds: 20),
                               ),
@@ -61,12 +65,12 @@ class WebChatBotWidget extends StatelessWidget {
                             displayFullTextOnTap: false,
                             stopPauseOnTap: false,
                           )
-                        : AppText.labelW500(
+                        : AppText.labelW400(
                             data.content,
                             16,
                             Colors.white,
                             maxLines: 100,
-                            height: 1.6,
+                            height: 2,
                           ),
                   ),
                 ),
@@ -121,17 +125,21 @@ class WebChatUserWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: Colors.white60,
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                        bottomLeft: Radius.circular(20),
+                      ),
                       border: Border.all(
                         color: Colors.grey.shade300,
                       ),
                     ),
-                    child: AppText.labelW500(
+                    child: AppText.labelW400(
                       data.content,
                       16,
-                      const Color(0xFF1F2228),
+                      colorPrimaryDark,
                       maxLines: 100,
-                      height: 1.6,
+                      height: 2,
                     ),
                   ),
                 ),

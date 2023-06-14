@@ -412,4 +412,18 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       return Left(ErrorEntity(code: 500, message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<ErrorEntity, UserEntity>> getUserById(String id) async {
+    try {
+      final response =
+          await FirebaseFirestore.instance.collection("users").doc(id).get();
+      if (!response.exists) {
+        return Left(ErrorEntity(code: 404, message: "User tidak ditemukan"));
+      }
+      return Right(UserEntity.fromJson(response.data()!));
+    } catch (e) {
+      return Left(ErrorEntity(code: 500, message: e.toString()));
+    }
+  }
 }

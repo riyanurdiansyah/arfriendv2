@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 import '../blocs/chat/chat_bloc.dart';
 import '../entities/dataset/dataset_entity.dart';
@@ -1151,10 +1152,38 @@ class AppDialog {
                                   const SizedBox(
                                     width: 14,
                                   ),
-                                  FittedBox(
-                                    child: AppTextNormal.labelW500(
+                                  Expanded(
+                                    child: TextScroll(
                                       listFix[index].title,
-                                      14,
+                                      mode: TextScrollMode.bouncing,
+                                      velocity: const Velocity(
+                                          pixelsPerSecond: Offset(20, 0)),
+                                      delayBefore:
+                                          const Duration(milliseconds: 500),
+                                      numberOfReps: 25,
+                                      pauseBetween: const Duration(seconds: 5),
+                                      style: GoogleFonts.sourceSansPro(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                      textAlign: TextAlign.right,
+                                      selectable: true,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 50,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade300,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 6, horizontal: 8),
+                                    child: AppTextNormal.labelW500(
+                                      listFix[index].token.toString(),
+                                      12,
                                       Colors.black,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -1203,11 +1232,41 @@ class AppDialog {
                                   const SizedBox(
                                     width: 14,
                                   ),
-                                  AppTextNormal.labelW500(
-                                    listFix[index].title,
-                                    14,
-                                    Colors.black,
-                                    overflow: TextOverflow.ellipsis,
+                                  Expanded(
+                                    child: TextScroll(
+                                      listFix[index].title,
+                                      mode: TextScrollMode.bouncing,
+                                      velocity: const Velocity(
+                                          pixelsPerSecond: Offset(20, 0)),
+                                      delayBefore:
+                                          const Duration(milliseconds: 500),
+                                      numberOfReps: 25,
+                                      pauseBetween: const Duration(seconds: 5),
+                                      style: GoogleFonts.sourceSansPro(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                      textAlign: TextAlign.right,
+                                      selectable: true,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 50,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade300,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 6, horizontal: 8),
+                                    child: AppTextNormal.labelW500(
+                                      listFix[index].token.toString(),
+                                      12,
+                                      Colors.black,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ],
                               ));

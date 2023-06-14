@@ -143,7 +143,7 @@ class _WebMainPageState extends State<WebMainPage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 AppTextNormal.labelW600(
-                                                  "Dummy",
+                                                  state.user.nama,
                                                   16,
                                                   Colors.black,
                                                 ),
@@ -151,7 +151,7 @@ class _WebMainPageState extends State<WebMainPage> {
                                                   height: 6,
                                                 ),
                                                 AppTextNormal.labelW400(
-                                                  "",
+                                                  state.user.roleName,
                                                   12.5,
                                                   colorPrimaryDark,
                                                 ),
@@ -396,50 +396,50 @@ class _WebMainPageState extends State<WebMainPage> {
                                         ),
                                       ),
                                     ),
-                                    OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                        backgroundColor: colorPrimary,
-                                        side: const BorderSide(
-                                          width: 0,
-                                          color: colorPrimary,
-                                        ),
-                                      ),
-                                      onPressed: () => _chatV2Bloc.add(
-                                          ChatV2OnChangeRouteEvent(
-                                              "", "ketentuan")),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        height: 60,
-                                        child: Center(
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const SizedBox(
-                                                width: 14,
-                                              ),
-                                              Image.asset(
-                                                "assets/images/ketentuan.webp",
-                                                width: 25,
-                                              ),
-                                              const SizedBox(
-                                                width: 16,
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 5),
-                                                child: AppTextNormal.labelW600(
-                                                  "Kelola User",
-                                                  16,
-                                                  colorPrimaryDark,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    // OutlinedButton(
+                                    //   style: OutlinedButton.styleFrom(
+                                    //     padding: EdgeInsets.zero,
+                                    //     backgroundColor: colorPrimary,
+                                    //     side: const BorderSide(
+                                    //       width: 0,
+                                    //       color: colorPrimary,
+                                    //     ),
+                                    //   ),
+                                    //   onPressed: () => _chatV2Bloc.add(
+                                    //       ChatV2OnChangeRouteEvent(
+                                    //           "", "ketentuan")),
+                                    //   child: SizedBox(
+                                    //     width: double.infinity,
+                                    //     height: 60,
+                                    //     child: Center(
+                                    //       child: Row(
+                                    //         crossAxisAlignment:
+                                    //             CrossAxisAlignment.start,
+                                    //         children: [
+                                    //           const SizedBox(
+                                    //             width: 14,
+                                    //           ),
+                                    //           Image.asset(
+                                    //             "assets/images/ketentuan.webp",
+                                    //             width: 25,
+                                    //           ),
+                                    //           const SizedBox(
+                                    //             width: 16,
+                                    //           ),
+                                    //           Padding(
+                                    //             padding: const EdgeInsets.only(
+                                    //                 top: 5),
+                                    //             child: AppTextNormal.labelW600(
+                                    //               "Kelola User",
+                                    //               16,
+                                    //               colorPrimaryDark,
+                                    //             ),
+                                    //           ),
+                                    //         ],
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
                                     // OutlinedButton(
                                     //   style: OutlinedButton.styleFrom(
                                     //     padding: EdgeInsets.zero,
