@@ -24,6 +24,9 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
   final tcQuestion = TextEditingController();
   String apiKey = "";
   String idUser = "";
+  String model = "";
+  int tokens = 0;
+  double temperature = 0.5;
   SpeechToText speech = SpeechToText();
 
   ChatV2Bloc() : super(ChatV2InitialState()) {
@@ -34,6 +37,9 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
           .doc("configs")
           .get());
       apiKey = data.data()!["api_key"];
+      model = data.data()?["model"] ?? "gpt-3.5-turbo";
+      tokens = data.data()?["tokens"] ?? 500;
+      temperature = data.data()?["temperature"] ?? 0.5;
     });
     on<ChatV2SaveNewChatEvent>(_onSaveNewChat);
     on<ChatV2CreateNewChatEvent>(_onCreateNewChat);
@@ -201,8 +207,8 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
               .last);
         }
 
-        final response =
-            await apiService.sendMessageToChatGPT(headers, messages);
+        final response = await apiService.sendMessageToChatGPT(
+            headers, messages, model, tokens);
 
         response.fold((l) {
           add(ChatV2ChangeTypingEvent(false));
@@ -241,8 +247,9 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
               title: "Gagal memuat dataset..."), (data) async {
         List<MessageEntity> messages = [];
         List<DatasetEntity> datasets = data
-            .where((e) => ((e.to.toLowerCase() == "all" || e.to == idUser) &&
-                dataMessage.listIdDataset.contains(e.id)))
+            .where((e) => (((e.to.toLowerCase() == "all" || e.to == idUser) &&
+                    dataMessage.listIdDataset.contains(e.id)) ||
+                e.to.toLowerCase() == "system"))
             .toList();
 
         // if (dataMessage.messages
@@ -269,8 +276,8 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
           messages.add(dataMessage.messages.last);
         }
 
-        final response =
-            await apiService.sendMessageToChatGPT(headers, messages);
+        final response = await apiService.sendMessageToChatGPT(
+            headers, messages, model, tokens);
 
         response.fold((l) {
           add(ChatV2ChangeTypingEvent(false));
@@ -320,7 +327,8 @@ class ChatV2Bloc extends Bloc<ChatV2Event, ChatV2State> {
               "berikan kalimat motivasi semangat untuk hari ini maksimal 30 kata")
     ];
 
-    final response = await apiService.sendMessageToChatGPT(headers, messages,
+    final response = await apiService.sendMessageToChatGPT(
+        headers, messages, model, tokens,
         temperature: 1.0);
     response.fold((l) => null, (data) async {
       List<MessageEntity> messages = [];

@@ -1,6 +1,7 @@
 import 'package:arfriendv2/blocs/chatv2/chatv2_bloc.dart';
 import 'package:arfriendv2/blocs/train/train_bloc.dart';
 import 'package:arfriendv2/blocs/user/user_bloc.dart';
+import 'package:arfriendv2/pages/web/main/web_main_blank_page.dart';
 import 'package:arfriendv2/pages/web/main/web_main_chat_page.dart';
 import 'package:arfriendv2/pages/web/main/web_main_train_page.dart';
 import 'package:arfriendv2/utils/app_color.dart';
@@ -113,102 +114,102 @@ class _WebMainPageState extends State<WebMainPage> {
                                 const SizedBox(
                                   height: 18,
                                 ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12.0),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 50,
-                                              height: 50,
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                  image: AssetImage(
-                                                    "assets/images/pp.webp",
-                                                  ),
-                                                  fit: BoxFit.cover,
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12.0),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 50,
+                                            height: 50,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                  "assets/images/pp.webp",
                                                 ),
+                                                fit: BoxFit.cover,
                                               ),
                                             ),
-                                            const SizedBox(
-                                              width: 12,
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                AppTextNormal.labelW600(
-                                                  state.user.nama,
-                                                  16,
-                                                  Colors.black,
-                                                ),
-                                                const SizedBox(
-                                                  height: 6,
-                                                ),
-                                                AppTextNormal.labelW400(
-                                                  state.user.roleName,
-                                                  12.5,
-                                                  colorPrimaryDark,
-                                                ),
-                                              ],
-                                            ),
-                                            const Spacer(),
-                                            // IconButton(
-                                            //   onPressed: () {},
-                                            //   icon: const Icon(
-                                            //     Icons.settings_rounded,
-                                            //     color: colorPrimaryDark,
-                                            //   ),
-                                            // ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 25,
-                                      ),
-                                      Container(
-                                        height: 50,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0),
-                                        child: OutlinedButton(
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: Colors.white,
                                           ),
-                                          onPressed: () => _chatV2Bloc.add(
-                                              ChatV2CheckTokenBeforeNewChatEvent()),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                          const SizedBox(
+                                            width: 12,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Container(
-                                                color: colorPrimaryDark,
-                                                width: 20,
-                                                height: 20,
-                                                child: const Icon(
-                                                  Icons.add_rounded,
-                                                  color: Colors.white,
-                                                  size: 15,
-                                                ),
+                                              AppTextNormal.labelW600(
+                                                state.user.nama,
+                                                16,
+                                                Colors.black,
                                               ),
                                               const SizedBox(
-                                                width: 16,
+                                                height: 6,
                                               ),
-                                              AppTextNormal.labelW600(
-                                                "Topik Baru",
-                                                14,
+                                              AppTextNormal.labelW400(
+                                                state.user.roleName,
+                                                12.5,
                                                 colorPrimaryDark,
                                               ),
                                             ],
                                           ),
+                                          const Spacer(),
+                                          // IconButton(
+                                          //   onPressed: () {},
+                                          //   icon: const Icon(
+                                          //     Icons.settings_rounded,
+                                          //     color: colorPrimaryDark,
+                                          //   ),
+                                          // ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 25,
+                                    ),
+                                    Container(
+                                      height: 50,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0),
+                                      child: OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                        ),
+                                        onPressed: () => _chatV2Bloc.add(
+                                            ChatV2CheckTokenBeforeNewChatEvent()),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              color: colorPrimaryDark,
+                                              width: 20,
+                                              height: 20,
+                                              child: const Icon(
+                                                Icons.add_rounded,
+                                                color: Colors.white,
+                                                size: 15,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 16,
+                                            ),
+                                            AppTextNormal.labelW600(
+                                              "Topik Baru",
+                                              14,
+                                              colorPrimaryDark,
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 18,
                                 ),
                                 Expanded(
                                   flex: 7,
@@ -566,19 +567,7 @@ class _WebMainPageState extends State<WebMainPage> {
                                 userBloc: _userBloc,
                               );
                             }
-                            return Stack(
-                              children: [
-                                Container(
-                                  color: Colors.white,
-                                ),
-                                Center(
-                                  child: Image.asset(
-                                    "assets/images/bg.webp",
-                                    width: 350,
-                                  ),
-                                ),
-                              ],
-                            );
+                            return const WebMainBlankPage();
                           },
                         ),
                       ),

@@ -172,7 +172,7 @@ class _WebLoginPageState extends State<WebLoginPage> {
                               ),
                             ),
                             AppText.labelW500(
-                              "we are friend",
+                              "can be a good friend",
                               12,
                               const Color(0xFF004B7B).withOpacity(0.6),
                             ),

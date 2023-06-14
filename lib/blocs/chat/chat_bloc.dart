@@ -155,8 +155,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         listMessageForGTP =
             listMessage.where((e) => e.role == "system").toSet().toList();
         listMessageForGTP.add(listMessage[listMessage.length - 1]);
-        final response =
-            await apiService.sendMessageToChatGPT(headers, listMessageForGTP);
+        final response = await apiService.sendMessageToChatGPT(
+            headers, listMessageForGTP, "", 0);
         response.fold((_) => add(ChatOnChangeTypingEvent(false)), (data) async {
           final checkData = (await FirebaseFirestore.instance
               .collection("chat")

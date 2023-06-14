@@ -51,7 +51,7 @@ class WebChatBotWidget extends StatelessWidget {
                             animatedTexts: [
                               TypewriterAnimatedText(
                                 data.content,
-                                textStyle: GoogleFonts.sourceSansPro(
+                                textStyle: GoogleFonts.poppins(
                                   fontSize: 16,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,

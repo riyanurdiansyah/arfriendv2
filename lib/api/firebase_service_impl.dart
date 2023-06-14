@@ -198,7 +198,9 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
   @override
   Future<Either<ErrorEntity, MessageEntity>> sendMessageToChatGPT(
     Map<String, dynamic> headers,
-    List<MessageEntity> messages, {
+    List<MessageEntity> messages,
+    String model,
+    int tokens, {
     double? temperature,
   }) async {
     Dio dio = Dio();
@@ -207,7 +209,8 @@ class FirebaseApiServiceImpl implements FirebaseApiService {
       messagesJson.add({"role": data.role, "content": data.content});
     }
     final data = {
-      "model": "gpt-3.5-turbo-16k",
+      "model": model,
+      "max_tokens": tokens,
       "temperature": temperature ?? 0.4,
       "messages": messagesJson,
     };

@@ -157,34 +157,6 @@ class WebMainChatPage extends StatelessWidget {
                                     "assets/gif/typing.gif",
                                     width: 60,
                                   ),
-
-                                  //  Row(
-                                  //   children: [
-                                  //     Text(
-                                  //       "Mempersiapkan jawaban terbaik untukmu",
-                                  //       style: GoogleFonts.poppins(
-                                  //         fontSize: 14,
-                                  //         color: Colors.grey.shade600,
-                                  //         height: 1.6,
-                                  //       ),
-                                  //     ),
-                                  //     AnimatedTextKit(
-                                  //       repeatForever: true,
-                                  //       animatedTexts: [
-                                  //         TyperAnimatedText(
-                                  //           speed: const Duration(
-                                  //               milliseconds: 400),
-                                  //           " . . . .",
-                                  //           textStyle: GoogleFonts.poppins(
-                                  //             fontSize: 14,
-                                  //             color: Colors.grey.shade600,
-                                  //             height: 1.6,
-                                  //           ),
-                                  //         )
-                                  //       ],
-                                  //     ),
-                                  //   ],
-                                  // ),
                                 )
                             ],
                           );
@@ -203,87 +175,142 @@ class WebMainChatPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      height: 2,
-                      color: Colors.grey.shade300,
-                    ),
-                    Container(
-                      color: colorPrimary,
+                      color: const Color(0xFFF5F5F5),
                       child: Row(
                         children: [
                           if (!state.isOnVoice)
                             Expanded(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                child: TextFormField(
-                                  controller: chatV2Bloc.tcQuestion,
-                                  validator: (val) =>
-                                      Validators.requiredField(val!),
-                                  style: GoogleFonts.montserrat(
-                                    color: Colors.grey.shade600,
-                                  ),
-                                  onEditingComplete: () {
-                                    if (!state.isTyping) {
-                                      chatV2Bloc
-                                          .add(ChatV2CheckMessagesInDBEvent());
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    fillColor: colorPrimary,
-                                    filled: true,
-                                    hintStyle: GoogleFonts.montserrat(
-                                      color: const Color(0xFFA2A4A8),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 18),
+                                child: Stack(
+                                  children: [
+                                    TextFormField(
+                                      controller: chatV2Bloc.tcQuestion,
+                                      validator: (val) =>
+                                          Validators.requiredField(val!),
+                                      style: GoogleFonts.montserrat(
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      onEditingComplete: () {
+                                        if (!state.isTyping &&
+                                            chatV2Bloc
+                                                .tcQuestion.text.isNotEmpty) {
+                                          chatV2Bloc.add(
+                                              ChatV2CheckMessagesInDBEvent());
+                                        }
+                                      },
+                                      decoration: InputDecoration(
+                                        fillColor: Colors.grey.shade300,
+                                        filled: true,
+                                        hintStyle: GoogleFonts.montserrat(
+                                          color: const Color(0xFFA2A4A8),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(35),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade300,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(35),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade400,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 0, horizontal: 18),
+                                        hintText: "Ketik pertanyaan...",
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(35),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade300,
+                                            width: 1,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    // contentPadding:
-                                    //     const EdgeInsets.symmetric(
-                                    //         vertical: 0, horizontal: 12),
-                                    hintText: "Ketik pertanyaan...",
-                                    enabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    border: InputBorder.none,
-                                  ),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 4.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            if (!state.isTyping &&
+                                                chatV2Bloc.tcQuestion.text
+                                                    .isNotEmpty) {
+                                              chatV2Bloc.add(
+                                                  ChatV2CheckMessagesInDBEvent());
+                                            }
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                                right: 10),
+                                            width: 40,
+                                            height: 40,
+                                            decoration: const BoxDecoration(
+                                              color: colorPrimaryDark,
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                  "assets/images/send.webp",
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
-                          if (!state.isOnVoice)
-                            const SizedBox(
-                              width: 12,
-                            ),
-                          if (state.isOnVoice)
-                            Expanded(
-                              child: AnimatedContainer(
-                                duration: const Duration(seconds: 1),
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.red,
-                                ),
-                                child: IconButton(
-                                  onPressed: () =>
-                                      chatV2Bloc.add(ChatV2OnVoiceEvent()),
-                                  icon: const Icon(
-                                    Icons.stop_rounded,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          if (!state.isOnVoice)
-                            AnimatedContainer(
-                              duration: const Duration(seconds: 1),
-                              width: 35,
-                              color: colorPrimary,
-                              child: InkWell(
-                                onTap: () =>
-                                    chatV2Bloc.add(ChatV2OnVoiceEvent()),
-                                child: Image.asset(
-                                  "assets/images/mic.webp",
-                                ),
-                              ),
-                            ),
-                          const SizedBox(
-                            width: 14,
-                          ),
+                          // if (!state.isOnVoice)
+                          //   const SizedBox(
+                          //     width: 12,
+                          //   ),
+                          // if (state.isOnVoice)
+                          //   Expanded(
+                          //     child: AnimatedContainer(
+                          //       duration: const Duration(seconds: 1),
+                          //       height: 48,
+                          //       decoration: BoxDecoration(
+                          //         borderRadius: BorderRadius.circular(8),
+                          //         color: Colors.red,
+                          //       ),
+                          //       child: IconButton(
+                          //         onPressed: () =>
+                          //             chatV2Bloc.add(ChatV2OnVoiceEvent()),
+                          //         icon: const Icon(
+                          //           Icons.stop_rounded,
+                          //           color: Colors.white,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // if (!state.isOnVoice)
+                          //   AnimatedContainer(
+                          //     duration: const Duration(seconds: 1),
+                          //     width: 35,
+                          //     color: colorPrimary,
+                          //     child: InkWell(
+                          //       onTap: () =>
+                          //           chatV2Bloc.add(ChatV2OnVoiceEvent()),
+                          //       child: Image.asset(
+                          //         "assets/images/mic.webp",
+                          //       ),
+                          //     ),
+                          //   ),
+                          // const SizedBox(
+                          //   width: 14,
+                          // ),
                         ],
                       ),
                     ),
